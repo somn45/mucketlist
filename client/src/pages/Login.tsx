@@ -24,7 +24,7 @@ function Login() {
     cookies.set('uid', response.data.uid, {
       maxAge: 3600,
     });
-    navigate('/');
+    window.location.reload();
   };
 
   return (
