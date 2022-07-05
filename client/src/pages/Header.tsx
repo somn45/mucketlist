@@ -4,10 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 
 function Header() {
   const navigate = useNavigate();
-  const [cookies, setCookie, removeCookie] = useCookies(['uid']);
+  const [cookies, setCookie, removeCookie] = useCookies(['firebaseEmailUid']);
   const onClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    removeCookie('uid');
+    removeCookie('firebaseEmailUid');
     window.location.reload();
   };
   return (

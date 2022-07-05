@@ -7,7 +7,7 @@ const cookies = new Cookies();
 function Home() {
   const navigate = useNavigate();
   useEffect(() => {
-    if (!cookies.get('uid')) navigate('/login');
+    if (!cookies.get('F_UID')) navigate('/login');
   }, []);
   return <div>Home</div>;
 }

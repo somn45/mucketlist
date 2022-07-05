@@ -26,14 +26,26 @@ function Login() {
         email,
         password,
       });
-      cookies.set('uid', response.data.uid, {
+      cookies.set('F_UID', response.data.fuid, {
         maxAge: 3600,
       });
-      window.location.reload();
+      const baseUrl = 'https://accounts.spotify.com/authorize';
+      const urlConfig = {
+        response_type: 'code',
+        client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID
+          ? process.env.REACT_APP_SPOTIFY_CLIENT_ID
+          : '',
+        redirect_uri: 'http://localhost:3000',
+        scope: 'user-read-private user-read-email',
+        state: '1SMWKN29Nksmwogl49SWM238FM1879Smx',
+      };
+      const option = new URLSearchParams(urlConfig).toString();
+      const finalUrl = `${baseUrl}?${option}`;
+      window.location.href = finalUrl;
     } catch (error) {
       if (error instanceof AxiosError) {
         setErrorMsg(error.response?.data.errorMsg);
-      }
+      } else console.log('error');
     }
   };
 

@@ -5,13 +5,15 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Join from './pages/Join';
 import Header from './pages/Header';
+import SpotifyAuth from './SpotifyAuth';
 
 const cookies = new Cookies();
 
 function App() {
   return (
     <Router>
-      {cookies.get('uid') ? <Header /> : null}
+      <SpotifyAuth />
+      {cookies.get('firebaseEmailUid') ? <Header /> : null}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

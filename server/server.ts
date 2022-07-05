@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { auth, db } from './firebase';
@@ -5,20 +6,26 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
+import SpotifyWebApi from 'spotify-web-api-node';
 
 interface UserFormBody {
   email: string;
   password: string;
 }
 
-interface Error {
+interface SpotifyAuthBody {
   code: string;
+  fuid: string;
 }
-
 const app = express();
 const PORT = 3001;
+const spotifyApi = new SpotifyWebApi({
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+  redirectUri: 'http://localhost:3000',
+});
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -32,12 +39,11 @@ app.post('/join', async (req: express.Request, res: express.Response) => {
       email,
       password
     );
-    await setDoc(doc(db, 'email', email), {
-      uid: response.user.uid,
-      password,
+    await setDoc(doc(db, 'firebaseUid', response.user.uid), {
+      email: response.user.email,
     });
     return res.status(201).json({
-      uid: response.user.uid,
+      fuid: response.user.uid,
     });
   } catch (error) {
     if (error instanceof FirebaseError) {
@@ -55,7 +61,7 @@ app.post('/login', async (req: express.Request, res: express.Response) => {
   try {
     const response = await signInWithEmailAndPassword(auth, email, password);
     return res.status(200).json({
-      uid: response.user.uid,
+      fuid: response.user.uid,
     });
   } catch (error) {
     if (error instanceof FirebaseError) {
@@ -67,5 +73,31 @@ app.post('/login', async (req: express.Request, res: express.Response) => {
     } else console.log(error);
   }
 });
+
+app.post(
+  '/spotify/auth',
+  async (req: express.Request, res: express.Response) => {
+    const WEEK = 1000 * 60 * 60 * 24 * 7;
+    try {
+      const { code, fuid }: SpotifyAuthBody = req.body;
+      const response = await spotifyApi.authorizationCodeGrant(code);
+      console.log(response);
+      await setDoc(
+        doc(db, 'fuid', fuid),
+        {
+          refreshToken: response.body.refresh_token,
+          scope: response.body.scope,
+        },
+        { merge: true }
+      );
+      return res.status(201).json({
+        accessToken: response.body.access_token,
+        expiresIn: response.body.expires_in,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 app.listen(PORT, () => console.log(`Server connected in port ${PORT}`));
