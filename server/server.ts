@@ -6,7 +6,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
 import SpotifyWebApi from 'spotify-web-api-node';
 
@@ -19,13 +19,15 @@ interface SpotifyAuthBody {
   code: string;
   fuid: string;
 }
+
+interface FirebaseUserData {
+  email: string;
+  scope: string;
+  refreshToken?: string;
+}
+
 const app = express();
 const PORT = 3001;
-const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.SPOTIFY_CLIENT_ID,
-  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-  redirectUri: 'http://localhost:3000',
-});
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -65,6 +67,12 @@ app.post('/login', async (req: express.Request, res: express.Response) => {
     });
   } catch (error) {
     if (error instanceof FirebaseError) {
+      console.log(error);
+      if (error.code === 'auth/user-not-found') {
+        return res.status(400).json({
+          errorMsg: '가입되어 있는 이메일이 아닙니다',
+        });
+      }
       if (error.code === 'auth/wrong-password') {
         return res.status(400).json({
           errorMsg: '이메일/비밀번호가 일치하지 않습니다.',
@@ -78,12 +86,16 @@ app.post(
   '/spotify/auth',
   async (req: express.Request, res: express.Response) => {
     const WEEK = 1000 * 60 * 60 * 24 * 7;
+    const spotifyApi = new SpotifyWebApi({
+      clientId: process.env.SPOTIFY_CLIENT_ID,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+      redirectUri: 'http://localhost:3000',
+    });
     try {
       const { code, fuid }: SpotifyAuthBody = req.body;
       const response = await spotifyApi.authorizationCodeGrant(code);
-      console.log(response);
       await setDoc(
-        doc(db, 'fuid', fuid),
+        doc(db, 'firebaseUid', fuid),
         {
           refreshToken: response.body.refresh_token,
           scope: response.body.scope,
@@ -94,6 +106,31 @@ app.post(
         accessToken: response.body.access_token,
         expiresIn: response.body.expires_in,
       });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+app.post(
+  '/spotify/refresh',
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const firebaseUid: string = req.body.firebaseUid;
+      const docSnap = await getDoc(doc(db, 'firebaseUid', firebaseUid));
+      const data = docSnap.data();
+      const refreshToken: string = data?.refreshToken;
+      const spotifyApi = new SpotifyWebApi({
+        clientId: process.env.SPOTIFY_CLIENT_ID,
+        clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+        refreshToken,
+      });
+      const response = await spotifyApi.refreshAccessToken();
+      res.status(200).json({
+        accessToken: response.body.access_token,
+        expiresIn: response.body.expires_in,
+      });
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
