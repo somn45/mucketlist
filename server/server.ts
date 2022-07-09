@@ -130,11 +130,22 @@ app.post(
         accessToken: response.body.access_token,
         expiresIn: response.body.expires_in,
       });
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
   }
 );
+
+app.post('/genres', async (req: express.Request, res: express.Response) => {
+  try {
+    const accessToken: string = req.body.accessToken;
+    const spotifyApi = new SpotifyWebApi();
+    spotifyApi.setAccessToken(accessToken);
+    const response = await spotifyApi.getAvailableGenreSeeds();
+    return res.status(200).json({ genres: response.body.genres });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 app.listen(PORT, () => console.log(`Server connected in port ${PORT}`));

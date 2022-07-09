@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SpotifyWebApi from 'spotify-web-api-node';
 import { Cookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,11 +8,12 @@ const code = new URLSearchParams(window.location.search).get('code');
 const cookies = new Cookies();
 
 function SpotifyAuth() {
-  const navigate = useNavigate();
   const [accessToken, setAccessToken] = useState('');
   useEffect(() => {
     const accessToken = cookies.get('accessToken');
-    if (accessToken) return setAccessToken(accessToken);
+    if (accessToken) {
+      return setAccessToken(accessToken);
+    }
     if (!code) return;
     requestTokens(code);
   }, []);
@@ -31,7 +33,7 @@ function SpotifyAuth() {
         maxAge: 60,
       });
       setAccessToken(response.data.accessToken);
-      navigate('/');
+      window.location.href = '/';
     } catch (error) {
       console.log(error);
     }
