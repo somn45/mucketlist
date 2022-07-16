@@ -6,12 +6,12 @@ import { connect } from 'react-redux';
 import Genre from '../components/Genre';
 
 interface HomeProps {
-  selectedGenre: string[];
+  selectedGenres: string[];
 }
 
 const cookies = new Cookies();
 
-function Home({ selectedGenre }: HomeProps) {
+function Home({ selectedGenres }: HomeProps) {
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,13 +30,16 @@ function Home({ selectedGenre }: HomeProps) {
 
   const onClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    /*
+    if (selectedGenres.length === 0) {
+      return;
+    }
+    console.log(selectedGenres);
+    const genres = JSON.stringify(selectedGenres);
     const accessToken = cookies.get('accessToken');
-    console.log(accessToken);
     const response = await axios.get(
-      `http://localhost:3001/search?accessToken=${accessToken}`
+      `http://localhost:3001/search?accessToken=${accessToken}&genre=${genres}`
     );
-    */
+    console.log(response);
   };
   return (
     <div>
@@ -62,7 +65,7 @@ function Home({ selectedGenre }: HomeProps) {
 }
 
 function mapStateToProps(state: string[]) {
-  return { selectedGenre: state };
+  return { selectedGenres: state };
 }
 
 export default connect(mapStateToProps)(Home);

@@ -20,12 +20,10 @@ interface SpotifyAuthBody {
   fuid: string;
 }
 
-interface FirebaseUserData {
-  email: string;
-  scope: string;
-  refreshToken?: string;
+interface searchQuery {
+  accessToken: string;
+  genres: string[];
 }
-
 const app = express();
 const PORT = 3001;
 
@@ -138,7 +136,7 @@ app.post(
 
 app.post('/genres', async (req: express.Request, res: express.Response) => {
   try {
-    const accessToken: string = req.body.accessToken;
+    const accessToken = req.body.accessToken;
     const spotifyApi = new SpotifyWebApi();
     spotifyApi.setAccessToken(accessToken);
     const response = await spotifyApi.getAvailableGenreSeeds();
@@ -146,6 +144,21 @@ app.post('/genres', async (req: express.Request, res: express.Response) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+app.get('/search', async (req: express.Request, res: express.Response) => {
+  const accessToken = req.query.accessToken as string;
+  const genres = req.query.genre as string;
+  const parsedGenres = JSON.parse(genres);
+  const spotifyApi = new SpotifyWebApi();
+  spotifyApi.setAccessToken(accessToken);
+  const response = await spotifyApi.getRecommendations({
+    seed_genres: parsedGenres,
+    limit: 64,
+  });
+  return res.json({
+    tracks: response.body,
+  });
 });
 
 app.listen(PORT, () => console.log(`Server connected in port ${PORT}`));
