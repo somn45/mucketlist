@@ -5,7 +5,6 @@ import spotifyAuth from './spotifyAuth';
 import refresh from './refresh';
 import genres from './genres';
 import search from './search';
-
 import SpotifyWebApi from 'spotify-web-api-node';
 
 const router = express.Router();

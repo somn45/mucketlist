@@ -9,10 +9,11 @@ const search = async (req: express.Request, res: express.Response) => {
   spotifyApi.setAccessToken(accessToken);
   const response = await spotifyApi.getRecommendations({
     seed_genres: parsedGenres,
-    limit: 64,
+    limit: 100,
   });
+  console.log(response);
   return res.json({
-    tracks: response.body,
+    tracks: response.body.tracks,
   });
 };
 

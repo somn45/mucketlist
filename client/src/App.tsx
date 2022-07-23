@@ -13,7 +13,7 @@ function App() {
   return (
     <Router>
       <SpotifyAuth />
-      {cookies.get('firebaseEmailUid') ? <Header /> : null}
+      {cookies.get('F_UID') ? <Header /> : null}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

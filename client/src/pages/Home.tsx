@@ -4,6 +4,8 @@ import { Cookies } from 'react-cookie';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import Genre from '../components/Genre';
+import Settings, { TrackState } from './Settings';
+import Tracks from './Tracks';
 
 interface HomeProps {
   selectedGenres: string[];
@@ -14,10 +16,18 @@ const cookies = new Cookies();
 function Home({ selectedGenres }: HomeProps) {
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
+  const [tracks, setTracks] = useState<TrackState[]>([]);
+  const [sortedTracks, setSortedTracks] = useState<TrackState[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isOpenSettings, setIsOpenSettings] = useState(false);
   useEffect(() => {
     getSpotifyGenres();
     if (!cookies.get('F_UID')) navigate('/login');
+  }, []);
+  useEffect(() => {
+    const tracks = localStorage.getItem('tracks');
+    if (!tracks) return;
+    setSortedTracks(JSON.parse(tracks));
   }, []);
   const getSpotifyGenres = async () => {
     const accessToken = cookies.get('accessToken');
@@ -26,6 +36,7 @@ function Home({ selectedGenres }: HomeProps) {
     });
     setGenres(response.data.genres);
     setLoading(false);
+    setIsOpenSettings(true);
   };
 
   const onClick = async (e: React.MouseEvent<HTMLInputElement>) => {
@@ -40,6 +51,7 @@ function Home({ selectedGenres }: HomeProps) {
       `http://localhost:3001/search?accessToken=${accessToken}&genre=${genres}`
     );
     console.log(response);
+    setTracks(response.data.tracks);
   };
   return (
     <div>
@@ -60,6 +72,8 @@ function Home({ selectedGenres }: HomeProps) {
           onClick={onClick}
         />
       </form>
+      {isOpenSettings ? <Settings tracks={tracks} /> : null}
+      {sortedTracks ? <Tracks tracks={sortedTracks} /> : null}
     </div>
   );
 }
