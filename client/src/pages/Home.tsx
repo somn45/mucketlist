@@ -14,6 +14,7 @@ interface HomeProps {
 const cookies = new Cookies();
 
 function Home({ selectedGenres }: HomeProps) {
+  console.log('home');
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
   const [tracks, setTracks] = useState<TrackState[]>([]);
@@ -24,11 +25,13 @@ function Home({ selectedGenres }: HomeProps) {
     getSpotifyGenres();
     if (!cookies.get('F_UID')) navigate('/login');
   }, []);
+
   useEffect(() => {
     const tracks = localStorage.getItem('tracks');
     if (!tracks) return;
     setSortedTracks(JSON.parse(tracks));
   }, []);
+
   const getSpotifyGenres = async () => {
     const accessToken = cookies.get('accessToken');
     const response = await axios.post(`http://localhost:3001/genres`, {

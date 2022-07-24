@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { addGenre, removeGenre } from '../store/store';
 
@@ -29,4 +29,4 @@ function Genre({ genre }: GenreProps) {
   );
 }
 
-export default Genre;
+export default React.memo(Genre);

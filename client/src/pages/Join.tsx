@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 const SERVER_ENDPOINT = 'http://localhost:3001';
 
 function Join() {
+  console.log('join');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');

@@ -3,6 +3,7 @@ import Track from '../components/Track';
 import { ITracks } from './Settings';
 
 function Tracks({ tracks }: ITracks) {
+  console.log('tracks');
   return (
     <div>
       {tracks.map((track) => (
@@ -12,4 +13,4 @@ function Tracks({ tracks }: ITracks) {
   );
 }
 
-export default Tracks;
+export default React.memo(Tracks);

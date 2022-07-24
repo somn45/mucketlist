@@ -21,6 +21,7 @@ export interface ITracks {
 }
 
 function Settings({ tracks }: ITracks) {
+  console.log('settings');
   const [selectedSetting, setSelectedSetting] = useState('');
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = e.target.value;
@@ -81,4 +82,4 @@ function Settings({ tracks }: ITracks) {
   );
 }
 
-export default Settings;
+export default React.memo(Settings);
