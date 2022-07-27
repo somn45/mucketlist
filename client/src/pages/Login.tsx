@@ -23,12 +23,13 @@ function Login() {
     if (!emailReg.exec(email))
       return setErrorMsg('이메일 형식(xxx@xxx.xxx)을 지켜야 합니다.');
     try {
+      const WEEK = 24 * 7;
       const response = await axios.post(`${SERVER_ENDPOINT}/login`, {
         email,
         password,
       });
       cookies.set('F_UID', response.data.fuid, {
-        maxAge: 3600,
+        maxAge: 3600 * WEEK,
       });
       const baseUrl = 'https://accounts.spotify.com/authorize';
       const urlConfig = {

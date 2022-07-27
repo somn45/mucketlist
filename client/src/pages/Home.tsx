@@ -2,22 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import axios from 'axios';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import Genre from '../components/Genre';
 import Settings, { TrackState } from './Settings';
 import Tracks from './Tracks';
+import { clearSettings, createTracks } from '../store/store';
 
 interface HomeProps {
   selectedGenres: string[];
+  tracks: TrackState[];
+  settings: string;
+}
+
+interface HomeStates {
+  genre: string[];
+  tracks: TrackState[];
+  settings: string;
 }
 
 const cookies = new Cookies();
 
-function Home({ selectedGenres }: HomeProps) {
-  console.log('home');
+function Home({ selectedGenres, tracks, settings }: HomeProps) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
-  const [tracks, setTracks] = useState<TrackState[]>([]);
   const [sortedTracks, setSortedTracks] = useState<TrackState[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
@@ -30,7 +38,7 @@ function Home({ selectedGenres }: HomeProps) {
     const tracks = localStorage.getItem('tracks');
     if (!tracks) return;
     setSortedTracks(JSON.parse(tracks));
-  }, []);
+  }, [settings]);
 
   const getSpotifyGenres = async () => {
     const accessToken = cookies.get('accessToken');
@@ -47,14 +55,13 @@ function Home({ selectedGenres }: HomeProps) {
     if (selectedGenres.length === 0) {
       return;
     }
-    console.log(selectedGenres);
     const genres = JSON.stringify(selectedGenres);
     const accessToken = cookies.get('accessToken');
     const response = await axios.get(
       `http://localhost:3001/search?accessToken=${accessToken}&genre=${genres}`
     );
-    console.log(response);
-    setTracks(response.data.tracks);
+    dispatch(createTracks(response.data.tracks));
+    dispatch(clearSettings(''));
   };
   return (
     <div>
@@ -75,14 +82,18 @@ function Home({ selectedGenres }: HomeProps) {
           onClick={onClick}
         />
       </form>
-      {isOpenSettings ? <Settings tracks={tracks} /> : null}
+      {isOpenSettings ? <Settings /> : null}
       {sortedTracks ? <Tracks tracks={sortedTracks} /> : null}
     </div>
   );
 }
 
-function mapStateToProps(state: string[]) {
-  return { selectedGenres: state };
-}
+const mapStateToProps = (state: HomeStates) => {
+  return {
+    selectedGenres: state.genre,
+    tracks: state.tracks,
+    settings: state.settings,
+  };
+};
 
 export default connect(mapStateToProps)(Home);

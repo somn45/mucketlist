@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import {
+  sortByPopularity,
+  sortByRelease,
+  sortByRandom,
+  addSettings,
+} from '../store/store';
 
 export interface AlbumImage {
   height: number;
@@ -21,38 +28,24 @@ export interface ITracks {
 }
 
 function Settings({ tracks }: ITracks) {
-  console.log('settings');
+  const dispatch = useDispatch();
   const [selectedSetting, setSelectedSetting] = useState('');
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = e.target.value;
-    setSelectedSetting(e.target.value);
+    setSelectedSetting(selectedValue);
   };
   const onClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (tracks.length === 0 && !Array.isArray(tracks)) return;
-    let sortedTracks;
     if (selectedSetting === 'popularity') {
-      sortedTracks = tracks.sort((a, b) => {
-        if (a.popularity > b.popularity) return 1;
-        else if (b.popularity > a.popularity) return -1;
-        else return 0;
-      });
-    } else if (selectedSetting === 'random') {
-      sortedTracks = tracks.sort((a, b) => {
-        const randomNumber1 = Math.random();
-        const randomNumber2 = Math.random();
-        if (randomNumber1 > randomNumber2) return 1;
-        else if (randomNumber2 > randomNumber1) return -1;
-        else return 0;
-      });
+      dispatch(sortByPopularity(''));
     } else if (selectedSetting === 'date') {
-      sortedTracks = tracks.sort((a, b) => {
-        if (a.album.release_date > b.album.release_date) return 1;
-        else if (b.album.release_date > a.album.release_date) return -1;
-        else return 0;
-      });
+      dispatch(sortByRelease(''));
+    } else if (selectedSetting === 'random') {
+      dispatch(sortByRandom(''));
     }
-    localStorage.setItem('tracks', JSON.stringify(sortedTracks));
+    localStorage.setItem('tracks', JSON.stringify(tracks));
+    dispatch(addSettings(selectedSetting));
   };
   return (
     <form>
@@ -82,4 +75,8 @@ function Settings({ tracks }: ITracks) {
   );
 }
 
-export default React.memo(Settings);
+const mapStateToProps = (state: ITracks) => {
+  return { tracks: state.tracks };
+};
+
+export default connect(mapStateToProps)(Settings);

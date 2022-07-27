@@ -6,7 +6,6 @@ interface TrackProps {
 }
 
 function Track({ track }: TrackProps) {
-  console.log('track');
   return (
     <div>
       <img src={track.album.images[2].url} alt={track.name} />

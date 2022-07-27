@@ -3,7 +3,6 @@ import Track from '../components/Track';
 import { ITracks } from './Settings';
 
 function Tracks({ tracks }: ITracks) {
-  console.log('tracks');
   return (
     <div>
       {tracks.map((track) => (
