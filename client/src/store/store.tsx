@@ -1,5 +1,8 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import { TrackState } from '../pages/Settings';
+import { Cookies } from 'react-cookie';
+
+const cookies = new Cookies();
 
 const genre = createSlice({
   name: 'genreReducer',

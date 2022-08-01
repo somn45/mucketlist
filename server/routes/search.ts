@@ -11,7 +11,6 @@ const search = async (req: express.Request, res: express.Response) => {
     seed_genres: parsedGenres,
     limit: 100,
   });
-  console.log(response);
   return res.json({
     tracks: response.body.tracks,
   });

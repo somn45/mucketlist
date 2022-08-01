@@ -7,7 +7,6 @@ const SERVER_ENDPOINT = 'http://localhost:3001';
 const cookies = new Cookies();
 
 function Login() {
-  console.log('login');
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

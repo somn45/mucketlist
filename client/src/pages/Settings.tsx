@@ -13,10 +13,19 @@ export interface AlbumImage {
   width: number;
 }
 
+export interface Artist {
+  name: string;
+  id: string;
+  external_urls: {
+    spotify: string;
+  };
+}
+
 export interface TrackState {
   id: string;
   name: string;
   popularity: number;
+  artists: Artist[];
   album: {
     images: AlbumImage[];
     release_date: string;
@@ -25,6 +34,16 @@ export interface TrackState {
 
 export interface ITracks {
   tracks: TrackState[];
+}
+
+export interface TrackSeed {
+  id: string;
+  type: string;
+}
+
+export interface TrackData {
+  tracks: TrackState[];
+  seeds: TrackSeed[];
 }
 
 function Settings({ tracks }: ITracks) {

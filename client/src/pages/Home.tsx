@@ -42,6 +42,7 @@ function Home({ selectedGenres, tracks, settings }: HomeProps) {
 
   const getSpotifyGenres = async () => {
     const accessToken = cookies.get('accessToken');
+    if (!accessToken) return console.log('not token');
     const response = await axios.post(`http://localhost:3001/genres`, {
       accessToken: accessToken,
     });
@@ -60,6 +61,7 @@ function Home({ selectedGenres, tracks, settings }: HomeProps) {
     const response = await axios.get(
       `http://localhost:3001/search?accessToken=${accessToken}&genre=${genres}`
     );
+    console.log(response.data.tracks);
     dispatch(createTracks(response.data.tracks));
     dispatch(clearSettings(''));
   };

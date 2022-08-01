@@ -5,7 +5,8 @@ import spotifyAuth from './spotifyAuth';
 import refresh from './refresh';
 import genres from './genres';
 import search from './search';
-import SpotifyWebApi from 'spotify-web-api-node';
+import addTrack from './addTrack';
+import getTrack from './getTrack';
 
 const router = express.Router();
 
@@ -15,5 +16,7 @@ router.post('/spotify/auth', spotifyAuth);
 router.post('/spotify/refresh', refresh);
 router.post('/genres', genres);
 router.get('/search', search);
+router.post('/track/add', addTrack);
+router.get('/track/read', getTrack);
 
 export default router;
