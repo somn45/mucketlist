@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import SpotifyWebApi from 'spotify-web-api-node';
 import { Cookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addAccessToken } from './store/store';
 
 const code = new URLSearchParams(window.location.search).get('code');
 const cookies = new Cookies();
 
 function SpotifyAuth() {
+  const dispatch = useDispatch();
   const [accessToken, setAccessToken] = useState('');
   useEffect(() => {
     const accessToken = cookies.get('accessToken');
     if (accessToken) {
-      return setAccessToken(accessToken);
+      dispatch(addAccessToken(accessToken));
+      return;
     }
     if (!code) return;
     requestTokens(code);
@@ -29,10 +31,7 @@ function SpotifyAuth() {
         code: code,
         fuid: cookies.get('F_UID'),
       });
-      cookies.set('accessToken', response.data.accessToken, {
-        maxAge: 60,
-      });
-      setAccessToken(response.data.accessToken);
+      dispatch(addAccessToken(response.data.accessToken));
       window.location.href = '/';
     } catch (error) {
       console.log(error);
@@ -44,10 +43,7 @@ function SpotifyAuth() {
     const response = await axios.post('http://localhost:3001/spotify/refresh', {
       firebaseUid: firebaseUid,
     });
-    cookies.set('accessToken', response.data.accessToken, {
-      maxAge: response.data.expiresIn,
-    });
-    setAccessToken(response.data.accessToken);
+    dispatch(addAccessToken(response.data.accessToken));
   };
   return <div></div>;
 }

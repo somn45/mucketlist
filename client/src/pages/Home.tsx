@@ -9,12 +9,13 @@ import Tracks from './Tracks';
 import { clearSettings, createTracks } from '../store/store';
 
 interface HomeProps {
+  accessToken: string;
   selectedGenres: string[];
-  tracks: TrackState[];
   settings: string;
 }
 
 interface HomeStates {
+  accessToken: string;
   genre: string[];
   tracks: TrackState[];
   settings: string;
@@ -22,7 +23,8 @@ interface HomeStates {
 
 const cookies = new Cookies();
 
-function Home({ selectedGenres, tracks, settings }: HomeProps) {
+function Home({ selectedGenres, accessToken, settings }: HomeProps) {
+  console.log(accessToken);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
@@ -32,7 +34,7 @@ function Home({ selectedGenres, tracks, settings }: HomeProps) {
   useEffect(() => {
     getSpotifyGenres();
     if (!cookies.get('F_UID')) navigate('/login');
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
     const tracks = localStorage.getItem('tracks');
@@ -42,7 +44,6 @@ function Home({ selectedGenres, tracks, settings }: HomeProps) {
 
   const getSpotifyGenres = async () => {
     const accessToken = cookies.get('accessToken');
-    if (!accessToken) return console.log('not token');
     const response = await axios.post(`http://localhost:3001/genres`, {
       accessToken: accessToken,
     });
@@ -92,6 +93,7 @@ function Home({ selectedGenres, tracks, settings }: HomeProps) {
 
 const mapStateToProps = (state: HomeStates) => {
   return {
+    accessToken: state.accessToken,
     selectedGenres: state.genre,
     tracks: state.tracks,
     settings: state.settings,

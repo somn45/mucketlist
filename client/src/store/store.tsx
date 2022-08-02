@@ -1,8 +1,24 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { AnyAction, configureStore, createSlice } from '@reduxjs/toolkit';
 import { TrackState } from '../pages/Settings';
 import { Cookies } from 'react-cookie';
 
 const cookies = new Cookies();
+
+const accessToken = createSlice({
+  name: 'accessTokenReducer',
+  initialState: '',
+  reducers: {
+    addAccessToken: (state, action) => {
+      cookies.set('accessToken', action.payload, {
+        maxAge: 3600,
+      });
+      return 'set';
+    },
+    getAccessToken: (state, action) => {
+      return cookies.get('accessToken');
+    },
+  },
+});
 
 const genre = createSlice({
   name: 'genreReducer',
@@ -65,12 +81,14 @@ const settings = createSlice({
 
 const store = configureStore({
   reducer: {
+    accessToken: accessToken.reducer,
     genre: genre.reducer,
     tracks: tracks.reducer,
     settings: settings.reducer,
   },
 });
 
+export const { addAccessToken, getAccessToken } = accessToken.actions;
 export const { addGenre, removeGenre } = genre.actions;
 export const { createTracks, sortByPopularity, sortByRelease, sortByRandom } =
   tracks.actions;
