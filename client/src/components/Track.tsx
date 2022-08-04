@@ -10,7 +10,7 @@ interface TrackProps {
 const cookies = new Cookies();
 
 function Track({ track }: TrackProps) {
-  const onClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const setDibsTrack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log(track);
     const dibsTrack = {
@@ -23,7 +23,7 @@ function Track({ track }: TrackProps) {
     };
     const firebaseUid = cookies.get('F_UID');
     const accessToken = cookies.get('accessToken');
-    const response = await axios.post('http://localhost:3001/track/add', {
+    const response = await axios.post('http://localhost:3001/tracks/add', {
       track: dibsTrack,
       accessToken: accessToken,
       firebaseUid: firebaseUid,
@@ -34,7 +34,7 @@ function Track({ track }: TrackProps) {
       <img src={track.album.images[2].url} alt={track.name} />
       <h2>{track.name}</h2>
       <p>발매일 : {track.album.release_date}</p>
-      <button onClick={onClick}>트랙 찜하기</button>
+      <button onClick={setDibsTrack}>트랙 찜하기</button>
     </div>
   );
 }

@@ -53,7 +53,7 @@ function Settings({ tracks }: ITracks) {
     const selectedValue = e.target.value;
     setSelectedSetting(selectedValue);
   };
-  const onClick = (e: React.MouseEvent<HTMLInputElement>) => {
+  const setTrackOption = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (tracks.length === 0 && !Array.isArray(tracks)) return;
     if (selectedSetting === 'popularity') {
@@ -89,7 +89,11 @@ function Settings({ tracks }: ITracks) {
         onChange={handleChange}
       />
       랜덤
-      <input type="submit" value="음악 재생 순서 결정" onClick={onClick} />
+      <input
+        type="submit"
+        value="음악 재생 순서 결정"
+        onClick={setTrackOption}
+      />
     </form>
   );
 }

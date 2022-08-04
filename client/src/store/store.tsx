@@ -1,87 +1,14 @@
-import { AnyAction, configureStore, createSlice } from '@reduxjs/toolkit';
-import { TrackState } from '../pages/Settings';
-import { Cookies } from 'react-cookie';
-
-const cookies = new Cookies();
-
-const accessToken = createSlice({
-  name: 'accessTokenReducer',
-  initialState: '',
-  reducers: {
-    addAccessToken: (state, action) => {
-      cookies.set('accessToken', action.payload, {
-        maxAge: 3600,
-      });
-      return 'set';
-    },
-    getAccessToken: (state, action) => {
-      return cookies.get('accessToken');
-    },
-  },
-});
-
-const genre = createSlice({
-  name: 'genreReducer',
-  initialState: [] as string[],
-  reducers: {
-    addGenre: (state, action) => {
-      state.push(action.payload);
-    },
-    removeGenre: (state, action) => {
-      return state.filter((genre) => genre !== action.payload);
-    },
-  },
-});
-
-const tracks = createSlice({
-  name: 'tracksReducer',
-  initialState: [] as TrackState[],
-  reducers: {
-    createTracks: (state, action) => {
-      return [...action.payload];
-    },
-    sortByPopularity: (state, action) => {
-      state.sort((a, b) => {
-        if (a.popularity > b.popularity) return 1;
-        else if (b.popularity > a.popularity) return -1;
-        else return 0;
-      });
-    },
-    sortByRelease: (state, action) => {
-      state.sort((a, b) => {
-        if (a.album.release_date > b.album.release_date) return 1;
-        else if (b.album.release_date > a.album.release_date) return -1;
-        else return 0;
-      });
-    },
-    sortByRandom: (state, action) => {
-      state.sort((a, b) => {
-        const randomNumber1 = Math.random();
-        const randomNumber2 = Math.random();
-        if (randomNumber1 > randomNumber2) return 1;
-        else if (randomNumber2 > randomNumber1) return -1;
-        else return 0;
-      });
-    },
-  },
-});
-
-const settings = createSlice({
-  name: 'settingsReducer',
-  initialState: '',
-  reducers: {
-    addSettings: (state, action) => {
-      return action.payload;
-    },
-    clearSettings: (state, action) => {
-      return '';
-    },
-  },
-});
+import { configureStore } from '@reduxjs/toolkit';
+import accessToken from './reducers/accessTokenReducer';
+import firebaseUidToken from './reducers/firebaseUidToken';
+import genre from './reducers/genreReducer';
+import tracks from './reducers/tracksReducer';
+import settings from './reducers/settingsReducer';
 
 const store = configureStore({
   reducer: {
     accessToken: accessToken.reducer,
+    firebaseUidToken: firebaseUidToken.reducer,
     genre: genre.reducer,
     tracks: tracks.reducer,
     settings: settings.reducer,
@@ -89,6 +16,8 @@ const store = configureStore({
 });
 
 export const { addAccessToken, getAccessToken } = accessToken.actions;
+export const { addFirebaseUidToken, getFirebaseUidToken } =
+  firebaseUidToken.actions;
 export const { addGenre, removeGenre } = genre.actions;
 export const { createTracks, sortByPopularity, sortByRelease, sortByRandom } =
   tracks.actions;

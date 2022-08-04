@@ -6,7 +6,7 @@ import { connect, useDispatch } from 'react-redux';
 import Genre from '../components/Genre';
 import Settings, { TrackState } from './Settings';
 import Tracks from './Tracks';
-import { clearSettings, createTracks } from '../store/store';
+import { clearSettings, createTracks, getAccessToken } from '../store/store';
 
 interface HomeProps {
   accessToken: string;
@@ -17,14 +17,12 @@ interface HomeProps {
 interface HomeStates {
   accessToken: string;
   genre: string[];
-  tracks: TrackState[];
   settings: string;
 }
 
 const cookies = new Cookies();
 
 function Home({ selectedGenres, accessToken, settings }: HomeProps) {
-  console.log(accessToken);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
@@ -43,8 +41,8 @@ function Home({ selectedGenres, accessToken, settings }: HomeProps) {
   }, [settings]);
 
   const getSpotifyGenres = async () => {
-    const accessToken = cookies.get('accessToken');
-    const response = await axios.post(`http://localhost:3001/genres`, {
+    dispatch(getAccessToken(''));
+    const response = await axios.post(`http://localhost:3001/tracks/genres`, {
       accessToken: accessToken,
     });
     setGenres(response.data.genres);
@@ -52,17 +50,13 @@ function Home({ selectedGenres, accessToken, settings }: HomeProps) {
     setIsOpenSettings(true);
   };
 
-  const onClick = async (e: React.MouseEvent<HTMLInputElement>) => {
+  const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    if (selectedGenres.length === 0) {
-      return;
-    }
+    if (selectedGenres.length === 0) return;
     const genres = JSON.stringify(selectedGenres);
-    const accessToken = cookies.get('accessToken');
     const response = await axios.get(
-      `http://localhost:3001/search?accessToken=${accessToken}&genre=${genres}`
+      `http://localhost:3001/tracks/search?accessToken=${accessToken}&genre=${genres}`
     );
-    console.log(response.data.tracks);
     dispatch(createTracks(response.data.tracks));
     dispatch(clearSettings(''));
   };
@@ -82,7 +76,7 @@ function Home({ selectedGenres, accessToken, settings }: HomeProps) {
         <input
           type="submit"
           value="Search your favorite genres"
-          onClick={onClick}
+          onClick={searchTracksToGenre}
         />
       </form>
       {isOpenSettings ? <Settings /> : null}
@@ -95,7 +89,6 @@ const mapStateToProps = (state: HomeStates) => {
   return {
     accessToken: state.accessToken,
     selectedGenres: state.genre,
-    tracks: state.tracks,
     settings: state.settings,
   };
 };

@@ -6,7 +6,6 @@ import Login from './pages/Login';
 import Join from './pages/Join';
 import Header from './pages/Header';
 import SpotifyAuth from './SpotifyAuth';
-import CustomPlayList from './pages/CustomPlayList';
 
 const cookies = new Cookies();
 

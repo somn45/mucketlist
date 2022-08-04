@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import Track from '../components/Track';
 
 interface CustomPlayList {
   name: string;
@@ -21,7 +20,7 @@ function CustomPlayList() {
   const getCustomPlayList = async () => {
     const firebaseUid = cookies.get('F_UID');
     const response = await axios.get(
-      `http://localhost:3001/track/read?firebaseUid=${firebaseUid}`
+      `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
     );
     setTracks(response.data.tracks);
   };

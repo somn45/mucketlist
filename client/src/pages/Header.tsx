@@ -7,21 +7,18 @@ function Header() {
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies(['F_UID']);
   const [aCookies, aSetCookie, aRemoveCookie] = useCookies(['accessToken']);
-  const onClick = (e: React.MouseEvent<HTMLInputElement>) => {
+  const handleLogout = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
     removeCookie('F_UID');
     aRemoveCookie('accessToken');
     localStorage.clear();
     window.location.reload();
   };
-  const showDbisTracks = (e: React.MouseEvent<HTMLInputElement>) => {
-    e.preventDefault();
-  };
   return (
     <>
       <ul>
         <li>
-          <span onClick={onClick}>로그아웃</span>
+          <span onClick={handleLogout}>로그아웃</span>
         </li>
         <li>
           <Link to="/track/custom">찜한 플레이리스트</Link>
