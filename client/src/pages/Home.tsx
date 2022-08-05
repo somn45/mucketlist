@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import axios from 'axios';
 import { connect, useDispatch } from 'react-redux';
@@ -62,6 +62,7 @@ function Home({ selectedGenres, accessToken, settings }: HomeProps) {
   };
   return (
     <div>
+      <Outlet />
       <h2>Home</h2>
       <form>
         {loading ? (

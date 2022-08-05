@@ -24,9 +24,6 @@ function Header() {
           <Link to="/track/custom">찜한 플레이리스트</Link>
         </li>
       </ul>
-      <Routes>
-        <Route path="/track/custom" element={<CustomPlayList />} />
-      </Routes>
     </>
   );
 }
