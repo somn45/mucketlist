@@ -34,6 +34,7 @@ function Track({ track }: TrackProps) {
       <img src={track.album.images[2].url} alt={track.name} />
       <h2>{track.name}</h2>
       <p>발매일 : {track.album.release_date}</p>
+      <p>음원 순위 : {track.popularity}</p>
       <button onClick={setDibsTrack}>트랙 찜하기</button>
     </div>
   );

@@ -6,39 +6,38 @@ import { connect, useDispatch } from 'react-redux';
 import Genre from '../components/Genre';
 import Settings, { TrackState } from './Settings';
 import Tracks from './Tracks';
-import { clearSettings, createTracks, getAccessToken } from '../store/store';
+import {
+  clearSettings,
+  createTracks,
+  getAccessToken,
+} from '../store/reducers/rootReducer';
 
 interface HomeProps {
   accessToken: string;
+  tracks: TrackState[];
   selectedGenres: string[];
   settings: string;
 }
 
 interface HomeStates {
   accessToken: string;
+  tracks: TrackState[];
   genre: string[];
   settings: string;
 }
 
 const cookies = new Cookies();
 
-function Home({ selectedGenres, accessToken, settings }: HomeProps) {
+function Home({ selectedGenres, tracks, accessToken, settings }: HomeProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
-  const [sortedTracks, setSortedTracks] = useState<TrackState[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   useEffect(() => {
     getSpotifyGenres();
     if (!cookies.get('F_UID')) navigate('/login');
   }, [accessToken]);
-
-  useEffect(() => {
-    const tracks = localStorage.getItem('tracks');
-    if (!tracks) return;
-    setSortedTracks(JSON.parse(tracks));
-  }, [settings]);
 
   const getSpotifyGenres = async () => {
     dispatch(getAccessToken(''));
@@ -57,6 +56,7 @@ function Home({ selectedGenres, accessToken, settings }: HomeProps) {
     const response = await axios.get(
       `http://localhost:3001/tracks/search?accessToken=${accessToken}&genre=${genres}`
     );
+
     dispatch(createTracks(response.data.tracks));
     dispatch(clearSettings(''));
   };
@@ -81,7 +81,7 @@ function Home({ selectedGenres, accessToken, settings }: HomeProps) {
         />
       </form>
       {isOpenSettings ? <Settings /> : null}
-      {sortedTracks ? <Tracks tracks={sortedTracks} /> : null}
+      {tracks ? <Tracks tracks={tracks} /> : null}
     </div>
   );
 }
@@ -89,6 +89,7 @@ function Home({ selectedGenres, accessToken, settings }: HomeProps) {
 const mapStateToProps = (state: HomeStates) => {
   return {
     accessToken: state.accessToken,
+    tracks: state.tracks,
     selectedGenres: state.genre,
     settings: state.settings,
   };

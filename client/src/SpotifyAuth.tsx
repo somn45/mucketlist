@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import { connect, useDispatch } from 'react-redux';
-import { addAccessToken } from './store/store';
+import { addAccessToken } from './store/reducers/rootReducer';
 
 interface SpotifyAuthProps {
   accessToken: string;

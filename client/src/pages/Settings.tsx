@@ -5,7 +5,7 @@ import {
   sortByRelease,
   sortByRandom,
   addSettings,
-} from '../store/store';
+} from '../store/reducers/rootReducer';
 
 export interface AlbumImage {
   height: number;
@@ -63,7 +63,6 @@ function Settings({ tracks }: ITracks) {
     } else if (selectedSetting === 'random') {
       dispatch(sortByRandom(''));
     }
-    localStorage.setItem('tracks', JSON.stringify(tracks));
     dispatch(addSettings(selectedSetting));
   };
   return (

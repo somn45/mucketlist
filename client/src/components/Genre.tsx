@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { addGenre, removeGenre } from '../store/store';
+import { addGenre, removeGenre } from '../store/reducers/rootReducer';
 
 interface GenreProps {
   genre: string;
