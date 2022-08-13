@@ -61,7 +61,7 @@ function Home({ selectedGenres, tracks, accessToken, settings }: HomeProps) {
     dispatch(clearSettings(''));
   };
   return (
-    <div>
+    <section>
       <Outlet />
       <h2>Home</h2>
       <form>
@@ -82,7 +82,7 @@ function Home({ selectedGenres, tracks, accessToken, settings }: HomeProps) {
       </form>
       {isOpenSettings ? <Settings /> : null}
       {tracks ? <Tracks tracks={tracks} /> : null}
-    </div>
+    </section>
   );
 }
 
