@@ -32,7 +32,7 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
   background-color: #0f0f1f;
-  display: flex;
+	display: flex;
   justify-content: center;
 }
 ol, ul {
@@ -52,10 +52,10 @@ table {
 }
 section {
   width: 420px;
-  height: 100vh;
+	margin-top: 250px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+	justify-content: center;
   align-items: center;
   background-color: #0f0f1f;
 }
