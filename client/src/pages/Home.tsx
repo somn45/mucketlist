@@ -7,46 +7,52 @@ import Genre from '../components/Genre';
 import Settings, { TrackState } from './Settings';
 import Tracks from './Tracks';
 import {
+  activeOptions,
   clearSettings,
   createTracks,
-  getAccessToken,
+  inactiveAll,
 } from '../store/reducers/rootReducer';
+import { getAccessToken } from '../utils/functions/accessToken';
 
 interface HomeProps {
-  accessToken: string;
+  isActive: {
+    genres: boolean;
+    options: boolean;
+  };
   tracks: TrackState[];
   selectedGenres: string[];
-  settings: string;
 }
 
 interface HomeStates {
-  accessToken: string;
+  activeComponent: {
+    genres: boolean;
+    options: boolean;
+  };
   tracks: TrackState[];
   genre: string[];
-  settings: string;
 }
 
 const cookies = new Cookies();
+const accessToken = getAccessToken();
 
-function Home({ selectedGenres, tracks, accessToken, settings }: HomeProps) {
+function Home({ selectedGenres, isActive, tracks }: HomeProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isOpenSettings, setIsOpenSettings] = useState(false);
+  useEffect(() => {
+    if (!(Array.isArray(tracks) && tracks.length === 0))
+      dispatch(inactiveAll(''));
+  }, []);
   useEffect(() => {
     getSpotifyGenres();
     if (!cookies.get('F_UID')) navigate('/login');
   }, [accessToken]);
 
   const getSpotifyGenres = async () => {
-    dispatch(getAccessToken(''));
     const response = await axios.post(`http://localhost:3001/tracks/genres`, {
       accessToken: accessToken,
     });
     setGenres(response.data.genres);
-    setLoading(false);
-    setIsOpenSettings(true);
   };
 
   const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
@@ -59,20 +65,21 @@ function Home({ selectedGenres, tracks, accessToken, settings }: HomeProps) {
 
     dispatch(createTracks(response.data.tracks));
     dispatch(clearSettings(''));
+    dispatch(activeOptions(''));
   };
   return (
     <div>
       <Outlet />
       <h2>Home</h2>
       <form>
-        {loading ? (
-          <h2>장르 목록을 불러오는 중입니다.</h2>
-        ) : (
+        {isActive.genres ? (
           <>
             {genres.map((genre) => (
               <Genre key={genre} genre={genre} />
             ))}
           </>
+        ) : (
+          <h2>장르 목록을 불러오는 중입니다.</h2>
         )}
         <input
           type="submit"
@@ -80,7 +87,7 @@ function Home({ selectedGenres, tracks, accessToken, settings }: HomeProps) {
           onClick={searchTracksToGenre}
         />
       </form>
-      {isOpenSettings ? <Settings /> : null}
+      {isActive.options ? <Settings /> : null}
       {tracks ? <Tracks tracks={tracks} /> : null}
     </div>
   );
@@ -88,10 +95,9 @@ function Home({ selectedGenres, tracks, accessToken, settings }: HomeProps) {
 
 const mapStateToProps = (state: HomeStates) => {
   return {
-    accessToken: state.accessToken,
     tracks: state.tracks,
+    isActive: state.activeComponent,
     selectedGenres: state.genre,
-    settings: state.settings,
   };
 };
 

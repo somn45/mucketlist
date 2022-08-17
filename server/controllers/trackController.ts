@@ -14,7 +14,6 @@ interface addTrackControllerBody {
 
 export const genres = async (req: express.Request, res: express.Response) => {
   try {
-    console.log('genre');
     const accessToken = req.body.accessToken;
     const spotifyApi = new SpotifyWebApi();
     spotifyApi.setAccessToken(accessToken);

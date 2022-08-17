@@ -5,6 +5,7 @@ import {
   sortByRelease,
   sortByRandom,
   addSettings,
+  inactiveAll,
 } from '../store/reducers/rootReducer';
 
 export interface AlbumImage {
@@ -64,6 +65,7 @@ function Settings({ tracks }: ITracks) {
       dispatch(sortByRandom(''));
     }
     dispatch(addSettings(selectedSetting));
+    dispatch(inactiveAll(''));
   };
   return (
     <form>
