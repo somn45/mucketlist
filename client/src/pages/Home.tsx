@@ -13,6 +13,9 @@ import {
   inactiveAll,
 } from '../store/reducers/rootReducer';
 import { getAccessToken } from '../utils/functions/accessToken';
+import styled, { css, keyframes } from 'styled-components';
+import { FormFrame } from '../utils/styles/FormFrame';
+import { Modal } from '../utils/styles/Modal';
 
 interface HomeProps {
   isActive: {
@@ -32,6 +35,54 @@ interface HomeStates {
   genre: string[];
 }
 
+interface GenresFormProps {
+  open: boolean;
+}
+
+const HomeSec = styled.section`
+  margin-top: 100px;
+  background-color: white;
+`;
+
+const OpenGenreModal = keyframes`
+  from {
+    opacity: 0;
+  } to {
+    opacity: 0.8;
+  }
+`;
+
+const GenresForm = styled(FormFrame)<GenresFormProps>`
+  animation: ${(props) =>
+    props.open === false
+      ? css`
+          ${OpenGenreModal} 0.4s ease-out
+        `
+      : css`
+          ${OpenGenreModal} 0.4s ease-out
+        `};
+`;
+
+const GenreSelectionTab = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  row-gap: 10px;
+  margin-bottom: 30px;
+  justify-content: space-between;
+`;
+
+const Submit = styled.input`
+  width: 250px;
+  height: 50px;
+  border: 0;
+  border-radius: 5px;
+  background-color: #20b2aa;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+`;
+
 const cookies = new Cookies();
 const accessToken = getAccessToken();
 
@@ -39,20 +90,24 @@ function Home({ selectedGenres, isActive, tracks }: HomeProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
+
   useEffect(() => {
     if (!(Array.isArray(tracks) && tracks.length === 0))
       dispatch(inactiveAll(''));
   }, []);
+
   useEffect(() => {
     getSpotifyGenres();
     if (!cookies.get('F_UID')) navigate('/login');
   }, [accessToken]);
 
   const getSpotifyGenres = async () => {
+    if (!(Array.isArray(tracks) && tracks.length === 0)) return;
     const response = await axios.post(`http://localhost:3001/tracks/genres`, {
       accessToken: accessToken,
     });
-    setGenres(response.data.genres);
+    setGenres(response.data.genres.slice(0, 14));
+    //setTimeout(() => setIsOpenGenres(true), 500);
   };
 
   const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
@@ -68,28 +123,28 @@ function Home({ selectedGenres, isActive, tracks }: HomeProps) {
     dispatch(activeOptions(''));
   };
   return (
-    <div>
+    <HomeSec>
       <Outlet />
-      <h2>Home</h2>
-      <form>
-        {isActive.genres ? (
-          <>
-            {genres.map((genre) => (
-              <Genre key={genre} genre={genre} />
-            ))}
-          </>
-        ) : (
-          <h2>장르 목록을 불러오는 중입니다.</h2>
-        )}
-        <input
-          type="submit"
-          value="Search your favorite genres"
-          onClick={searchTracksToGenre}
-        />
-      </form>
+      {isActive.genres ? (
+        <Modal>
+          <GenresForm open={isActive.genres}>
+            <h2>좋아하는 장르는 무엇입니까?</h2>
+            <GenreSelectionTab>
+              {genres.map((genre) => (
+                <Genre key={genre} genre={genre} />
+              ))}
+            </GenreSelectionTab>
+            <Submit
+              type="submit"
+              value="트랙 검색하기"
+              onClick={searchTracksToGenre}
+            />
+          </GenresForm>
+        </Modal>
+      ) : null}
       {isActive.options ? <Settings /> : null}
       {tracks ? <Tracks tracks={tracks} /> : null}
-    </div>
+    </HomeSec>
   );
 }
 
