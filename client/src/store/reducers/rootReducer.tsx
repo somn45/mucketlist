@@ -29,8 +29,13 @@ export const { addFirebaseUidToken, getFirebaseUidToken } =
 export const { activeGenres, activeOptions, inactiveAll } =
   activeComponent.actions;
 export const { addGenre, removeGenre } = genre.actions;
-export const { createTracks, sortByPopularity, sortByRelease, sortByRandom } =
-  tracks.actions;
+export const {
+  createTracks,
+  sortByPopularity,
+  sortByRelease,
+  sortByRandom,
+  clearTracks,
+} = tracks.actions;
 export const { addSettings, clearSettings } = settings.actions;
 
 export default persistReducer(persistConfig, rootReducer);

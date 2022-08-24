@@ -92,14 +92,14 @@ function Home({ selectedGenres, isActive, tracks }: HomeProps) {
   const [genres, setGenres] = useState<string[]>([]);
 
   useEffect(() => {
+    if (!cookies.get('F_UID')) navigate('/login');
     if (!(Array.isArray(tracks) && tracks.length === 0))
       dispatch(inactiveAll(''));
   }, []);
 
   useEffect(() => {
     getSpotifyGenres();
-    if (!cookies.get('F_UID')) navigate('/login');
-  }, [accessToken]);
+  }, [isActive.genres]);
 
   const getSpotifyGenres = async () => {
     if (!(Array.isArray(tracks) && tracks.length === 0)) return;

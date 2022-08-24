@@ -28,6 +28,9 @@ const tracks = createSlice({
       });
     },
     sortByRandom: (state, action) => {},
+    clearTracks: (state, action) => {
+      return [];
+    },
   },
 });
 
