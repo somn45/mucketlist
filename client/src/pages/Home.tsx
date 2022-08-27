@@ -87,6 +87,7 @@ const cookies = new Cookies();
 const accessToken = getAccessToken();
 
 function Home({ selectedGenres, isActive, tracks }: HomeProps) {
+  console.log(tracks[0]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
@@ -103,9 +104,17 @@ function Home({ selectedGenres, isActive, tracks }: HomeProps) {
 
   const getSpotifyGenres = async () => {
     if (!(Array.isArray(tracks) && tracks.length === 0)) return;
-    const response = await axios.post(`http://localhost:3001/tracks/genres`, {
-      accessToken: accessToken,
-    });
+    const response = await axios.post(
+      `http://localhost:3001/tracks/genres`,
+      {
+        accessToken: accessToken,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     setGenres(response.data.genres.slice(0, 14));
     //setTimeout(() => setIsOpenGenres(true), 500);
   };

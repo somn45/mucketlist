@@ -118,7 +118,8 @@ function Login() {
           ? process.env.REACT_APP_SPOTIFY_CLIENT_ID
           : '',
         redirect_uri: 'http://localhost:3000',
-        scope: 'user-read-private user-read-email',
+        scope:
+          'user-read-private user-read-email streaming user-read-playback-state, user-modify-playback-state',
         state: '1SMWKN29Nksmwogl49SWM238FM1879Smx',
       };
       const option = new URLSearchParams(urlConfig).toString();

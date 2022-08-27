@@ -13,10 +13,6 @@ const accessToken = createSlice({
       });
       return 'set';
     },
-    getAccessToken: (state, action) => {
-      if (cookies.get('accessToken')) return cookies.get('accessToken');
-      return '';
-    },
   },
 });
 

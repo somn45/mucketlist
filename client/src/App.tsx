@@ -8,6 +8,7 @@ import Header from './pages/Header';
 import SpotifyAuth from './SpotifyAuth';
 import CustomPlayList from './pages/CustomPlayList';
 import GlobalStyles from './GlobalStyles';
+import WebPlayback from './WebPlayback';
 
 const cookies = new Cookies();
 
@@ -18,6 +19,7 @@ function App() {
       <Router>
         <SpotifyAuth />
         {cookies.get('F_UID') ? <Header /> : null}
+        <WebPlayback />
         <Routes>
           <Route path="/" element={<Home />}>
             <Route path="/track/custom" element={<CustomPlayList />} />

@@ -23,7 +23,7 @@ const persistConfig = {
   whitelist: ['tracks'],
 };
 
-export const { addAccessToken, getAccessToken } = accessToken.actions;
+export const { addAccessToken } = accessToken.actions;
 export const { addFirebaseUidToken, getFirebaseUidToken } =
   firebaseUidToken.actions;
 export const { activeGenres, activeOptions, inactiveAll } =
