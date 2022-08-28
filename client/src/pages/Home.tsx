@@ -115,7 +115,7 @@ function Home({ selectedGenres, isActive, tracks }: HomeProps) {
         },
       }
     );
-    setGenres(response.data.genres.slice(0, 14));
+    setGenres(response.data.genres.slice(0, 20));
     //setTimeout(() => setIsOpenGenres(true), 500);
   };
 

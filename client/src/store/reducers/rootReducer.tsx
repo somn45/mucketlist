@@ -7,6 +7,7 @@ import genre from '../reducers/genreReducer';
 import tracks from '../reducers/tracksReducer';
 import settings from '../reducers/settingsReducer';
 import activeComponent from './activeComponentReducer';
+import volume from './volumeReducer';
 
 const rootReducer = combineReducers({
   accessToken: accessToken.reducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   genre: genre.reducer,
   tracks: tracks.reducer,
   settings: settings.reducer,
+  volume: volume.reducer,
 });
 
 const persistConfig = {
@@ -37,5 +39,6 @@ export const {
   clearTracks,
 } = tracks.actions;
 export const { addSettings, clearSettings } = settings.actions;
+export const { onChangeVolume } = volume.actions;
 
 export default persistReducer(persistConfig, rootReducer);
