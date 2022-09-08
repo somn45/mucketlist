@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAccessToken } from './accessToken';
+import getTokens from './getTokens';
 
 interface PlayProps {
   spotify_uri: string;
@@ -25,7 +25,7 @@ const play = ({
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${getAccessToken()}`,
+          Authorization: `Bearer ${getTokens()}`,
         },
       }
     );

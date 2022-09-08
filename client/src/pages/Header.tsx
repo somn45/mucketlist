@@ -43,12 +43,12 @@ const LogoutButton = styled.div`
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [cookies, setCookie, removeCookie] = useCookies(['F_UID']);
-  const [aCookies, aSetCookie, aRemoveCookie] = useCookies(['accessToken']);
+  const [, , removeFirebaseUID] = useCookies(['F_UID']);
+  const [, , removeAccessToken] = useCookies(['accessToken']);
   const handleLogout = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    removeCookie('F_UID');
-    aRemoveCookie('accessToken');
+    removeFirebaseUID('F_UID');
+    removeAccessToken('accessToken');
     localStorage.clear();
     window.location.reload();
   };

@@ -88,7 +88,7 @@ export const spotifyAuth = async (
       },
       { merge: true }
     );
-    return res.status(201).json({
+    res.status(202).json({
       accessToken: response.body.access_token,
       expiresIn: response.body.expires_in,
     });

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  genres: true,
+  genres: false,
   options: false,
 };
 

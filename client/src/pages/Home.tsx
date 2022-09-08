@@ -7,15 +7,16 @@ import Genre from '../components/Genre';
 import Settings, { TrackState } from './Settings';
 import Tracks from './Tracks';
 import {
+  activeGenres,
   activeOptions,
   clearSettings,
   createTracks,
   inactiveAll,
 } from '../store/reducers/rootReducer';
-import { getAccessToken } from '../utils/functions/accessToken';
 import styled, { css, keyframes } from 'styled-components';
 import { FormFrame } from '../utils/styles/FormFrame';
 import { Modal } from '../utils/styles/Modal';
+import getTokens from '../utils/functions/getTokens';
 
 interface HomeProps {
   isActive: {
@@ -84,9 +85,9 @@ const Submit = styled.input`
 `;
 
 const cookies = new Cookies();
-const accessToken = getAccessToken();
 
 function Home({ selectedGenres, isActive, tracks }: HomeProps) {
+  console.log(isActive);
   console.log(tracks[0]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -94,16 +95,18 @@ function Home({ selectedGenres, isActive, tracks }: HomeProps) {
 
   useEffect(() => {
     if (!cookies.get('F_UID')) navigate('/login');
-    if (!(Array.isArray(tracks) && tracks.length === 0))
+    if (!(Array.isArray(tracks) && tracks.length === 0)) {
       dispatch(inactiveAll(''));
+    }
   }, []);
-
   useEffect(() => {
+    if (!isActive.genres) return;
     getSpotifyGenres();
   }, [isActive.genres]);
 
   const getSpotifyGenres = async () => {
     if (!(Array.isArray(tracks) && tracks.length === 0)) return;
+    const accessToken = getTokens();
     const response = await axios.post(
       `http://localhost:3001/tracks/genres`,
       {
@@ -121,6 +124,7 @@ function Home({ selectedGenres, isActive, tracks }: HomeProps) {
 
   const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
+    const accessToken = getTokens();
     if (selectedGenres.length === 0) return;
     const genres = JSON.stringify(selectedGenres);
     const response = await axios.get(

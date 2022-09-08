@@ -2,7 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { PlayerContext } from '../PlayerContext';
 import play from '../utils/functions/play';
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { TrackState } from './Settings';
+import axios from 'axios';
+import getTokens from '../utils/functions/getTokens';
+
+interface PlayerState {
+  tracks: TrackState[];
+}
 
 const PlayerWrap = styled.div`
   background-color: white;
@@ -22,15 +29,34 @@ const VolumeMixer = styled.div`
   grid-template-rows: repeat(11, 1fr);
 `;
 
-function Player() {
+function Player({ tracks }: PlayerState) {
   const playerState = useContext(PlayerContext);
   const [isPlay, isSetPlay] = useState(false);
   const [progress, setProgress] = useState(0);
   const [prevVolume, setPrevVolume] = useState(0);
   const [currentVolume, setCurrentVolume] = useState(0.5);
   const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
-  console.log(currentVolume);
-  useEffect(() => {}, [playerState.deviceId]);
+
+  useEffect(() => {
+    if (!playerState.deviceId) return;
+    if (!(Array.isArray(tracks) && tracks.length === 0)) {
+      addItemPlaybackQueue();
+    }
+  }, [playerState.deviceId]);
+  const addItemPlaybackQueue = async () => {
+    const response = await axios.post(
+      `https://api.spotify.com/v1/me/player/queue?uri=spotify:track:4DmBVImaIhE3RyNvbtZTTz&device_id=${playerState.deviceId}`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getTokens()}`,
+        },
+      }
+    );
+    console.log(response);
+  };
+
   const onPlay = () => {
     const player = playerState.player;
     if (!playerState.player) return;
@@ -55,7 +81,9 @@ function Player() {
   };
   const getState = () => {
     const player = playerState.player;
-    player?.getCurrentState().then((data) => {});
+    player?.getCurrentState().then((data) => {
+      console.log(data);
+    });
   };
   const getTrackProgress = async () => {
     const player = playerState.player;
@@ -82,6 +110,8 @@ function Player() {
     const player = playerState.player;
     player?.setVolume(volume);
   };
+  const onPreviousTrack = () => {};
+  const onNextTrack = () => {};
   return (
     <PlayerWrap>
       <button onClick={isPlay ? onPause : onPlay}>
@@ -104,9 +134,17 @@ function Player() {
           Volume
         </VolumeButton>
       </div>
+      <button onClick={onPreviousTrack}>previousTrack</button>
+      <button onClick={onNextTrack}>nextTrack</button>
       <button onClick={getState}>getState</button>
     </PlayerWrap>
   );
 }
 
-export default Player;
+const mapStateToProps = (state: PlayerState) => {
+  return {
+    tracks: state.tracks,
+  };
+};
+
+export default connect(mapStateToProps)(Player);

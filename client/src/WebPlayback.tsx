@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Player from './pages/Player';
 import { PlayerContext } from './PlayerContext';
-import { getAccessToken } from './utils/functions/accessToken';
+import getTokens from './utils/functions/getTokens';
 
 export interface IPlayerContext {
   player: Spotify.Player | null;
@@ -22,7 +22,7 @@ function WebPlayback() {
       const player = new window.Spotify.Player({
         name: 'Mucketlist Player SDK',
         getOAuthToken: (cb) => {
-          cb(getAccessToken());
+          cb(getTokens());
         },
         volume: 0.5,
       });
@@ -38,7 +38,7 @@ function WebPlayback() {
         console.log('Device ID has gone offline', device_id);
       });
 
-      player.connect();
+      //player.connect();
     };
   }, []);
   return (
