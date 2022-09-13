@@ -75,8 +75,10 @@ function SpotifyAuth({ tracks }: ITracks) {
         path: '/',
       }
     );
-    if (!(Array.isArray(tracks) && tracks.length === 0))
+    if (Array.isArray(tracks) && tracks.length === 0) {
+      console.log('active genres');
       dispatch(activeGenres(''));
+    }
   };
   return <></>;
 }

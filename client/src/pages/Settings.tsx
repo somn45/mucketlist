@@ -34,6 +34,7 @@ export interface TrackState {
     images: AlbumImage[];
     release_date: string;
   };
+  uri: string;
 }
 
 export interface ITracks {

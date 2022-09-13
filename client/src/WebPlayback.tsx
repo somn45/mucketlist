@@ -38,7 +38,7 @@ function WebPlayback() {
         console.log('Device ID has gone offline', device_id);
       });
 
-      //player.connect();
+      player.connect();
     };
   }, []);
   return (

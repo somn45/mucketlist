@@ -7,7 +7,6 @@ import Genre from '../components/Genre';
 import Settings, { TrackState } from './Settings';
 import Tracks from './Tracks';
 import {
-  activeGenres,
   activeOptions,
   clearSettings,
   createTracks,
@@ -87,8 +86,6 @@ const Submit = styled.input`
 const cookies = new Cookies();
 
 function Home({ selectedGenres, isActive, tracks }: HomeProps) {
-  console.log(isActive);
-  console.log(tracks[0]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [genres, setGenres] = useState<string[]>([]);
