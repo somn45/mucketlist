@@ -2,6 +2,7 @@ import express from 'express';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import SpotifyWebApi from 'spotify-web-api-node';
 import { db } from '../firebase';
+import fetch from 'node-fetch';
 
 interface addTrackControllerBody {
   track: {
@@ -10,6 +11,12 @@ interface addTrackControllerBody {
   };
   accessToken: string;
   firebaseUid: string;
+}
+
+interface addTrackPlayerQueueBody {
+  uri: string;
+  deviceId: string;
+  accessToken: string;
 }
 
 export const genres = async (req: express.Request, res: express.Response) => {
@@ -69,4 +76,23 @@ export const getTrack = async (req: express.Request, res: express.Response) => {
   return res.status(200).json({
     tracks: customTracks,
   });
+};
+
+export const addTrackPlayerQueue = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const { uri, deviceId, accessToken }: addTrackPlayerQueueBody = req.body;
+  const response = await fetch(
+    `https://api.spotify.com/v1/me/player/queue?uri=${uri}&device_id=${deviceId}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  console.log(response);
+  return res.sendStatus(200);
 };

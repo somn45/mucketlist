@@ -2,14 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { PlayerContext } from '../PlayerContext';
 import play from '../utils/functions/play';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { TrackState } from './Settings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
-import { AxiosError } from 'axios';
+import {
+  moveNextPosition,
+  movePreviousPosition,
+} from '../store/reducers/rootReducer';
 
 interface PlayerState {
   tracks: TrackState[];
+  currentPlayingPosition: number;
 }
 
 const PlayerWrap = styled.div`
@@ -22,88 +26,78 @@ const PlayerWrap = styled.div`
 
 const VolumeButton = styled.button``;
 
-const VolumeMixer = styled.div`
-  background-color: #bbbbbb;
-  width: 100%;
-  height: 100px;
-  display: grid;
-  grid-template-rows: repeat(11, 1fr);
-`;
-
-function Player({ tracks }: PlayerState) {
+function Player({ tracks, currentPlayingPosition }: PlayerState) {
+  const dispatch = useDispatch();
   const playerState = useContext(PlayerContext);
-  const [isPlay, isSetPlay] = useState(false);
+  const [isPlay, setIsPlay] = useState(false);
   const [progress, setProgress] = useState(0);
   const [prevVolume, setPrevVolume] = useState(0);
   const [currentVolume, setCurrentVolume] = useState(0.5);
   const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
-  const [currentPlayingPosition, setCurrentPlayingPosition] = useState(0);
 
   useEffect(() => {
-    if (!playerState.deviceId) return;
-    detectPlayerState();
-  }, [playerState.deviceId]);
-
-  const detectPlayerState = () => {
     const player = playerState.player;
     if (!player) return;
+    detectFinishTrackPlay(player);
+  }, [playerState.deviceId]);
+
+  useEffect(() => {
+    onPlay(tracks[currentPlayingPosition].uri);
+  }, [currentPlayingPosition]);
+
+  const detectFinishTrackPlay = (player: Spotify.Player) => {
     player.addListener('player_state_changed', async (state) => {
+      if (!player) return;
       console.log('Player state changed', state);
       console.log('Playing Track', state.track_window.current_track.name);
-      if (state.position === 0 && state.paused) {
-        setTimeout(() => onNextTrack(), 3000);
+      if (state.duration <= state.position) {
+        dispatch(moveNextPosition(1));
       }
     });
   };
 
   const onPlay = (uri: string): void => {
+    console.log(currentPlayingPosition);
     const player = playerState.player;
     if (!playerState.player) return;
-    console.log(progress);
     if (progress === 0 || progress === undefined) {
-      play({
-        spotify_uri: uri,
-        device_id: playerState.deviceId,
-        playerInstance: playerState.player,
-      });
+      {
+        play({
+          spotify_uri: uri,
+          device_id: playerState.deviceId,
+          playerInstance: playerState.player,
+        });
+      }
     } else {
       player?.resume();
       console.log('resume');
     }
-    isSetPlay(true);
+    setIsPlay(true);
   };
   const onPause = async () => {
     const player = playerState.player;
     const trackProgress = await getTrackProgress();
+    console.log(trackProgress);
     if (!trackProgress) setProgress(0);
     else setProgress(trackProgress);
     player?.pause();
-    isSetPlay(false);
+    setIsPlay(false);
   };
   const getState = () => {
     const player = playerState.player;
     player?.getCurrentState().then((data) => {
       console.log(data);
+      console.log(data?.position, data?.duration);
     });
   };
+
   const getTrackProgress = async () => {
     const player = playerState.player;
     const data = await player?.getCurrentState();
     if (!data) return;
     return data.position;
   };
-  /*
-  const toggleVolume = async () => {
-    setIsShowVolumeMixer((prevState) => !prevState);
-    const player = playerState.player;
-    if (!player) return;
-    const volume = await player.getVolume();
-    if (volume === 0) await player.setVolume(prevVolume);
-    else await player.setVolume(0);
-    setPrevVolume(volume);
-    dispatch(onChangeVolume(await player.getVolume()));
-  };
-  */
+
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const volume = Number(e.target.value);
@@ -122,16 +116,15 @@ function Player({ tracks }: PlayerState) {
     setCurrentVolume(await player.getVolume());
   };
   const onPreviousTrack = () => {
-    setCurrentPlayingPosition(currentPlayingPosition - 1);
     setProgress(0);
-    console.log(currentPlayingPosition);
-    onPlay(tracks[currentPlayingPosition - 1].uri);
+    dispatch(movePreviousPosition(1));
+    setIsPlay(true);
   };
   const onNextTrack = () => {
-    setCurrentPlayingPosition(currentPlayingPosition + 1);
     setProgress(0);
-    console.log(currentPlayingPosition);
-    onPlay(tracks[currentPlayingPosition + 1].uri);
+    console.log('on next track', currentPlayingPosition);
+    dispatch(moveNextPosition(1));
+    setIsPlay(true);
   };
   return (
     <PlayerWrap>
@@ -177,6 +170,7 @@ function Player({ tracks }: PlayerState) {
 const mapStateToProps = (state: PlayerState) => {
   return {
     tracks: state.tracks,
+    currentPlayingPosition: state.currentPlayingPosition,
   };
 };
 

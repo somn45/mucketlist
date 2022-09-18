@@ -56,6 +56,7 @@ function SpotifyAuth({ tracks }: ITracks) {
     else return refreshAccessToken();
   };
   const refreshAccessToken = async (): Promise<void> => {
+    console.log('refresh accessToken');
     const firebaseUid = cookies.get('F_UID');
     const response = await axios.post(
       'http://localhost:3001/users/spotify/refresh',

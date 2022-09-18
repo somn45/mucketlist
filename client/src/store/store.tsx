@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore } from 'redux-persist';
+import logger from './middleware/logger';
 import rootReducer from './reducers/rootReducer';
 
 const store = configureStore({
@@ -9,7 +10,7 @@ const store = configureStore({
       serializableCheck: {
         ignoreActions: true,
       },
-    }),
+    }).concat(logger),
 });
 
 export const persistor = persistStore(store);

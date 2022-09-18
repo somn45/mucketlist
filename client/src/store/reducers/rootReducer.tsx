@@ -8,6 +8,8 @@ import tracks from '../reducers/tracksReducer';
 import settings from '../reducers/settingsReducer';
 import activeComponent from './activeComponentReducer';
 import volume from './volumeReducer';
+import currentPlayingPosition from './currentPlayingPositionReducer';
+import trackProgress from './trackProgressReducer';
 
 const rootReducer = combineReducers({
   accessToken: accessToken.reducer,
@@ -17,6 +19,8 @@ const rootReducer = combineReducers({
   tracks: tracks.reducer,
   settings: settings.reducer,
   volume: volume.reducer,
+  currentPlayingPosition: currentPlayingPosition.reducer,
+  trackProgress: trackProgress.reducer,
 });
 
 const persistConfig = {
@@ -40,5 +44,8 @@ export const {
 } = tracks.actions;
 export const { addSettings, clearSettings } = settings.actions;
 export const { onChangeVolume } = volume.actions;
+export const { moveNextPosition, movePreviousPosition } =
+  currentPlayingPosition.actions;
+export const { getTrackProgress, clearTrackProgress } = trackProgress.actions;
 
 export default persistReducer(persistConfig, rootReducer);
