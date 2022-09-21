@@ -9,11 +9,16 @@ import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import {
   moveNextPosition,
   movePreviousPosition,
+  switchShuffleMode,
+  swtichRepeatMode,
 } from '../store/reducers/rootReducer';
 
 interface PlayerState {
   tracks: TrackState[];
-  currentPlayingPosition: number;
+  playback: {
+    playingPosition: number;
+    playMode: string;
+  };
 }
 
 const PlayerWrap = styled.div`
@@ -26,7 +31,7 @@ const PlayerWrap = styled.div`
 
 const VolumeButton = styled.button``;
 
-function Player({ tracks, currentPlayingPosition }: PlayerState) {
+function Player({ tracks, playback }: PlayerState) {
   const dispatch = useDispatch();
   const playerState = useContext(PlayerContext);
   const [isPlay, setIsPlay] = useState(false);
@@ -34,6 +39,10 @@ function Player({ tracks, currentPlayingPosition }: PlayerState) {
   const [prevVolume, setPrevVolume] = useState(0);
   const [currentVolume, setCurrentVolume] = useState(0.5);
   const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
+  const [isFinishTrackPlay, setIsFinishTrackPlay] = useState(false);
+  const [isRepeat, setIsRepeat] = useState(false);
+  const [isShuffle, setIsShuffle] = useState(false);
+  console.log(isShuffle, isRepeat);
 
   useEffect(() => {
     const player = playerState.player;
@@ -42,8 +51,19 @@ function Player({ tracks, currentPlayingPosition }: PlayerState) {
   }, [playerState.deviceId]);
 
   useEffect(() => {
-    onPlay(tracks[currentPlayingPosition].uri);
-  }, [currentPlayingPosition]);
+    console.log(playback.playingPosition);
+    onPlay(tracks[playback.playingPosition].uri);
+  }, [playback.playingPosition]);
+
+  useEffect(() => {
+    if (!isFinishTrackPlay) return;
+    setIsFinishTrackPlay(false);
+    if (isRepeat) {
+      dispatch(swtichRepeatMode());
+      onPlay(tracks[playback.playingPosition].uri);
+    } else if (isShuffle) dispatch(switchShuffleMode());
+    else dispatch(moveNextPosition(1));
+  }, [isFinishTrackPlay]);
 
   const detectFinishTrackPlay = (player: Spotify.Player) => {
     player.addListener('player_state_changed', async (state) => {
@@ -51,13 +71,14 @@ function Player({ tracks, currentPlayingPosition }: PlayerState) {
       console.log('Player state changed', state);
       console.log('Playing Track', state.track_window.current_track.name);
       if (state.duration <= state.position) {
-        dispatch(moveNextPosition(1));
+        setProgress(0);
+        setIsFinishTrackPlay(true);
       }
     });
   };
 
   const onPlay = (uri: string): void => {
-    console.log(currentPlayingPosition);
+    console.log(playback.playingPosition);
     const player = playerState.player;
     if (!playerState.player) return;
     if (progress === 0 || progress === undefined) {
@@ -77,7 +98,7 @@ function Player({ tracks, currentPlayingPosition }: PlayerState) {
   const onPause = async () => {
     const player = playerState.player;
     const trackProgress = await getTrackProgress();
-    console.log(trackProgress);
+
     if (!trackProgress) setProgress(0);
     else setProgress(trackProgress);
     player?.pause();
@@ -122,15 +143,23 @@ function Player({ tracks, currentPlayingPosition }: PlayerState) {
   };
   const onNextTrack = () => {
     setProgress(0);
-    console.log('on next track', currentPlayingPosition);
+    console.log('on next track', playback.playingPosition);
     dispatch(moveNextPosition(1));
     setIsPlay(true);
+  };
+  const handleRepeatMode = () => {
+    setIsRepeat((prevState) => !prevState);
+    setIsShuffle(false);
+  };
+  const handleShuffleMode = async () => {
+    setIsShuffle((prevState) => !prevState);
+    setIsRepeat(false);
   };
   return (
     <PlayerWrap>
       <button
         onClick={
-          isPlay ? onPause : () => onPlay(tracks[currentPlayingPosition].uri)
+          isPlay ? onPause : () => onPlay(tracks[playback.playingPosition].uri)
         }
       >
         {isPlay ? 'pause' : 'play'}
@@ -160,9 +189,11 @@ function Player({ tracks, currentPlayingPosition }: PlayerState) {
       <button onClick={onPreviousTrack}>previousTrack</button>
       <button onClick={onNextTrack}>nextTrack</button>
       <button onClick={getState}>getState</button>
-      <button onClick={() => console.log(currentPlayingPosition)}>
+      <button onClick={() => console.log(playback.playingPosition)}>
         getPosition
       </button>
+      <button onClick={handleRepeatMode}>repeat</button>
+      <button onClick={handleShuffleMode}>shuffle</button>
     </PlayerWrap>
   );
 }
@@ -170,7 +201,7 @@ function Player({ tracks, currentPlayingPosition }: PlayerState) {
 const mapStateToProps = (state: PlayerState) => {
   return {
     tracks: state.tracks,
-    currentPlayingPosition: state.currentPlayingPosition,
+    playback: state.playback,
   };
 };
 

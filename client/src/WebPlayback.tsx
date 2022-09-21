@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Home from './pages/Home';
 import Player from './pages/Player';
-import { TrackState } from './pages/Settings';
 import { PlayerContext } from './PlayerContext';
-import {
-  clearTrackProgress,
-  moveNextPosition,
-} from './store/reducers/rootReducer';
+
 import getTokens from './utils/functions/getTokens';
-import play from './utils/functions/play';
 
 export interface IPlayerContext {
   player: Spotify.Player | null;
@@ -53,7 +48,6 @@ function WebPlayback() {
 
   return (
     <PlayerContext.Provider value={{ player, deviceId }}>
-      <Home />
       <Player />
     </PlayerContext.Provider>
   );

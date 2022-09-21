@@ -48,8 +48,10 @@ const handlePlayerStateError = ({
   device_id,
   playerInstance,
 }: PlayError) => {
+  let errorCost = 0;
   if (error.response?.status === 502 || error.response?.status === 404) {
     setTimeout(() => {
+      errorCost++;
       console.log('Spotify api 네트워크 오류로 인해 트랙 재생을 재시도합니다.');
       play({ spotify_uri, device_id, playerInstance });
     }, 3000);

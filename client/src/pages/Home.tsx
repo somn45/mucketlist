@@ -16,7 +16,6 @@ import styled, { css, keyframes } from 'styled-components';
 import { FormFrame } from '../utils/styles/FormFrame';
 import { Modal } from '../utils/styles/Modal';
 import getTokens from '../utils/functions/getTokens';
-import { PlayerContext } from '../PlayerContext';
 
 interface HomeProps {
   isActive: {
@@ -89,7 +88,6 @@ const cookies = new Cookies();
 function Home({ selectedGenres, isActive, tracks }: HomeProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const playerState = useContext(PlayerContext);
   const [genres, setGenres] = useState<string[]>([]);
 
   useEffect(() => {
