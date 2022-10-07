@@ -69,13 +69,18 @@ export const addTrack = async (req: express.Request, res: express.Response) => {
 };
 
 export const getTrack = async (req: express.Request, res: express.Response) => {
-  const firebaseUid = req.query.firebaseUid as string;
-  const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
-  if (!userData.exists()) return;
-  const customTracks = userData.data().customTracks;
-  return res.status(200).json({
-    tracks: customTracks,
-  });
+  try {
+    console.log('get track');
+    const firebaseUid = req.query.firebaseUid as string;
+    const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
+    if (!userData.exists()) return;
+    const customTracks = userData.data().customTracks;
+    return res.status(200).json({
+      tracks: customTracks,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const addTrackPlayerQueue = async (

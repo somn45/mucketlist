@@ -48,14 +48,18 @@ const handlePlayerStateError = ({
   device_id,
   playerInstance,
 }: PlayError) => {
-  let errorCost = 0;
   if (error.response?.status === 502 || error.response?.status === 404) {
-    setTimeout(() => {
-      errorCost++;
-      console.log('Spotify api 네트워크 오류로 인해 트랙 재생을 재시도합니다.');
-      play({ spotify_uri, device_id, playerInstance });
-    }, 3000);
+    let errorCost = 0;
+    setTimeout(retryPlay, 3000);
+    errorCost++;
+    if (errorCost > 5) {
+      console.log(
+        '재시도 횟수가 초과되었습니다. 플레이 버튼을 다시 눌러주세요. '
+      );
+    }
   }
 };
+
+const retryPlay = () => {};
 
 export default play;

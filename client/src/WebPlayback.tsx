@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import Home from './pages/Home';
-import Player from './pages/Player';
+import Player from './pages/Home/Player/Player';
 import { PlayerContext } from './PlayerContext';
 
 import getTokens from './utils/functions/getTokens';
@@ -12,7 +10,6 @@ export interface IPlayerContext {
 }
 
 function WebPlayback() {
-  const dispatch = useDispatch();
   const [player, setPlayer] = useState<Spotify.Player | null>(null);
   const [deviceId, setDeviceId] = useState('');
   useEffect(() => {
@@ -31,8 +28,6 @@ function WebPlayback() {
         volume: 0.5,
       });
 
-      setPlayer(player);
-
       player.addListener('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
         setDeviceId(device_id);
@@ -43,6 +38,7 @@ function WebPlayback() {
       });
 
       player.connect();
+      setPlayer(player);
     };
   }, []);
 

@@ -3,8 +3,8 @@ import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import { connect, useDispatch } from 'react-redux';
 import { activeGenres } from './store/reducers/rootReducer';
-import { ITracks } from './pages/Settings';
-
+import isArrayEmpty from './utils/functions/isArrayEmpty';
+import { ITracks } from '../src/pages/Home/TrackList/TrackList';
 interface TAccessToken {
   setTokenRefresh: number;
 }
@@ -26,7 +26,7 @@ function SpotifyAuth({ tracks }: ITracks) {
         'http://localhost:3001/users/spotify/auth',
         {
           code: code,
-          fuid: cookies.get('F_UID'),
+          fuid: cookies.get('firebaseUid'),
         }
       );
       const afterFifty = Date.now() + 3300 * 1000;
@@ -47,7 +47,7 @@ function SpotifyAuth({ tracks }: ITracks) {
     }
   };
   const filteringToken = () => {
-    if (!cookies.get('F_UID')) return;
+    if (!cookies.get('firebaseUid')) return;
     const accessToken: TAccessToken = cookies.get('accessToken');
     if (!accessToken) return refreshAccessToken();
     else if (!accessToken.setTokenRefresh) return refreshAccessToken();
@@ -56,8 +56,7 @@ function SpotifyAuth({ tracks }: ITracks) {
     else return refreshAccessToken();
   };
   const refreshAccessToken = async (): Promise<void> => {
-    console.log('refresh accessToken');
-    const firebaseUid = cookies.get('F_UID');
+    const firebaseUid = cookies.get('firebaseUid');
     const response = await axios.post(
       'http://localhost:3001/users/spotify/refresh',
       {
@@ -76,8 +75,7 @@ function SpotifyAuth({ tracks }: ITracks) {
         path: '/',
       }
     );
-    if (Array.isArray(tracks) && tracks.length === 0) {
-      console.log('active genres');
+    if (isArrayEmpty(tracks)) {
       dispatch(activeGenres(''));
     }
   };

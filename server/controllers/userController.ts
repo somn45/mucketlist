@@ -30,7 +30,7 @@ export const join = async (req: express.Request, res: express.Response) => {
       email: response.user.email,
     });
     return res.status(201).json({
-      fuid: response.user.uid,
+      firebaseUid: response.user.uid,
     });
   } catch (error) {
     if (error instanceof FirebaseError) {
@@ -48,7 +48,7 @@ export const login = async (req: express.Request, res: express.Response) => {
   try {
     const response = await signInWithEmailAndPassword(auth, email, password);
     return res.status(200).json({
-      fuid: response.user.uid,
+      firebaseUid: response.user.uid,
     });
   } catch (error) {
     if (error instanceof FirebaseError) {

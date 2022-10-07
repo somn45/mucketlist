@@ -1,13 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Join from './pages/Join';
-import Header from './pages/Header';
+import Login from './pages/Login/Login';
+import Join from './pages/Join/Join';
+
 import SpotifyAuth from './SpotifyAuth';
-import CustomPlayList from './pages/CustomPlayList';
+// import CustomPlayList from './pages/CustomPlayList';
+import CustomPlayList from './pages/CustomPlayList/CustomPlayList';
 import GlobalStyles from './GlobalStyles';
 import WebPlayback from './WebPlayback';
+import Home from './pages/Home/Home';
 
 const cookies = new Cookies();
 
@@ -17,11 +18,9 @@ function App() {
       <GlobalStyles />
       <Router>
         <SpotifyAuth />
-        {cookies.get('F_UID') ? <Header /> : null}
-        <WebPlayback />
         <Routes>
           <Route path="/" element={<Home />}>
-            <Route path="/track/custom" element={<CustomPlayList />} />
+            <Route path="/tracks/custom" element={<CustomPlayList />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/Join" element={<Join />} />

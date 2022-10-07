@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { TrackState } from '../../pages/Settings';
+import { TrackState } from '../../pages/Home/TrackList/TrackList';
 
 const tracks = createSlice({
   name: 'tracksReducer',

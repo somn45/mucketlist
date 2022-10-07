@@ -52,12 +52,18 @@ table {
 }
 section {
   width: 420px;
-	margin-top: 250px;
+	margin-top: 100px;
   display: flex;
   flex-direction: column;
 	justify-content: center;
   align-items: center;
   background-color: #0f0f1f;
+}
+button {
+	border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
 }
 `;
 
