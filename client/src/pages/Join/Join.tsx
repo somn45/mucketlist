@@ -4,9 +4,13 @@ import validateForm from '../../utils/functions/validateForm';
 import InputItem from './InputItem/InputItem';
 import JoinSubmit from './Submit/JoinSubmit';
 import LoginLink from './Link/LoginLink';
-import Form from '../../components/atom/Form';
 import JoinForm from './Form/JoinForm';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
+import styled from 'styled-components';
+
+const AccountSection = styled.section`
+  margin-top: 250px;
+`;
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
 
@@ -39,7 +43,7 @@ function Join() {
     return 'ok';
   };
   return (
-    <section>
+    <AccountSection>
       <ErrorMsg text={errorMsg} />
       <JoinForm>
         <InputItem
@@ -61,7 +65,7 @@ function Join() {
         <JoinSubmit value="회원가입" onClick={handleJoin} />
       </JoinForm>
       <LoginLink text="가입되어 있는 계정이 있으신가요?" linkText="로그인" />
-    </section>
+    </AccountSection>
   );
 }
 

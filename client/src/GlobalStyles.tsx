@@ -51,8 +51,7 @@ table {
 	border-spacing: 0;
 }
 section {
-  width: 420px;
-	margin-top: 100px;
+  width: 370px;
   display: flex;
   flex-direction: column;
 	justify-content: center;

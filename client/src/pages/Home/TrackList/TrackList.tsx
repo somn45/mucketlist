@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import TempTrack from '../../../components/atom/TempTrack';
+import TempTrack from '../../../components/TempTrack';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 
 export interface AlbumImage {

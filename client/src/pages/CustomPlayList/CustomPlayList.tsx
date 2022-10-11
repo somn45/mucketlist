@@ -6,6 +6,7 @@ import CustomPlayListTitle from './Title/CustomPlayListTitle';
 import CloseButton from './CloseButton/CloseButton';
 import CustomTrackItem from '../../components/CustomTrackItem';
 import styled from 'styled-components';
+import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 
 export interface ICustomPlayList {
   name: string;
@@ -31,15 +32,14 @@ function CustomPlayList() {
     const response = await axios.get(
       `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
     );
-    setTracks(response.data.tracks);
+    console.log(response);
   };
   return (
     <div>
       <CustomPlayListTitle text="찜한 플레이리스트" />
       <CloseButton value="X" onClick={() => navigate('/')} />
-      {tracks.map((track) => (
-        <CustomTrackItem key={track.id} track={track} />
-      ))}
+      {!isArrayEmpty(tracks) &&
+        tracks.map((track) => <CustomTrackItem key={track.id} track={track} />)}
     </div>
   );
 }

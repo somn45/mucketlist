@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import Button, { ButtonProps } from '../../../../components/atom/Button';
+import Icon from '../../../../components/atom/Icon';
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
 
 const MenuItem = styled.li`
   * {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
   }
-  Link,
-  LogoutButton {
+  & > * {
+    box-sizing: content-box;
     padding: 5px;
   }
 `;
@@ -15,7 +17,11 @@ const MenuItem = styled.li`
 function ClearTracks({ onClick }: Omit<ButtonProps, 'ButtonStyle' | 'value'>) {
   return (
     <MenuItem>
-      <Button ButtonStyle={undefined} value="트랙 초기화" onClick={onClick} />
+      <Button
+        ButtonStyle={undefined}
+        value={<Icon icon={faRotateRight} />}
+        onClick={onClick}
+      />
     </MenuItem>
   );
 }

@@ -10,6 +10,11 @@ import JoinLink from './Link/JoinLink';
 import validateForm from '../../utils/functions/validateForm';
 import LoginForm from './Form/LoginForm';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
+import styled from 'styled-components';
+
+const AccountSection = styled.section`
+  margin-top: 250px;
+`;
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
 
@@ -53,7 +58,7 @@ function Login() {
   };
 
   return (
-    <section>
+    <AccountSection>
       <Title />
       <ErrorMsg text={errorMsg} />
       <LoginForm>
@@ -74,7 +79,7 @@ function Login() {
         <LoginSubmit onClick={handleLogin} />
       </LoginForm>
       <JoinLink />
-    </section>
+    </AccountSection>
   );
 }
 

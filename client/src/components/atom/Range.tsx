@@ -1,4 +1,7 @@
+import { StyledComponent } from 'styled-components';
+
 export interface RangeProps {
+  RangeStyle?: StyledComponent<'input', any, {}, never>;
   min: string;
   max: string;
   step: string;
@@ -6,8 +9,20 @@ export interface RangeProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-function Range({ currentRange, onChange, ...rangeUnit }: RangeProps) {
-  return (
+function Range({
+  RangeStyle,
+  currentRange,
+  onChange,
+  ...rangeUnit
+}: RangeProps) {
+  return RangeStyle ? (
+    <RangeStyle
+      type="range"
+      {...rangeUnit}
+      value={currentRange}
+      onChange={onChange}
+    />
+  ) : (
     <input
       type="range"
       {...rangeUnit}

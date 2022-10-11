@@ -8,7 +8,6 @@ import GenreModalTitle from './Title/GenreModalTitle';
 import { TrackState } from '../TrackList/TrackList';
 import GenreSelectionTab from './GenreSelectionTab/GenreSelectionTab';
 import {
-  activeGenres,
   activeOptions,
   clearSettings,
   createTracks,

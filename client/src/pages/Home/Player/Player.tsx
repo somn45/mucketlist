@@ -1,23 +1,29 @@
 import { useState, useEffect, useContext } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import Icon from '../../../components/atom/Icon';
 import { PlayerContext } from '../../../PlayerContext';
 import {
   moveNextPosition,
   movePreviousPosition,
+  switchShuffleMode,
+  swtichRepeatMode,
 } from '../../../store/reducers/rootReducer';
+import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 import play from '../../../utils/functions/play';
 import { TrackState } from '../TrackList/TrackList';
+import ArtistName from './ArtistName/ArtistName';
+import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 
-import GetPositionButton from './GetPositionButton/GetPositionButton';
-import GetStateButton from './GetStateButton/GetStateButton';
 import NextTrackButton from './NextTrackButton/NextTrackButton';
 import PrevTrackButton from './PrevTrackButton/PrevTrackButton';
 import RepeatMode from './RepeatMode/RepeatMode';
 import ShuffleMode from './ShuffleMode/ShuffleMode';
 import TogglePlayButton from './TogglePlayButton/TogglePlayButton';
+import TrackName from './TrackName/TrackName';
 import VolumeButton from './VolumeButton/VolumeButton';
 import VolumeMixer from './VolumeMixer/VolumeMixer';
+import VolumeMixerWrap from './VolumeMixerWrap/VolumeMixerWrap';
 
 interface PlayerState {
   tracks: TrackState[];
@@ -28,11 +34,28 @@ interface PlayerState {
 }
 
 const PlayerWrap = styled.div`
+  width: 370px;
+  height: 80px;
   background-color: white;
+  border: 5px solid green;
+  border-radius: 25px;
   position: fixed;
-  bottom: 0;
+  bottom: 5px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+const PlayerController = styled.div`
+  width: 300px;
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+  & > button {
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 function Player({ tracks, playback }: PlayerState) {
@@ -45,7 +68,47 @@ function Player({ tracks, playback }: PlayerState) {
   const [isFinishTrackPlay, setIsFinishTrackPlay] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
+  const [playingTrack, setPlayingTrack] = useState('');
+  const [artist, setArtist] = useState('');
   const { player, deviceId } = useContext(PlayerContext);
+  console.log(isShowVolumeMixer);
+
+  useEffect(() => {
+    if (!player) return;
+    detectFinishTrackPlay(player);
+  }, [deviceId]);
+
+  useEffect(() => {
+    if (isArrayEmpty(tracks)) return;
+    setPlayingTrack(tracks[playback.playingPosition].name);
+    const artistData = tracks[playback.playingPosition].artists.map(
+      (artist) => artist.name
+    );
+    setArtist(artistData.length < 2 ? artistData[0] : artistData.join(','));
+    onPlay(tracks[playback.playingPosition].uri);
+  }, [playback.playingPosition]);
+
+  useEffect(() => {
+    if (!isFinishTrackPlay) return;
+    setIsFinishTrackPlay(false);
+    if (isRepeat) {
+      dispatch(swtichRepeatMode());
+      onPlay(tracks[playback.playingPosition].uri);
+    } else if (isShuffle) dispatch(switchShuffleMode());
+    else dispatch(moveNextPosition(1));
+  }, [isFinishTrackPlay]);
+
+  const detectFinishTrackPlay = (player: Spotify.Player) => {
+    player.addListener('player_state_changed', async (state) => {
+      if (!player) return;
+      console.log('Player state changed', state);
+      console.log('Playing Track', state.track_window.current_track.name);
+      if (state.duration <= state.position) {
+        setProgress(0);
+        setIsFinishTrackPlay(true);
+      }
+    });
+  };
 
   const onPlay = (uri: string): void => {
     if (!player) return;
@@ -66,17 +129,10 @@ function Player({ tracks, playback }: PlayerState) {
 
   const onPause = async () => {
     const trackProgress = await getTrackProgress();
-
     if (!trackProgress) setProgress(0);
     else setProgress(trackProgress);
     player?.pause();
     setIsPlay(false);
-  };
-  const getState = () => {
-    player?.getCurrentState().then((data) => {
-      console.log(data);
-      console.log(data?.position, data?.duration);
-    });
   };
 
   const getTrackProgress = async () => {
@@ -123,29 +179,33 @@ function Player({ tracks, playback }: PlayerState) {
 
   return (
     <PlayerWrap>
-      <TogglePlayButton
-        value={isPlay ? 'pause' : 'play'}
-        onClick={
-          isPlay ? onPause : () => onPlay(tracks[playback.playingPosition].uri)
-        }
-      />
-      <VolumeMixer
-        currentRange={currentVolume}
-        onChange={handleVolume}
-        onClick={toggleVolume}
-      />
-      <VolumeButton
-        value="Volume"
-        onClick={() => setIsShowVolumeMixer((prevState) => !prevState)}
-      />
-      <PrevTrackButton onClick={onPreviousTrack} />
-      <NextTrackButton onClick={onNextTrack} />
-      <GetStateButton onClick={getState} />
-      <GetPositionButton
-        onClick={() => console.log(playback.playingPosition)}
-      />
-      <RepeatMode onClick={handleRepeatMode} />
-      <ShuffleMode onClick={handleShuffleMode} />
+      <TrackName text={playingTrack} />
+      <ArtistName text={artist} />
+      <PlayerController>
+        <TogglePlayButton
+          value={isPlay ? <Icon icon={faPause} /> : <Icon icon={faPlay} />}
+          onClick={
+            isPlay
+              ? onPause
+              : () => onPlay(tracks[playback.playingPosition].uri)
+          }
+        />
+        <PrevTrackButton onClick={onPreviousTrack} />
+        <NextTrackButton onClick={onNextTrack} />
+        <RepeatMode onClick={handleRepeatMode} />
+        <ShuffleMode onClick={handleShuffleMode} />
+        <VolumeMixerWrap
+          onMouseEnter={() => setIsShowVolumeMixer(true)}
+          onMouseLeave={() => setIsShowVolumeMixer(false)}
+        >
+          <VolumeButton onClick={toggleVolume} />
+          {isShowVolumeMixer ? (
+            <VolumeMixer currentRange={currentVolume} onChange={handleVolume} />
+          ) : (
+            <></>
+          )}
+        </VolumeMixerWrap>
+      </PlayerController>
     </PlayerWrap>
   );
 }

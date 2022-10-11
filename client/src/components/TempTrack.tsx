@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
-import Image from './Image';
-import Span from './Span';
+import Image from './atom/Image';
+import Span from './atom/Span';
 import React from 'react';
-import Button from './Button';
-import { TrackState } from '../../pages/Home/TrackList/TrackList';
+import Button from './atom/Button';
+import { TrackState } from '../pages/Home/TrackList/TrackList';
 
 interface TempTrackProps {
   track: TrackState;
@@ -35,12 +35,15 @@ function TempTrack({ track }: TempTrackProps) {
   return (
     <div>
       <Image src={track.album.images[2].url} alt={track.name} />
-      <Span text={track.name} />
-      <Span text={`발매일 : ${track.album.release_date}`} />
-      <Span text={`음원 순위 : ${track.popularity}`} />
-      <Button value="트랙 찜하기" onClick={setDibsTrack} />
     </div>
   );
 }
 
 export default React.memo(TempTrack);
+
+/*
+      <Span text={track.name} />
+      <Span text={`발매일 : ${track.album.release_date}`} />
+      <Span text={`음원 순위 : ${track.popularity}`} />
+      <Button value="트랙 찜하기" onClick={setDibsTrack} />
+*/

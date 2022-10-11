@@ -5,15 +5,17 @@ import { Cookies } from 'react-cookie';
 import Header from './Header/Header';
 import GenreModal from './GenreModal/GenreModal';
 import OptionModal from './OptionModal/OptionModal';
-import TrackList from './TrackList/TrackList';
+import TrackList, { TrackState } from './TrackList/TrackList';
 import styled from 'styled-components';
 import WebPlayback from '../../WebPlayback';
+import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 
 interface HomeStates {
   activeComponent: {
     genres: boolean;
     options: boolean;
   };
+  tracks: TrackState[];
 }
 
 interface HomeProps {
@@ -21,15 +23,23 @@ interface HomeProps {
     genres: boolean;
     options: boolean;
   };
+  tracks: TrackState[];
 }
 
+const Main = styled.main`
+  margin-top: 80px;
+`;
+
 const HomeSection = styled.section`
-  background-color: white;
+  padding-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 64px);
+  grid-template-rows: repeat(8, 64px);
 `;
 
 const cookies = new Cookies();
 
-function Home({ isActive }: HomeProps) {
+function Home({ tracks, isActive }: HomeProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -39,22 +49,23 @@ function Home({ isActive }: HomeProps) {
     <>
       <Outlet />
       <Header />
-      <main>
+      <Main>
         <section>
           <GenreModal />
           <OptionModal />
         </section>
         <HomeSection>
           <TrackList />
-          {cookies.get('firebaseUid') && <WebPlayback />}
+          {!isArrayEmpty(tracks) && <WebPlayback />}
         </HomeSection>
-      </main>
+      </Main>
     </>
   );
 }
 
 function mapStateToProps(state: HomeStates) {
   return {
+    tracks: state.tracks,
     isActive: state.activeComponent,
   };
 }

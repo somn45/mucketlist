@@ -5,11 +5,11 @@ import LinkElement from '../../../../components/atom/LinkElement';
 
 const MenuItem = styled.li`
   * {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
   }
-  Link,
-  LogoutButton {
+  & > * {
+    box-sizing: content-box;
     padding: 5px;
   }
 `;
