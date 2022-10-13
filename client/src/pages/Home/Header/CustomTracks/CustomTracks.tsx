@@ -4,6 +4,9 @@ import Icon from '../../../../components/atom/Icon';
 import LinkElement from '../../../../components/atom/LinkElement';
 
 const MenuItem = styled.li`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   * {
     width: 20px;
     height: 20px;

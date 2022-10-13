@@ -15,10 +15,16 @@ interface AddCustomTrackStates {
 }
 
 const AddCustomTrackWrap = styled.div`
-  background-color: white;
+  width: 46px;
+  height: 46px;
+  background-color: #7fffd4;
+  border: 3px solid #ff5474;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
-  right: 5px;
-  top: 80px;
+  right: 10px;
+  bottom: 90px;
 `;
 
 const cookies = new Cookies();
