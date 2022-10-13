@@ -9,6 +9,7 @@ import TrackList, { TrackState } from './TrackList/TrackList';
 import styled from 'styled-components';
 import WebPlayback from '../../WebPlayback';
 import isArrayEmpty from '../../utils/functions/isArrayEmpty';
+import AddCustomTrack from './AddCustomTrack/AddCustomTrack';
 
 interface HomeStates {
   activeComponent: {
@@ -55,6 +56,7 @@ function Home({ tracks, isActive }: HomeProps) {
           <OptionModal />
         </section>
         <HomeSection>
+          <AddCustomTrack />
           <TrackList />
           {!isArrayEmpty(tracks) && <WebPlayback />}
         </HomeSection>

@@ -71,7 +71,6 @@ function Player({ tracks, playback }: PlayerState) {
   const [playingTrack, setPlayingTrack] = useState('');
   const [artist, setArtist] = useState('');
   const { player, deviceId } = useContext(PlayerContext);
-  console.log(isShowVolumeMixer);
 
   useEffect(() => {
     if (!player) return;

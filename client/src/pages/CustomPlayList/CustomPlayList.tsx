@@ -23,6 +23,7 @@ const cookies = new Cookies();
 function CustomPlayList() {
   const navigate = useNavigate();
   const [tracks, setTracks] = useState<ICustomPlayList[]>([]);
+  console.log(tracks);
   useEffect(() => {
     getCustomPlayList();
   }, []);
@@ -32,15 +33,18 @@ function CustomPlayList() {
     const response = await axios.get(
       `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
     );
-    console.log(response);
+    setTracks(response.data.tracks);
   };
   return (
-    <div>
+    <Wrap>
       <CustomPlayListTitle text="찜한 플레이리스트" />
       <CloseButton value="X" onClick={() => navigate('/')} />
-      {!isArrayEmpty(tracks) &&
-        tracks.map((track) => <CustomTrackItem key={track.id} track={track} />)}
-    </div>
+      {tracks
+        ? tracks.map((track) => (
+            <CustomTrackItem key={track.id} track={track} />
+          ))
+        : null}
+    </Wrap>
   );
 }
 

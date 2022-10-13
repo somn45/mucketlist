@@ -3,6 +3,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import SpotifyWebApi from 'spotify-web-api-node';
 import { db } from '../firebase';
 import fetch from 'node-fetch';
+import isArrayEmpty from '../utils/isArrayEmpty';
 
 interface addTrackControllerBody {
   track: {
@@ -17,6 +18,16 @@ interface addTrackPlayerQueueBody {
   uri: string;
   deviceId: string;
   accessToken: string;
+}
+
+interface CustomTrack {
+  name: string;
+  id: string;
+  artistId: string;
+  artists: string[];
+  genres: string[];
+  release_date: string;
+  image: string;
 }
 
 export const genres = async (req: express.Request, res: express.Response) => {
@@ -48,24 +59,36 @@ export const search = async (req: express.Request, res: express.Response) => {
 
 export const addTrack = async (req: express.Request, res: express.Response) => {
   const { track, accessToken, firebaseUid }: addTrackControllerBody = req.body;
-  const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
-  if (!userData.exists()) return;
+  try {
+    const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
+    if (!userData.exists()) return;
+    let customTracks = userData.data().customTracks as CustomTrack[];
+    if (!customTracks) customTracks = [];
+    if (customTracks.length >= 1) {
+      const dupulicateTrack = customTracks.find(
+        (customTrack) => customTrack.id === track.id
+      );
+      if (dupulicateTrack)
+        return res.json({
+          errorMsg: '이 트랙은 커스텀 트랙에 이미 등록되어 있습니다.',
+        });
+    }
 
-  let customTracks = userData.data().customTracks;
-  if (!customTracks) customTracks = [];
-
-  const spotifyApi = new SpotifyWebApi();
-  spotifyApi.setAccessToken(accessToken);
-  const response = await spotifyApi.getArtist(track.artistId);
-  const customTrack = { ...track, genres: response.body.genres };
-  const data = await setDoc(
-    doc(db, 'firebaseUid', firebaseUid),
-    {
-      customTracks: [...customTracks, customTrack],
-    },
-    { merge: true }
-  );
-  return res.sendStatus(200);
+    const spotifyApi = new SpotifyWebApi();
+    spotifyApi.setAccessToken(accessToken);
+    const response = await spotifyApi.getArtist(track.artistId);
+    const customTrack = { ...track, genres: response.body.genres };
+    const data = await setDoc(
+      doc(db, 'firebaseUid', firebaseUid),
+      {
+        customTracks: [...customTracks, customTrack],
+      },
+      { merge: true }
+    );
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getTrack = async (req: express.Request, res: express.Response) => {
