@@ -6,6 +6,7 @@ import {
   sortByPopularity,
   sortByRandom,
   sortByRelease,
+  updateStatusMessage,
 } from '../../../store/reducers/rootReducer';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 import { TrackState } from '../TrackList/TrackList';
@@ -48,6 +49,11 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
     }
     dispatch(addSettings(selectedSetting));
     dispatch(inactiveAll(''));
+    dispatch(
+      updateStatusMessage(
+        '트랙 검색이 완료되었습니다. 이제 음악의 재생이 가능합니다.'
+      )
+    );
   };
   return (
     <>

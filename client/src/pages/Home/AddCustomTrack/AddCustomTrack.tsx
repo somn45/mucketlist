@@ -5,6 +5,7 @@ import { Cookies } from 'react-cookie';
 import AddCustomTrackButton from './AddCustomTrackButton/AddCustomTrackButton';
 import { TrackState } from '../TrackList/TrackList';
 import getTokens from '../../../utils/functions/getTokens';
+import { updateStatusMessage } from '../../../store/reducers/rootReducer';
 
 interface AddCustomTrackStates {
   playback: {
@@ -24,7 +25,7 @@ const AddCustomTrackWrap = styled.div`
 const cookies = new Cookies();
 
 function AddCustomTrack({ playback, tracks }: AddCustomTrackStates) {
-  console.log(playback);
+  const dispatch = useDispatch();
 
   const addCustomTrack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -44,6 +45,12 @@ function AddCustomTrack({ playback, tracks }: AddCustomTrackStates) {
       firebaseUid: firebaseUid,
     });
     if (response.data.errorMsg) console.log(response.data.errorMsg);
+    else
+      dispatch(
+        updateStatusMessage(
+          `${track.name}이 찜한 트랙 리스트에 추가되었습니다.`
+        )
+      );
   };
   return (
     <AddCustomTrackWrap>

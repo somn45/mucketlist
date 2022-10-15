@@ -1,16 +1,18 @@
 import { useState, useEffect, useContext } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import axios, { AxiosError } from 'axios';
 import styled from 'styled-components';
-import Icon from '../../../components/atom/Icon';
+
 import { PlayerContext } from '../../../PlayerContext';
 import {
   moveNextPosition,
   movePreviousPosition,
   switchShuffleMode,
   swtichRepeatMode,
+  updateStatusMessage,
 } from '../../../store/reducers/rootReducer';
+import getTokens from '../../../utils/functions/getTokens';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
-import play from '../../../utils/functions/play';
 import { TrackState } from '../TrackList/TrackList';
 import ArtistName from './ArtistName/ArtistName';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
@@ -24,6 +26,7 @@ import TrackName from './TrackName/TrackName';
 import VolumeButton from './VolumeButton/VolumeButton';
 import VolumeMixer from './VolumeMixer/VolumeMixer';
 import VolumeMixerWrap from './VolumeMixerWrap/VolumeMixerWrap';
+import Icon from '../../../components/atom/Icon';
 
 interface PlayerState {
   tracks: TrackState[];
@@ -124,6 +127,75 @@ function Player({ tracks, playback }: PlayerState) {
       console.log('resume');
     }
     setIsPlay(true);
+  };
+
+  interface PlayProps {
+    spotify_uri: string;
+    device_id: string;
+    playerInstance: Spotify.Player;
+  }
+
+  interface PlayError extends PlayProps {
+    error: AxiosError;
+  }
+
+  const play = ({ spotify_uri, device_id, playerInstance }: PlayProps) => {
+    const {
+      _options: { getOAuthToken },
+    } = playerInstance;
+    getOAuthToken(async (accessToken: string) => {
+      try {
+        await axios.put(
+          `https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,
+          {
+            uris: [spotify_uri],
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${getTokens()}`,
+            },
+          }
+        );
+      } catch (error) {
+        if (error instanceof AxiosError)
+          handlePlayerStateError({
+            error,
+            spotify_uri,
+            device_id,
+            playerInstance,
+          });
+        else console.log(error);
+      }
+    });
+  };
+
+  const handlePlayerStateError = ({
+    error,
+    spotify_uri,
+    device_id,
+    playerInstance,
+  }: PlayError) => {
+    if (error.response?.status === 502 || error.response?.status === 404) {
+      let errorCost = 0;
+      setTimeout(
+        () => retryPlay({ spotify_uri, device_id, playerInstance }),
+        3000
+      );
+      dispatch(updateStatusMessage('오류로 인해 트랙 재생을 재시도합니다.'));
+      errorCost++;
+      if (errorCost > 5) {
+        dispatch(
+          updateStatusMessage(
+            '재시도 횟수가 초과되었습니다. 재생 버튼을 다시 눌러주세요.'
+          )
+        );
+      }
+    }
+  };
+
+  const retryPlay = ({ spotify_uri, device_id, playerInstance }: PlayProps) => {
+    play({ spotify_uri, device_id, playerInstance });
   };
 
   const onPause = async () => {

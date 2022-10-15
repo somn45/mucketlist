@@ -10,6 +10,7 @@ import activeComponent from './activeComponentReducer';
 import volume from './volumeReducer';
 import trackProgress from './trackProgressReducer';
 import playback from './playbackReducer';
+import statusMessage from './statusMessageReducer';
 
 const rootReducer = combineReducers({
   accessToken: accessToken.reducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   volume: volume.reducer,
   trackProgress: trackProgress.reducer,
   playback: playback.reducer,
+  statusMessage: statusMessage.reducer,
 });
 
 const persistConfig = {
@@ -51,5 +53,6 @@ export const {
   swtichRepeatMode,
   switchShuffleMode,
 } = playback.actions;
+export const { updateStatusMessage } = statusMessage.actions;
 
 export default persistReducer(persistConfig, rootReducer);

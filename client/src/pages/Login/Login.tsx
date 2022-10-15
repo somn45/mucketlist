@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,18 +12,30 @@ import validateForm from '../../utils/functions/validateForm';
 import LoginForm from './Form/LoginForm';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
 import styled from 'styled-components';
+import StatusMessage from '../../components/StatusMessage';
+
+interface ILocation {
+  state: {
+    joinSuccessMsg: string;
+  };
+}
 
 const AccountSection = styled.section`
   margin-top: 250px;
 `;
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
+const cookies = new Cookies();
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const cookies = new Cookies();
+  const [statusMsg, setStatusMsg] = useState('');
+  const { state } = useLocation() as ILocation;
+  useEffect(() => {
+    if (state) setStatusMsg(state.joinSuccessMsg);
+  }, []);
 
   const handleLogin = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -59,6 +72,7 @@ function Login() {
 
   return (
     <AccountSection>
+      {statusMsg && <StatusMessage text={statusMsg} />}
       <Title />
       <ErrorMsg text={errorMsg} />
       <LoginForm>

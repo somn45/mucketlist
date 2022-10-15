@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 import validateForm from '../../utils/functions/validateForm';
 import InputItem from './InputItem/InputItem';
 import JoinSubmit from './Submit/JoinSubmit';
@@ -15,9 +17,11 @@ const AccountSection = styled.section`
 const SERVER_ENDPOINT = 'http://localhost:3001';
 
 function Join() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
   const handleJoin = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
     const validateMessage = handleJoinValidate();
@@ -27,7 +31,12 @@ function Join() {
         email,
         password,
       });
-      console.log(response);
+      navigate('/login', {
+        state: {
+          joinSuccessMsg:
+            '회원가입을 완료했습니다. 이제 가입된 계정으로 로그인이 가능합니다.',
+        },
+      });
     } catch (error) {
       if (error instanceof AxiosError) {
         return setErrorMsg(error?.response?.data.errorMsg);
