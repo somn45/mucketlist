@@ -1,5 +1,11 @@
 import express from 'express';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  deleteField,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import SpotifyWebApi from 'spotify-web-api-node';
 import { db } from '../firebase';
 import fetch from 'node-fetch';
@@ -69,7 +75,7 @@ export const addTrack = async (req: express.Request, res: express.Response) => {
         (customTrack) => customTrack.id === track.id
       );
       if (dupulicateTrack)
-        return res.json({
+        return res.status(204).json({
           errorMsg: '이 트랙은 커스텀 트랙에 이미 등록되어 있습니다.',
         });
     }
@@ -104,6 +110,23 @@ export const getTrack = async (req: express.Request, res: express.Response) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const deleteTrack = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const id = req.query.id as string;
+  const firebaseUid = req.query.firebaseUid as string;
+  const userRef = doc(db, 'firebaseUid', firebaseUid);
+  const userData = await getDoc(userRef);
+  if (!userData.exists()) return;
+  const customTracks: CustomTrack[] = userData.data().customTracks;
+  const targetData = customTracks.filter((track) => track.id !== id);
+  await updateDoc(userRef, {
+    customTracks: targetData,
+  });
+  res.sendStatus(200);
 };
 
 export const addTrackPlayerQueue = async (

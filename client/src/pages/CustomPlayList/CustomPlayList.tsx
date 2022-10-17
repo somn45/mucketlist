@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+
 import CustomPlayListTitle from './Title/CustomPlayListTitle';
 import CloseButton from './CloseButton/CloseButton';
 import CustomTrackItem from '../../components/CustomTrackItem';
 import styled from 'styled-components';
 import { Modal } from '../../utils/styles/Modal';
-import isArrayEmpty from '../../utils/functions/isArrayEmpty';
+import { addCustomTrack, RootState } from '../../store/reducers/rootReducer';
 
 export interface ICustomPlayList {
   name: string;
@@ -44,18 +46,24 @@ const cookies = new Cookies();
 
 function CustomPlayList() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const customTrack = useSelector((state: RootState) => state.customTrack);
   const [tracks, setTracks] = useState<ICustomPlayList[]>([]);
-  console.log(tracks);
+
   useEffect(() => {
     getCustomPlayList();
   }, []);
+
+  useEffect(() => {
+    setTracks(customTrack);
+  }, [customTrack]);
+
   const getCustomPlayList = async () => {
     const firebaseUid = cookies.get('firebaseUid');
-    console.log('custom track');
     const response = await axios.get(
       `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
     );
-    setTracks(response.data.tracks);
+    dispatch(addCustomTrack(response.data.tracks));
   };
   return (
     <Wrap>
@@ -64,8 +72,8 @@ function CustomPlayList() {
         <CloseButton value="X" onClick={() => navigate('/')} />
       </CustomTrackHeader>
       <CustomTrackList>
-        {tracks
-          ? tracks.map((track) => (
+        {customTrack
+          ? customTrack.map((track) => (
               <CustomTrackItem key={track.id} track={track} />
             ))
           : null}

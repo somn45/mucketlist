@@ -11,6 +11,7 @@ import volume from './volumeReducer';
 import trackProgress from './trackProgressReducer';
 import playback from './playbackReducer';
 import statusMessage from './statusMessageReducer';
+import customTrack from './customTrackReducer';
 
 const rootReducer = combineReducers({
   accessToken: accessToken.reducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   activeComponent: activeComponent.reducer,
   genre: genre.reducer,
   tracks: tracks.reducer,
+  customTrack: customTrack.reducer,
   settings: settings.reducer,
   volume: volume.reducer,
   trackProgress: trackProgress.reducer,
@@ -44,6 +46,7 @@ export const {
   sortByRandom,
   clearTracks,
 } = tracks.actions;
+export const { addCustomTrack, deleteCustomTrack } = customTrack.actions;
 export const { addSettings, clearSettings } = settings.actions;
 export const { onChangeVolume } = volume.actions;
 export const { getTrackProgress, clearTrackProgress } = trackProgress.actions;
@@ -56,3 +59,5 @@ export const {
 export const { updateStatusMessage } = statusMessage.actions;
 
 export default persistReducer(persistConfig, rootReducer);
+
+export type RootState = ReturnType<typeof rootReducer>;

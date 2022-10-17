@@ -34,7 +34,6 @@ function Home({ tracks, statusMessage }: HomeStates) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [homeStatusMessage, setHomeStatusMessage] = useState('');
-  console.log(homeStatusMessage);
   useEffect(() => {
     if (!cookies.get('firebaseUid')) navigate('/login');
   }, []);
