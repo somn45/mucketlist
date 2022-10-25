@@ -1,13 +1,13 @@
 import styled from 'styled-components';
-import Span, { SpanProps } from '../../../components/atom/Span';
+import { SpanProps } from '../../../utils/types/atomTypes';
 
-const TiTle = styled.span`
+const Title = styled.span`
   font-size: 20px;
   font-weight: 600;
 `;
 
 function CustomPlayListTitle({ text }: SpanProps) {
-  return <Span TextStyle={TiTle} text={text} />;
+  return <Title>{text}</Title>;
 }
 
 export default CustomPlayListTitle;

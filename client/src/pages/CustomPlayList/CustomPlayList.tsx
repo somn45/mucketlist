@@ -47,6 +47,7 @@ const cookies = new Cookies();
 function CustomPlayList() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const customTrack = useSelector((state: RootState) => state.customTrack);
   const [tracks, setTracks] = useState<ICustomPlayList[]>([]);
 
@@ -73,7 +74,7 @@ function CustomPlayList() {
       </CustomTrackHeader>
       <CustomTrackList>
         {customTrack
-          ? customTrack.map((track) => (
+          ? customTrack.map((track: ICustomPlayList) => (
               <CustomTrackItem key={track.id} track={track} />
             ))
           : null}

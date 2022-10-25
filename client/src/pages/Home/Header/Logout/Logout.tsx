@@ -1,8 +1,7 @@
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
-import Button from '../../../../components/atom/Button';
-import { ButtonProps } from '../../../../components/atom/Button';
-import Icon from '../../../../components/atom/Icon';
+import { ButtonProps } from '../../../../utils/types/atomTypes';
+import Icon from '../../../../components/Icon';
 
 const MenuItem = styled.li`
   * {
@@ -18,12 +17,9 @@ const MenuItem = styled.li`
 function Logout({ onClick }: Omit<ButtonProps, 'ButtonStyle' | 'value'>) {
   return (
     <MenuItem>
-      <Button
-        ButtonStyle={undefined}
-        value={<Icon icon={faRightFromBracket} />}
-        title="로그아웃"
-        onClick={onClick}
-      />
+      <button onClick={onClick}>
+        <Icon icon={faRightFromBracket} />
+      </button>
     </MenuItem>
   );
 }

@@ -6,6 +6,7 @@ import AddCustomTrackButton from './AddCustomTrackButton/AddCustomTrackButton';
 import { TrackState } from '../TrackList/TrackList';
 import getTokens from '../../../utils/functions/getTokens';
 import { updateStatusMessage } from '../../../store/reducers/rootReducer';
+import Wrap from './Wrap/AddCustomTrackWrap';
 
 interface AddCustomTrackStates {
   playback: {
@@ -14,19 +15,6 @@ interface AddCustomTrackStates {
   };
   tracks: TrackState[];
 }
-
-const AddCustomTrackWrap = styled.div`
-  width: 46px;
-  height: 46px;
-  background-color: #7fffd4;
-  border: 3px solid #ff5474;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  right: 10px;
-  bottom: 90px;
-`;
 
 const cookies = new Cookies();
 
@@ -59,9 +47,9 @@ function AddCustomTrack({ playback, tracks }: AddCustomTrackStates) {
       );
   };
   return (
-    <AddCustomTrackWrap>
+    <Wrap>
       <AddCustomTrackButton onClick={addCustomTrack} />
-    </AddCustomTrackWrap>
+    </Wrap>
   );
 }
 

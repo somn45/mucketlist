@@ -8,10 +8,12 @@ import tracks from '../reducers/tracksReducer';
 import settings from '../reducers/settingsReducer';
 import activeComponent from './activeComponentReducer';
 import volume from './volumeReducer';
-import trackProgress from './trackProgressReducer';
-import playback from './playbackReducer';
 import statusMessage from './statusMessageReducer';
 import customTrack from './customTrackReducer';
+import isPlay from './isPlayReducer';
+import trackProgress from './thunk/progress';
+import playingPosition from './playingPosition';
+import playMode from './playMode';
 
 const rootReducer = combineReducers({
   accessToken: accessToken.reducer,
@@ -21,9 +23,11 @@ const rootReducer = combineReducers({
   tracks: tracks.reducer,
   customTrack: customTrack.reducer,
   settings: settings.reducer,
+  isPlay: isPlay.reducer,
   volume: volume.reducer,
-  trackProgress: trackProgress.reducer,
-  playback: playback.reducer,
+  progress: trackProgress.reducer,
+  playMode: playMode.reducer,
+  playingPosition: playingPosition.reducer,
   statusMessage: statusMessage.reducer,
 });
 
@@ -48,14 +52,12 @@ export const {
 } = tracks.actions;
 export const { addCustomTrack, deleteCustomTrack } = customTrack.actions;
 export const { addSettings, clearSettings } = settings.actions;
-export const { onChangeVolume } = volume.actions;
-export const { getTrackProgress, clearTrackProgress } = trackProgress.actions;
-export const {
-  moveNextPosition,
-  movePreviousPosition,
-  swtichRepeatMode,
-  switchShuffleMode,
-} = playback.actions;
+export const { onChangeVolume, toggleVolume } = volume.actions;
+export const { updatePlayMode } = playMode.actions;
+export const { clearTrackProgress } = trackProgress.actions;
+export const { moveNextPosition, movePreviousPosition, moveRandomPosition } =
+  playingPosition.actions;
+export const { updatePlayState } = isPlay.actions;
 export const { updateStatusMessage } = statusMessage.actions;
 
 export default persistReducer(persistConfig, rootReducer);

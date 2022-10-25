@@ -1,12 +1,5 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import LinkElement, {
-  LinkElementProps,
-} from '../../../components/atom/LinkElement';
-
-interface LoginLinkProps extends LinkElementProps {
-  text: string;
-}
 
 const LinkTab = styled.div`
   display: flex;
@@ -26,14 +19,11 @@ const AccountLink = styled(Link)`
   }
 `;
 
-function LoginLink({
-  text,
-  linkText,
-}: Omit<LoginLinkProps, 'LinkStyle' | 'to'>) {
+function LoginLink() {
   return (
     <LinkTab>
-      <span>{text}</span>
-      <LinkElement LinkStyle={AccountLink} to="/login" linkText={linkText} />
+      <span>가입되어 있는 계정이 있으신가요?</span>
+      <AccountLink to="/login">로그인</AccountLink>
     </LinkTab>
   );
 }

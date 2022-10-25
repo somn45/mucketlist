@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Form, { FormProps } from '../../../components/atom/Form';
+import { FormProps } from '../../../utils/types/atomTypes';
 
 const AccountForm = styled.form`
   width: 100%;
@@ -8,8 +8,8 @@ const AccountForm = styled.form`
   flex-direction: column;
 `;
 
-function JoinForm({ children }: Omit<FormProps, 'FormStyle'>) {
-  return <Form FormStyle={AccountForm}>{children}</Form>;
+function JoinForm({ children }: FormProps) {
+  return <AccountForm>{children}</AccountForm>;
 }
 
 export default JoinForm;

@@ -1,7 +1,7 @@
-import Span, { SpanProps } from '../../../../components/atom/Span';
+import { SpanProps } from '../../../../utils/types/atomTypes';
 
 function ArtistName({ text }: SpanProps) {
-  return <Span text={text} />;
+  return <span>{text}</span>;
 }
 
 export default ArtistName;

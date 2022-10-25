@@ -1,11 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+interface IVolumeReducer {
+  volume: number;
+  prevVolume: number;
+}
+
 const volume = createSlice({
   name: 'volumeReducer',
-  initialState: 0.5,
+  initialState: {
+    volume: 0.5,
+    prevVolume: 0,
+  },
   reducers: {
     onChangeVolume: (state, action) => {
-      return action.payload;
+      return {
+        volume: action.payload,
+        prevVolume: state.prevVolume,
+      };
+    },
+    toggleVolume: (state) => {
+      return {
+        volume: state.prevVolume,
+        prevVolume: state.volume,
+      };
     },
   },
 });

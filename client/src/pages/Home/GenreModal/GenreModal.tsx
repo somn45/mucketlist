@@ -12,9 +12,9 @@ import {
   clearSettings,
   createTracks,
 } from '../../../store/reducers/rootReducer';
-import { Modal } from '../../../utils/styles/Modal';
 import GenreModalSubmit from './Submit/GenreModalSubmit';
 import GenreModalForm from './Form/GenreModalForm';
+import { Modal } from '../../../utils/styles/Modal';
 
 interface GenreModalStates {
   tracks: TrackState[];

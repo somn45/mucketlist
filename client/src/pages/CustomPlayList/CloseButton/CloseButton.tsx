@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Button, { ButtonProps } from '../../../components/atom/Button';
+import { ButtonProps } from '../../../utils/types/atomTypes';
 
 const CloseButtonStyle = styled.button`
   box-sizing: content-box;
@@ -11,9 +11,7 @@ const CloseButtonStyle = styled.button`
 `;
 
 function CloseButton({ value, onClick }: ButtonProps) {
-  return (
-    <Button ButtonStyle={CloseButtonStyle} value={value} onClick={onClick} />
-  );
+  return <CloseButtonStyle onClick={onClick}>{value}</CloseButtonStyle>;
 }
 
 export default CloseButton;

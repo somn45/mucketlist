@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Submit, { SubmitProps } from '../../../../components/atom/Submit';
+import { SubmitProps } from '../../../../utils/types/atomTypes';
 
 const SubmitStyle = styled.input`
   width: 250px;
@@ -12,12 +12,8 @@ const SubmitStyle = styled.input`
   cursor: pointer;
 `;
 
-function GenreModalSubmit({
-  onClick,
-}: Omit<SubmitProps, 'value' | 'SubmitStyle'>) {
-  return (
-    <Submit SubmitStyle={SubmitStyle} value="트랙 검색하기" onClick={onClick} />
-  );
+function GenreModalSubmit({ onClick }: SubmitProps) {
+  return <SubmitStyle type="submit" value="트랙 검색하기" onClick={onClick} />;
 }
 
 export default GenreModalSubmit;

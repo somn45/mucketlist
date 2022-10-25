@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Span from './atom/Span';
 
 interface CustomTrackGenreProps {
   genre: string;
@@ -15,7 +14,7 @@ const TrackGenreItem = styled.span`
 `;
 
 function CustomTrackGenre({ genre }: CustomTrackGenreProps) {
-  return <Span TextStyle={TrackGenreItem} text={genre} />;
+  return <TrackGenreItem>{genre}</TrackGenreItem>;
 }
 
 export default CustomTrackGenre;

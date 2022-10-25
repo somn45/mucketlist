@@ -1,13 +1,5 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import LinkElement, {
-  LinkElementProps,
-} from '../../../components/atom/LinkElement';
-import Span from '../../../components/atom/Span';
-
-interface JoinLinkProps extends LinkElementProps {
-  text: string;
-}
 
 const LinkTab = styled.div`
   display: flex;
@@ -29,8 +21,8 @@ const AccountLink = styled(Link)`
 function JoinLink() {
   return (
     <LinkTab>
-      <Span text="계정이 없으신가요?" />
-      <LinkElement to="/join" linkText="회원가입" LinkStyle={AccountLink} />
+      <span>계정이 없으신가요?</span>
+      <AccountLink to="/join">회원가입</AccountLink>
     </LinkTab>
   );
 }

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Submit, { SubmitProps } from '../../../../components/atom/Submit';
+import { SubmitProps } from '../../../../utils/types/atomTypes';
 
 const SubmitStyle = styled.input`
   width: 250px;
@@ -12,15 +12,9 @@ const SubmitStyle = styled.input`
   cursor: pointer;
 `;
 
-function OptionModalSubmit({
-  onClick,
-}: Omit<SubmitProps, 'value' | 'SubmitStyle'>) {
+function OptionModalSubmit({ onClick }: SubmitProps) {
   return (
-    <Submit
-      SubmitStyle={SubmitStyle}
-      value="음악 재생 순서 결정"
-      onClick={onClick}
-    />
+    <SubmitStyle type="submit" value="음악 재생 순서 결정" onClick={onClick} />
   );
 }
 

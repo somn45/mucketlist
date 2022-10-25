@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { SpanProps } from '../../../components/atom/Span';
-import Span from '../../../components/atom/Span';
+import { SpanProps } from '../../../utils/types/atomTypes';
 
 const TitleStyle = styled.h1`
   @font-face {
@@ -15,7 +14,7 @@ const TitleStyle = styled.h1`
 `;
 
 function Title() {
-  return <Span TextStyle={TitleStyle} text="Mucketlist"></Span>;
+  return <TitleStyle>MucketList</TitleStyle>;
 }
 
 export default Title;

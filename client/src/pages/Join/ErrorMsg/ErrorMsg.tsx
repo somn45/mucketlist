@@ -1,13 +1,13 @@
 import styled from 'styled-components';
-import Span, { SpanProps } from '../../../components/atom/Span';
+import { SpanProps } from '../../../utils/types/atomTypes';
 
 const ErrorMsgStyle = styled.span`
   color: red;
   text-decoration: underline;
 `;
 
-function ErrorMsg({ text }: Omit<SpanProps, 'TextStyle'>) {
-  return <Span TextStyle={ErrorMsgStyle} text={text} />;
+function ErrorMsg({ text }: SpanProps) {
+  return <ErrorMsgStyle>{text}</ErrorMsgStyle>;
 }
 
 export default ErrorMsg;

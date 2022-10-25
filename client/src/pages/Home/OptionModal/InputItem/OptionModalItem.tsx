@@ -1,13 +1,10 @@
 import styled from 'styled-components';
-import Checkbox from '../../../../components/atom/Checkbox';
-import Label from '../../../../components/atom/Label';
-import Span from '../../../../components/atom/Span';
 
 interface OptionModalItem {
-  optionName: string;
+  name: string;
   checked: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
-  labelText: string;
+  text: string;
 }
 
 const InputTab = styled.div`
@@ -32,22 +29,17 @@ const InputTab = styled.div`
   }
 `;
 
-function OptionModalItem({
-  optionName,
-  checked,
-  onChange,
-  labelText,
-}: OptionModalItem) {
+function OptionModalItem({ name, checked, onChange, text }: OptionModalItem) {
   return (
     <InputTab>
-      <Checkbox
-        id={optionName}
-        name={optionName}
+      <input
+        type="checkbox"
+        id={name}
+        name={name}
         checked={checked}
         onChange={onChange}
       />
-      <Label htmlFor={optionName} />
-      <Span text={labelText} />
+      <label htmlFor={name}>{text}</label>
     </InputTab>
   );
 }

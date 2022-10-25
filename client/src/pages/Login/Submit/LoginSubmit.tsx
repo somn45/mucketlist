@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Submit, { SubmitProps } from '../../../components/atom/Submit';
+import { SubmitProps } from '../../../utils/types/atomTypes';
 import { InputStyle } from '../../Join/InputItem/InputItem';
 
 const SubmitStyle = styled(InputStyle)`
@@ -18,7 +18,7 @@ const SubmitStyle = styled(InputStyle)`
 function LoginSubmit({ onClick }: Omit<SubmitProps, 'value' | 'SubmitStyle'>) {
   return (
     <>
-      <Submit SubmitStyle={SubmitStyle} value="로그인" onClick={onClick} />
+      <SubmitStyle type="submit" value="로그인" onClick={onClick} />
     </>
   );
 }

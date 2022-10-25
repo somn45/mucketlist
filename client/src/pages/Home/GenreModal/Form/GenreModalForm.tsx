@@ -1,5 +1,5 @@
-import Form, { FormProps } from '../../../../components/atom/Form';
 import { FormFrame } from '../../../../utils/styles/FormFrame';
+import { FormProps } from '../../../../utils/types/atomTypes';
 
 /*
 const OpenGenreModal = keyframes`
@@ -22,8 +22,8 @@ const GenreModalFormStyle = styled(FormFrame)<GenreModalFormProps>`
 `;
 */
 
-function GenreModalForm({ children }: Omit<FormProps, 'FormStyle'>) {
-  return <Form FormStyle={FormFrame}>{children}</Form>;
+function GenreModalForm({ children }: FormProps) {
+  return <FormFrame>{children}</FormFrame>;
 }
 
 export default GenreModalForm;

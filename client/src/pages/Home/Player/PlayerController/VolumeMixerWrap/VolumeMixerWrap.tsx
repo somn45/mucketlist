@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import Div, { DivProps } from '../../../../components/atom/Div';
+import { DivProps } from '../../../../../utils/types/atomTypes';
 
-interface VolumeMixerWrap extends DivProps {
-  children?: JSX.Element[] | JSX.Element;
+interface VolumeMixerProps extends DivProps {
+  onMouseEnter: React.MouseEventHandler<HTMLDivElement>;
+  onMouseLeave: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const VolumeMixerWrapStyle = styled.div`
@@ -15,15 +16,14 @@ function VolumeMixerWrap({
   children,
   onMouseEnter,
   onMouseLeave,
-}: VolumeMixerWrap) {
+}: VolumeMixerProps) {
   return (
-    <Div
-      DivStyle={VolumeMixerWrapStyle}
+    <VolumeMixerWrapStyle
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       {children}
-    </Div>
+    </VolumeMixerWrapStyle>
   );
 }
 

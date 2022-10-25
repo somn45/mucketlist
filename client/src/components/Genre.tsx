@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { addGenre, removeGenre } from '../store/reducers/rootReducer';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import { addGenre, removeGenre } from '../store/reducers/rootReducer';
+import Icon from './Icon';
 
 interface GenreProps {
   genre: string;
@@ -56,11 +56,11 @@ function Genre({ genre }: GenreProps) {
         onChange={handleChange}
       />
       <label htmlFor={genre}>
-        <FontAwesomeIcon icon={faCheck} />
+        <Icon icon={faCheck} />
       </label>
-      {genre}
+      <span>{genre}</span>
     </CheckBoxWrap>
   );
 }
 
-export default React.memo(Genre);
+export default Genre;

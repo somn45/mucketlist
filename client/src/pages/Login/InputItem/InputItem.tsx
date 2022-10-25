@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Icon from '../../../components/atom/Icon';
-import Input, { InputProps } from '../../../components/atom/Input';
+import Icon from '../../../components/Icon';
+import { InputProps } from '../../../utils/types/atomTypes';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 interface InputItemProps extends InputProps {
@@ -47,11 +47,10 @@ function InputItem({
 }: Omit<InputItemProps, 'InputStyle'>) {
   return (
     <InputTab>
-      <Input
-        InputStyle={InputStyle}
+      <InputStyle
         type={type}
         value={value}
-        setState={setState}
+        onChange={(e) => setState(e.target.value)}
         placeholder={placeholder}
       />
       <Icon icon={icon} />

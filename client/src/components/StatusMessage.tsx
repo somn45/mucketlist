@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Span, { SpanProps } from './atom/Span';
+import { SpanProps } from '../utils/types/atomTypes';
 
 const StatusMessageStyle = styled.span`
   margin-top: 90px;
@@ -8,7 +8,7 @@ const StatusMessageStyle = styled.span`
 `;
 
 function StatusMessage({ text }: SpanProps) {
-  return <Span TextStyle={StatusMessageStyle} text={text} />;
+  return <StatusMessageStyle>{text}</StatusMessageStyle>;
 }
 
 export default StatusMessage;

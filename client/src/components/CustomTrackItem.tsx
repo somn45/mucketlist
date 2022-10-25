@@ -4,9 +4,6 @@ import { Cookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 
 import { ICustomPlayList } from '../pages/CustomPlayList/CustomPlayList';
-import Button from './atom/Button';
-import Image from './atom/Image';
-import Span from './atom/Span';
 import CustomTrackGenre from './CustomTrackGenre';
 import {
   deleteCustomTrack,
@@ -15,10 +12,6 @@ import {
 
 interface CustomTrackItemProps {
   track: ICustomPlayList;
-}
-
-interface IUseSelector {
-  customTrack: ICustomPlayList[];
 }
 
 const TrackItem = styled.li`
@@ -79,17 +72,16 @@ function CustomTrackItem({ track }: CustomTrackItemProps) {
   return (
     <TrackItem>
       <TrackColumn>
-        <Image src={track.image} alt={track.name} />
+        <img src={track.image} alt={track.name} />
         <TrackInfo>
           <div>
-            <Span TextStyle={TrackName} text={track.name} />
-            <Button
-              value="X"
-              onClick={(e) => handleDeleteCustomTrack(e, track.id)}
-            />
+            <TrackName>{track.name}</TrackName>
+            <button onClick={(e) => handleDeleteCustomTrack(e, track.id)}>
+              X
+            </button>
           </div>
-          <Span text={`아티스트 : ${track.artists}`} />
-          <Span text={`발매일 : ${track.release_date}`} />
+          <span>{`아티스트 ${track.artists}`}</span>
+          <span>{`발매일 ${track.release_date}`}</span>
         </TrackInfo>
       </TrackColumn>
       <TrackGenreList>

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import TempGenre from '../../../../components/TempGenre';
+import Genre from '../../../../components/Genre';
 
 interface GenreSelectionTabProps {
   genres: string[];
@@ -18,7 +18,7 @@ function GenreSelectionTab({ genres }: GenreSelectionTabProps) {
   return (
     <GenreSelectionTabStyle>
       {genres.map((genre) => (
-        <TempGenre key={genre} genre={genre} />
+        <Genre key={genre} genre={genre} />
       ))}
     </GenreSelectionTabStyle>
   );

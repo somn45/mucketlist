@@ -62,22 +62,22 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
           <OptionModalForm>
             <OptionModalTitle />
             <OptionModalItem
-              optionName="popularity"
+              name="popularity"
               checked={selectedSetting === 'popularity'}
               onChange={(e) => setSelectedSetting(e.target.name)}
-              labelText="인기순"
+              text="인기순"
             />
             <OptionModalItem
-              optionName="date"
+              name="date"
               checked={selectedSetting === 'date'}
               onChange={(e) => setSelectedSetting(e.target.name)}
-              labelText="발매순"
+              text="발매순"
             />
             <OptionModalItem
-              optionName="random"
+              name="random"
               checked={selectedSetting === 'random'}
               onChange={(e) => setSelectedSetting(e.target.name)}
-              labelText="랜덤 정렬"
+              text="랜덤 정렬"
             />
             <OptionModalSubmit onClick={setTrackOption} />
           </OptionModalForm>

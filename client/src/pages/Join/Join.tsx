@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -56,7 +56,6 @@ function Join() {
       <ErrorMsg text={errorMsg} />
       <JoinForm>
         <InputItem
-          labelText="아이디"
           htmlFor="email"
           type="text"
           value={email}
@@ -64,16 +63,15 @@ function Join() {
           placeholder="아이디"
         />
         <InputItem
-          labelText="비밀번호"
           htmlFor="password"
-          type="text"
+          type="password"
           value={password}
           setState={setPassword}
           placeholder="비밀번호"
         />
         <JoinSubmit value="회원가입" onClick={handleJoin} />
       </JoinForm>
-      <LoginLink text="가입되어 있는 계정이 있으신가요?" linkText="로그인" />
+      <LoginLink />
     </AccountSection>
   );
 }

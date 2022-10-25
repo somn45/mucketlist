@@ -1,79 +1,49 @@
 import { useState, useEffect, useContext } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios, { AxiosError } from 'axios';
-import styled from 'styled-components';
 
 import { PlayerContext } from '../../../PlayerContext';
 import {
   moveNextPosition,
-  movePreviousPosition,
-  switchShuffleMode,
-  swtichRepeatMode,
+  moveRandomPosition,
+  RootState,
+  updatePlayMode,
+  updatePlayState,
   updateStatusMessage,
 } from '../../../store/reducers/rootReducer';
 import getTokens from '../../../utils/functions/getTokens';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
-import { TrackState } from '../TrackList/TrackList';
-import ArtistName from './ArtistName/ArtistName';
-import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
-
-import NextTrackButton from './NextTrackButton/NextTrackButton';
-import PrevTrackButton from './PrevTrackButton/PrevTrackButton';
-import RepeatMode from './RepeatMode/RepeatMode';
-import ShuffleMode from './ShuffleMode/ShuffleMode';
-import TogglePlayButton from './TogglePlayButton/TogglePlayButton';
 import TrackName from './TrackName/TrackName';
-import VolumeButton from './VolumeButton/VolumeButton';
-import VolumeMixer from './VolumeMixer/VolumeMixer';
-import VolumeMixerWrap from './VolumeMixerWrap/VolumeMixerWrap';
-import Icon from '../../../components/atom/Icon';
+import ArtistName from './ArtistName/ArtistName';
+import Wrap from './Wrap/Wrap';
+import PlayerController from './PlayerController/PlayerController';
+import { getTrackProgress } from '../../../store/reducers/thunk/progress';
+import { useAppDispatch } from '../../../store/store';
 
-interface PlayerState {
-  tracks: TrackState[];
-  playback: {
-    playingPosition: number;
-    playMode: string;
-  };
+interface PlayProps {
+  spotify_uri: string;
+  device_id: string;
+  playerInstance: Spotify.Player;
 }
 
-const PlayerWrap = styled.div`
-  width: 370px;
-  height: 80px;
-  background-color: white;
-  border: 5px solid green;
-  border-radius: 25px;
-  position: fixed;
-  bottom: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-`;
+interface PlayError extends PlayProps {
+  error: AxiosError;
+}
 
-const PlayerController = styled.div`
-  width: 300px;
-  display: flex;
-  justify-content: space-around;
-  position: relative;
-  & > button {
-    width: 20px;
-    height: 20px;
-  }
-`;
-
-function Player({ tracks, playback }: PlayerState) {
+function Player() {
   const dispatch = useDispatch();
-  const [isPlay, setIsPlay] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [prevVolume, setPrevVolume] = useState(0);
-  const [currentVolume, setCurrentVolume] = useState(0.5);
-  const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
+  const appDispatch = useAppDispatch();
   const [isFinishTrackPlay, setIsFinishTrackPlay] = useState(false);
-  const [isRepeat, setIsRepeat] = useState(false);
-  const [isShuffle, setIsShuffle] = useState(false);
   const [playingTrack, setPlayingTrack] = useState('');
   const [artist, setArtist] = useState('');
+  const progress = useSelector((state: RootState) => state.progress.value);
+  const tracks = useSelector((state: RootState) => state.tracks);
+  const playMode = useSelector((state: RootState) => state.playMode);
+  const playingPosition = useSelector(
+    (state: RootState) => state.playingPosition
+  );
   const { player, deviceId } = useContext(PlayerContext);
+  console.log(playMode);
 
   useEffect(() => {
     if (!player) return;
@@ -82,22 +52,24 @@ function Player({ tracks, playback }: PlayerState) {
 
   useEffect(() => {
     if (isArrayEmpty(tracks)) return;
-    setPlayingTrack(tracks[playback.playingPosition].name);
-    const artistData = tracks[playback.playingPosition].artists.map(
+    setPlayingTrack(tracks[playingPosition].name);
+    const artistData = tracks[playingPosition].artists.map(
       (artist) => artist.name
     );
     setArtist(artistData.length < 2 ? artistData[0] : artistData.join(','));
-    onPlay(tracks[playback.playingPosition].uri);
-  }, [playback.playingPosition]);
+    onPlay(tracks[playingPosition].uri);
+  }, [playingPosition]);
 
   useEffect(() => {
     if (!isFinishTrackPlay) return;
     setIsFinishTrackPlay(false);
-    if (isRepeat) {
-      dispatch(swtichRepeatMode());
-      onPlay(tracks[playback.playingPosition].uri);
-    } else if (isShuffle) dispatch(switchShuffleMode());
-    else dispatch(moveNextPosition(1));
+    if (playMode === 'repeat') {
+      dispatch(updatePlayMode('repeat'));
+      onPlay(tracks[playingPosition].uri);
+    } else if (playMode === 'shuffle') {
+      dispatch(moveRandomPosition());
+      dispatch(updatePlayMode('shuffle'));
+    } else dispatch(moveNextPosition());
   }, [isFinishTrackPlay]);
 
   const detectFinishTrackPlay = (player: Spotify.Player) => {
@@ -106,7 +78,7 @@ function Player({ tracks, playback }: PlayerState) {
       console.log('Player state changed', state);
       console.log('Playing Track', state.track_window.current_track.name);
       if (state.duration <= state.position) {
-        setProgress(0);
+        appDispatch(getTrackProgress(player));
         setIsFinishTrackPlay(true);
       }
     });
@@ -126,24 +98,14 @@ function Player({ tracks, playback }: PlayerState) {
       player?.resume();
       console.log('resume');
     }
-    setIsPlay(true);
+    dispatch(updatePlayState(true));
   };
-
-  interface PlayProps {
-    spotify_uri: string;
-    device_id: string;
-    playerInstance: Spotify.Player;
-  }
-
-  interface PlayError extends PlayProps {
-    error: AxiosError;
-  }
 
   const play = ({ spotify_uri, device_id, playerInstance }: PlayProps) => {
     const {
       _options: { getOAuthToken },
     } = playerInstance;
-    getOAuthToken(async (accessToken: string) => {
+    getOAuthToken(async () => {
       try {
         await axios.put(
           `https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,
@@ -198,94 +160,13 @@ function Player({ tracks, playback }: PlayerState) {
     play({ spotify_uri, device_id, playerInstance });
   };
 
-  const onPause = async () => {
-    const trackProgress = await getTrackProgress();
-    if (!trackProgress) setProgress(0);
-    else setProgress(trackProgress);
-    player?.pause();
-    setIsPlay(false);
-  };
-
-  const getTrackProgress = async () => {
-    const data = await player?.getCurrentState();
-    if (!data) return;
-    return data.position;
-  };
-
-  const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const volume = Number(e.target.value);
-    setCurrentVolume(volume);
-
-    player?.setVolume(volume);
-  };
-  const toggleVolume = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!player) return;
-    const volume = await player.getVolume();
-    if (volume === 0) await player.setVolume(prevVolume);
-    else await player.setVolume(0);
-    setPrevVolume(volume);
-    setCurrentVolume(await player.getVolume());
-  };
-  const onPreviousTrack = () => {
-    setProgress(0);
-    dispatch(movePreviousPosition(1));
-    setIsPlay(true);
-  };
-  const onNextTrack = () => {
-    setProgress(0);
-    console.log('on next track', playback.playingPosition);
-    dispatch(moveNextPosition(1));
-    setIsPlay(true);
-  };
-  const handleRepeatMode = () => {
-    setIsRepeat((prevState) => !prevState);
-    setIsShuffle(false);
-  };
-  const handleShuffleMode = async () => {
-    setIsShuffle((prevState) => !prevState);
-    setIsRepeat(false);
-  };
-
   return (
-    <PlayerWrap>
+    <Wrap>
       <TrackName text={playingTrack} />
       <ArtistName text={artist} />
-      <PlayerController>
-        <TogglePlayButton
-          value={isPlay ? <Icon icon={faPause} /> : <Icon icon={faPlay} />}
-          onClick={
-            isPlay
-              ? onPause
-              : () => onPlay(tracks[playback.playingPosition].uri)
-          }
-        />
-        <PrevTrackButton onClick={onPreviousTrack} />
-        <NextTrackButton onClick={onNextTrack} />
-        <RepeatMode onClick={handleRepeatMode} />
-        <ShuffleMode onClick={handleShuffleMode} />
-        <VolumeMixerWrap
-          onMouseEnter={() => setIsShowVolumeMixer(true)}
-          onMouseLeave={() => setIsShowVolumeMixer(false)}
-        >
-          <VolumeButton onClick={toggleVolume} />
-          {isShowVolumeMixer ? (
-            <VolumeMixer currentRange={currentVolume} onChange={handleVolume} />
-          ) : (
-            <></>
-          )}
-        </VolumeMixerWrap>
-      </PlayerController>
-    </PlayerWrap>
+      <PlayerController player={player} onPlay={onPlay} />
+    </Wrap>
   );
 }
 
-const mapStateToProps = (state: PlayerState) => {
-  return {
-    tracks: state.tracks,
-    playback: state.playback,
-  };
-};
-
-export default connect(mapStateToProps)(Player);
+export default Player;

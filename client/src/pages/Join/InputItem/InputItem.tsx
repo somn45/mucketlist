@@ -1,15 +1,5 @@
 import styled from 'styled-components';
-import Input from '../../../components/atom/Input';
-import Label from '../../../components/atom/Label';
-
-interface JoinInputItemProps {
-  labelText: string;
-  htmlFor: string;
-  type: 'text';
-  value: string;
-  setState: React.Dispatch<React.SetStateAction<string>>;
-  placeholder: string;
-}
+import { InputProps } from '../../../utils/types/atomTypes';
 
 const LabelStyle = styled.label`
   height: 20px;
@@ -42,20 +32,19 @@ export const InputStyle = styled.input`
 `;
 
 function InputItem({
-  labelText,
   htmlFor,
+  type,
   value,
   setState,
   placeholder,
-}: JoinInputItemProps) {
+}: InputProps) {
   return (
     <>
-      <Label LabelStyle={LabelStyle} value={labelText} htmlFor={htmlFor} />
-      <Input
-        InputStyle={InputStyle}
-        type="text"
+      <LabelStyle htmlFor={htmlFor}>{value}</LabelStyle>
+      <InputStyle
+        type={type}
         value={value}
-        setState={setState}
+        onChange={(e) => setState(e.target.value)}
         placeholder={placeholder}
       />
     </>

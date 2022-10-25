@@ -1,8 +1,6 @@
 import styled from 'styled-components';
-import Submit, { SubmitProps } from '../../../components/atom/Submit';
+import { SubmitProps } from '../../../utils/types/atomTypes';
 import { InputStyle } from '../InputItem/InputItem';
-
-type JoinSubmitProps = Omit<SubmitProps, 'SubmitStyle'>;
 
 const SubmitStyle = styled(InputStyle)`
   padding: 0;
@@ -17,10 +15,10 @@ const SubmitStyle = styled(InputStyle)`
   }
 `;
 
-function JoinSubmit({ value, onClick }: JoinSubmitProps) {
+function JoinSubmit({ value, onClick }: SubmitProps) {
   return (
     <>
-      <Submit SubmitStyle={SubmitStyle} value={value} onClick={onClick} />
+      <SubmitStyle type="submit" value={value} onClick={onClick} />
     </>
   );
 }

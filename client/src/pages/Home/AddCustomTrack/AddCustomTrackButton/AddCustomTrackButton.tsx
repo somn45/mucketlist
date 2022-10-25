@@ -1,7 +1,7 @@
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
-import Button, { ButtonProps } from '../../../../components/atom/Button';
-import Icon from '../../../../components/atom/Icon';
+import Icon from '../../../../components/Icon';
+import { ButtonProps } from '../../../../utils/types/atomTypes';
 
 const AddCustomTrackButtonStyle = styled.button`
   width: 32px;
@@ -15,13 +15,11 @@ const AddCustomTrackButtonStyle = styled.button`
   }
 `;
 
-function AddCustomTrackButton({ onClick }: Omit<ButtonProps, 'value'>) {
+function AddCustomTrackButton({ onClick }: ButtonProps) {
   return (
-    <Button
-      ButtonStyle={AddCustomTrackButtonStyle}
-      value={<Icon icon={faHeart} />}
-      onClick={onClick}
-    />
+    <AddCustomTrackButtonStyle onClick={onClick}>
+      <Icon icon={faHeart} />
+    </AddCustomTrackButtonStyle>
   );
 }
 

@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
-import Image from './atom/Image';
-import Span from './atom/Span';
 import React from 'react';
-import Button from './atom/Button';
 import { TrackState } from '../pages/Home/TrackList/TrackList';
 
 interface TempTrackProps {
@@ -34,7 +31,7 @@ function TempTrack({ track }: TempTrackProps) {
   };
   return (
     <div>
-      <Image src={track.album.images[2].url} alt={track.name} />
+      <img src={track.album.images[2].url} alt={track.name} />
     </div>
   );
 }
