@@ -1,5 +1,6 @@
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import TempTrack from '../../../components/TempTrack';
+import { RootState } from '../../../store/reducers/rootReducer';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 
 export interface AlbumImage {
@@ -42,19 +43,23 @@ export interface TrackData {
   seeds: TrackSeed[];
 }
 
-function TrackList({ tracks }: ITracks) {
+function TrackList() {
+  const playingPosition = useSelector(
+    (state: RootState) => state.playingPosition
+  );
+  const tracks = useSelector((state: RootState) => state.tracks);
   return (
     <>
       {!isArrayEmpty(tracks) &&
-        tracks.map((track) => <TempTrack key={track.id} track={track} />)}
+        tracks.map((track) => (
+          <TempTrack
+            key={track.id}
+            track={track}
+            playingTrack={tracks[playingPosition].name}
+          />
+        ))}
     </>
   );
 }
 
-function mapStateToProps(state: ITracks) {
-  return {
-    tracks: state.tracks,
-  };
-}
-
-export default connect(mapStateToProps)(TrackList);
+export default TrackList;

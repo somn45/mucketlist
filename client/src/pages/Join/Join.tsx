@@ -33,8 +33,7 @@ function Join() {
       });
       navigate('/login', {
         state: {
-          joinSuccessMsg:
-            '회원가입을 완료했습니다. 이제 가입된 계정으로 로그인이 가능합니다.',
+          joinSuccessMsg: '회원가입 완료',
         },
       });
     } catch (error) {
@@ -60,6 +59,7 @@ function Join() {
           type="text"
           value={email}
           setState={setEmail}
+          labelText="아이디"
           placeholder="아이디"
         />
         <InputItem
@@ -67,6 +67,7 @@ function Join() {
           type="password"
           value={password}
           setState={setPassword}
+          labelText="비밀번호"
           placeholder="비밀번호"
         />
         <JoinSubmit value="회원가입" onClick={handleJoin} />

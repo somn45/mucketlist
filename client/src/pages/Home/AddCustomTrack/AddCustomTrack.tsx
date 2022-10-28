@@ -1,29 +1,26 @@
-import styled from 'styled-components';
 import axios from 'axios';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Cookies } from 'react-cookie';
 import AddCustomTrackButton from './AddCustomTrackButton/AddCustomTrackButton';
-import { TrackState } from '../TrackList/TrackList';
 import getTokens from '../../../utils/functions/getTokens';
-import { updateStatusMessage } from '../../../store/reducers/rootReducer';
+import {
+  RootState,
+  updateStatusMessage,
+} from '../../../store/reducers/rootReducer';
 import Wrap from './Wrap/AddCustomTrackWrap';
-
-interface AddCustomTrackStates {
-  playback: {
-    playingPosition: number;
-    playMode: string;
-  };
-  tracks: TrackState[];
-}
 
 const cookies = new Cookies();
 
-function AddCustomTrack({ playback, tracks }: AddCustomTrackStates) {
+function AddCustomTrack() {
+  const tracks = useSelector((state: RootState) => state.tracks);
+  const playingPosition = useSelector(
+    (state: RootState) => state.playingPosition
+  );
   const dispatch = useDispatch();
 
   const addCustomTrack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const track = tracks[playback.playingPosition];
+    const track = tracks[playingPosition];
     const dibsTrack = {
       name: track.name,
       id: track.id,
@@ -38,6 +35,7 @@ function AddCustomTrack({ playback, tracks }: AddCustomTrackStates) {
       accessToken: getTokens(),
       firebaseUid: firebaseUid,
     });
+    console.log(response);
     if (response.data.errorMsg) console.log(response.data.errorMsg);
     else
       dispatch(
@@ -53,11 +51,4 @@ function AddCustomTrack({ playback, tracks }: AddCustomTrackStates) {
   );
 }
 
-function mapStateToProps(state: AddCustomTrackStates) {
-  return {
-    playback: state.playback,
-    tracks: state.tracks,
-  };
-}
-
-export default connect(mapStateToProps)(AddCustomTrack);
+export default AddCustomTrack;

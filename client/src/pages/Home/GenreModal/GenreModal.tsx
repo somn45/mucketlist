@@ -15,6 +15,7 @@ import {
 import GenreModalSubmit from './Submit/GenreModalSubmit';
 import GenreModalForm from './Form/GenreModalForm';
 import { Modal } from '../../../utils/styles/Modal';
+import styled, { css, Keyframes, keyframes } from 'styled-components';
 
 interface GenreModalStates {
   tracks: TrackState[];
@@ -34,10 +35,40 @@ interface GenreModalProps {
   selectedGenres: string[];
 }
 
+type AnimationType = Keyframes;
+
+const FadeIn = keyframes`
+  0% {
+    opacity: 0;
+  } 100% {
+    opacity: 1;
+  }
+`;
+
+const FadeOut = keyframes`
+  0% {
+    opacity: 1;
+  } 100% {
+    opacity: 0;
+  }
+`;
+
+const GenreModalWrap = styled(Modal)<{ isActive: boolean }>`
+  animation: ${(props) =>
+    props.isActive
+      ? css`
+          ${FadeIn} 0.6s linear forwards
+        `
+      : css`
+          ${FadeOut} 0.6s linear forwards
+        `};
+`;
+
 function GenreModal({ tracks, isActive, selectedGenres }: GenreModalProps) {
-  console.log(isActive);
   const dispatch = useDispatch();
   const [genres, setGenres] = useState([]);
+  const [isActiveGenreModal, setIsActiveGenreModal] = useState(false);
+  console.log(isActive.genres);
 
   useEffect(() => {
     if (!isActive.genres) return;
@@ -45,6 +76,7 @@ function GenreModal({ tracks, isActive, selectedGenres }: GenreModalProps) {
   }, [isActive.genres]);
 
   const getSpotifyGenres = async () => {
+    setIsActiveGenreModal(true);
     if (!isArrayEmpty(tracks)) return;
     const accessToken = getTokens();
     const response = await axios.post(
@@ -72,19 +104,20 @@ function GenreModal({ tracks, isActive, selectedGenres }: GenreModalProps) {
 
     dispatch(createTracks(response.data.tracks));
     dispatch(clearSettings(''));
-    dispatch(activeOptions(''));
+    setIsActiveGenreModal(false);
+    setTimeout(() => dispatch(activeOptions('')), 600);
   };
 
   return (
     <>
       {isActive.genres && (
-        <Modal>
+        <GenreModalWrap isActive={isActiveGenreModal}>
           <GenreModalForm>
             <GenreModalTitle />
             <GenreSelectionTab genres={genres} />
             <GenreModalSubmit onClick={searchTracksToGenre} />
           </GenreModalForm>
-        </Modal>
+        </GenreModalWrap>
       )}
     </>
   );

@@ -42,6 +42,7 @@ function Player() {
   const playingPosition = useSelector(
     (state: RootState) => state.playingPosition
   );
+  const isPlay = useSelector((state: RootState) => state.isPlay);
   const { player, deviceId } = useContext(PlayerContext);
   console.log(playMode);
 
@@ -161,7 +162,7 @@ function Player() {
   };
 
   return (
-    <Wrap>
+    <Wrap isPlay={isPlay}>
       <TrackName text={playingTrack} />
       <ArtistName text={artist} />
       <PlayerController player={player} onPlay={onPlay} />

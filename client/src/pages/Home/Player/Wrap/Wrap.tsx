@@ -1,11 +1,15 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { DivProps } from '../../../../utils/types/atomTypes';
 
-const PlayerWrap = styled.div`
+interface PlayerWrapProps extends DivProps {
+  isPlay: boolean;
+}
+
+const PlayerWrap = styled.div<{ isPlay: boolean }>`
   width: 370px;
   height: 80px;
   background-color: white;
-  border: 5px solid green;
+  border: ${(props) => (props.isPlay ? '5px solid green' : '5px solid red')};
   border-radius: 25px;
   position: fixed;
   bottom: 5px;
@@ -15,8 +19,8 @@ const PlayerWrap = styled.div`
   align-items: center;
 `;
 
-function Wrap({ children }: DivProps) {
-  return <PlayerWrap>{children}</PlayerWrap>;
+function Wrap({ children, isPlay }: PlayerWrapProps) {
+  return <PlayerWrap isPlay={isPlay}>{children}</PlayerWrap>;
 }
 
 export default Wrap;

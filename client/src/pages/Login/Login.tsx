@@ -13,6 +13,12 @@ import LoginForm from './Form/LoginForm';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
 import styled from 'styled-components';
 import StatusMessage from '../../components/StatusMessage';
+import { useAppDispatch } from '../../store/store';
+import {
+  RootState,
+  updateStatusMessage,
+} from '../../store/reducers/rootReducer';
+import { useSelector } from 'react-redux';
 
 interface ILocation {
   state: {
@@ -31,10 +37,11 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [statusMsg, setStatusMsg] = useState('');
   const { state } = useLocation() as ILocation;
+  const statusMessage = useSelector((state: RootState) => state.statusMessage);
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    if (state) setStatusMsg(state.joinSuccessMsg);
+    if (state) dispatch(updateStatusMessage(state.joinSuccessMsg));
   }, []);
 
   const handleLogin = async (e: React.MouseEvent<HTMLInputElement>) => {
@@ -72,7 +79,7 @@ function Login() {
 
   return (
     <AccountSection>
-      {statusMsg && <StatusMessage text={statusMsg} />}
+      {statusMessage && <StatusMessage text={statusMessage} />}
       <Title />
       <ErrorMsg text={errorMsg} />
       <LoginForm>

@@ -45,15 +45,6 @@ function PlayerController({
 }: Omit<PlayControllerProps, 'deviceId'>) {
   const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
   const isPlay = useSelector((state: RootState) => state.isPlay);
-  const dispatch = useAppDispatch();
-
-  const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (!player) return;
-    const volume = Number(e.target.value);
-    dispatch(onChangeVolume(volume));
-    player?.setVolume(volume);
-  };
 
   return (
     <PlayerControllerWrap>

@@ -24,6 +24,7 @@ const Main = styled.main`
 const HomeSection = styled.section`
   padding-top: 40px;
   display: grid;
+  gap: 6px;
   grid-template-columns: repeat(4, 64px);
   grid-template-rows: repeat(8, 64px);
 `;

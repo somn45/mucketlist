@@ -27,6 +27,7 @@ export interface InputProps {
   type: string;
   value: string;
   setState: React.Dispatch<React.SetStateAction<string>>;
+  labelText?: string;
   placeholder: string;
 }
 

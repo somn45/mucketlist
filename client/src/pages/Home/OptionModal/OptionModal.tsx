@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import styled, { css, keyframes } from 'styled-components';
 import {
   addSettings,
   inactiveAll,
@@ -33,9 +34,41 @@ interface OptionModalProps {
   };
 }
 
+const FadeIn = keyframes`
+  0% {
+    opacity: 0;
+  } 100% {
+    opacity: 1;
+  }
+`;
+
+const FadeOut = keyframes`
+  0% {
+    opacity: 1;
+  } 100% {
+    opacity: 0;
+  }
+`;
+
+const OpenModalWrap = styled(Modal)<{ isActive: boolean }>`
+  animation: ${(props) =>
+    props.isActive
+      ? css`
+          ${FadeIn} 0.6s linear forwards
+        `
+      : css`
+          ${FadeOut} 0.6s linear forwards
+        `};
+`;
+
 function OptionModal({ tracks, isActive }: OptionModalProps) {
   const dispatch = useDispatch();
   const [selectedSetting, setSelectedSetting] = useState('');
+  const [isActiveOptionModal, setIsActiveOptionModal] = useState(false);
+
+  useEffect(() => {
+    setIsActiveOptionModal(true);
+  }, []);
 
   const setTrackOption = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -48,6 +81,7 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
       dispatch(sortByRandom(''));
     }
     dispatch(addSettings(selectedSetting));
+    setTimeout(() => setIsActiveOptionModal(false), 600);
     dispatch(inactiveAll(''));
     dispatch(
       updateStatusMessage(
@@ -58,7 +92,7 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
   return (
     <>
       {isActive.options && (
-        <Modal>
+        <OpenModalWrap isActive={isActiveOptionModal}>
           <OptionModalForm>
             <OptionModalTitle />
             <OptionModalItem
@@ -81,7 +115,7 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
             />
             <OptionModalSubmit onClick={setTrackOption} />
           </OptionModalForm>
-        </Modal>
+        </OpenModalWrap>
       )}
     </>
   );

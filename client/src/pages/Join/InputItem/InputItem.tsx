@@ -36,11 +36,12 @@ function InputItem({
   type,
   value,
   setState,
+  labelText,
   placeholder,
 }: InputProps) {
   return (
     <>
-      <LabelStyle htmlFor={htmlFor}>{value}</LabelStyle>
+      <LabelStyle htmlFor={htmlFor}>{labelText}</LabelStyle>
       <InputStyle
         type={type}
         value={value}
