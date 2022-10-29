@@ -6,16 +6,15 @@ interface PlayerWrapProps extends DivProps {
 }
 
 const PlayerWrap = styled.div<{ isPlay: boolean }>`
-  width: 370px;
-  height: 80px;
+  width: 375px;
+  height: 108px;
   background-color: white;
   border: ${(props) => (props.isPlay ? '5px solid green' : '5px solid red')};
-  border-radius: 25px;
+  border-radius: 36px;
   position: fixed;
   bottom: 5px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  flex-direction: row;
   align-items: center;
 `;
 

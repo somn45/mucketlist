@@ -83,11 +83,7 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
     dispatch(addSettings(selectedSetting));
     setTimeout(() => setIsActiveOptionModal(false), 600);
     dispatch(inactiveAll(''));
-    dispatch(
-      updateStatusMessage(
-        '트랙 검색이 완료되었습니다. 이제 음악의 재생이 가능합니다.'
-      )
-    );
+    dispatch(updateStatusMessage('트랙 검색이 완료되었습니다.'));
   };
   return (
     <>

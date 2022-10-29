@@ -10,8 +10,8 @@ const AddCustomTrackWrap = styled.div`
   justify-content: center;
   align-items: center;
   position: fixed;
-  right: 10px;
-  bottom: 90px;
+  right: 5px;
+  bottom: 130px;
 `;
 function Wrap({ children }: DivProps) {
   return <AddCustomTrackWrap>{children}</AddCustomTrackWrap>;

@@ -19,8 +19,6 @@ import PrevTrackButton from './PrevTrackButton/PrevTrackButton';
 import RepeatMode from './RepeatMode/RepeatMode';
 import ShuffleMode from './ShuffleMode/ShuffleMode';
 import TogglePlayButton from './TogglePlayButton/TogglePlayButton';
-import { useAppDispatch } from '../../../../store/store';
-import { getTrackProgress } from '../../../../store/reducers/thunk/progress';
 
 interface PlayControllerProps extends IPlayerContext {
   onPlay: {
@@ -29,9 +27,11 @@ interface PlayControllerProps extends IPlayerContext {
 }
 
 const PlayerControllerWrap = styled.div`
-  width: 300px;
+  width: 180px;
+  height: 30px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
   position: relative;
   & > button {
     width: 20px;
@@ -47,16 +47,18 @@ function PlayerController({
   const isPlay = useSelector((state: RootState) => state.isPlay);
 
   return (
-    <PlayerControllerWrap>
-      <TogglePlayButton
-        value={isPlay ? <Icon icon={faPause} /> : <Icon icon={faPlay} />}
-        player={player}
-        onPlay={onPlay}
-      />
-      <PrevTrackButton player={player} />
-      <NextTrackButton player={player} />
-      <RepeatMode />
-      <ShuffleMode />
+    <>
+      <PlayerControllerWrap>
+        <TogglePlayButton
+          value={isPlay ? <Icon icon={faPause} /> : <Icon icon={faPlay} />}
+          player={player}
+          onPlay={onPlay}
+        />
+        <PrevTrackButton player={player} />
+        <NextTrackButton player={player} />
+        <RepeatMode />
+        <ShuffleMode />
+      </PlayerControllerWrap>
       <VolumeMixerWrap
         onMouseEnter={() => setIsShowVolumeMixer(true)}
         onMouseLeave={() => setIsShowVolumeMixer(false)}
@@ -64,7 +66,7 @@ function PlayerController({
         <VolumeButton player={player} />
         {isShowVolumeMixer ? <VolumeMixer player={player} /> : <></>}
       </VolumeMixerWrap>
-    </PlayerControllerWrap>
+    </>
   );
 }
 

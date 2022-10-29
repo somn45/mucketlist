@@ -39,7 +39,8 @@ function OptionModalItem({ name, checked, onChange, text }: OptionModalItem) {
         checked={checked}
         onChange={onChange}
       />
-      <label htmlFor={name}>{text}</label>
+      <label htmlFor={name}></label>
+      <span>{text}</span>
     </InputTab>
   );
 }

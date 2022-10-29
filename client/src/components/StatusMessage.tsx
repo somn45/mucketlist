@@ -8,10 +8,10 @@ const AnimationStatusBar = keyframes`
     width: 0;
   } 13% {
     background-color: #D363AD;
-    width: 420px;
+    width: 100%;
   }100% {
     background-color: #D363AD;
-    width: 420px;
+    width: 100%;
   }
 `;
 

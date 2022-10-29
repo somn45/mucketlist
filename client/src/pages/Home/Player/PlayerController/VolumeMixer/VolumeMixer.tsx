@@ -15,7 +15,7 @@ const VolumeMixerWrap = styled.div`
 `;
 
 const RangeStyle = styled.input`
-  width: 100px;
+  width: 130px;
 `;
 
 function VolumeMixer({ player }: VolumeMixerProps) {

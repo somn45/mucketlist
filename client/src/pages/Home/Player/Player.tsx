@@ -19,6 +19,8 @@ import Wrap from './Wrap/Wrap';
 import PlayerController from './PlayerController/PlayerController';
 import { getTrackProgress } from '../../../store/reducers/thunk/progress';
 import { useAppDispatch } from '../../../store/store';
+import styled from 'styled-components';
+import PlayerTrackImage from './PlayerTrackImage/PlayerTrackImage';
 
 interface PlayProps {
   spotify_uri: string;
@@ -30,11 +32,17 @@ interface PlayError extends PlayProps {
   error: AxiosError;
 }
 
+const PlayerColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 function Player() {
   const dispatch = useDispatch();
   const appDispatch = useAppDispatch();
   const [isFinishTrackPlay, setIsFinishTrackPlay] = useState(false);
   const [playingTrack, setPlayingTrack] = useState('');
+  const [playingTrackImage, setPlayingTrackImage] = useState('');
   const [artist, setArtist] = useState('');
   const progress = useSelector((state: RootState) => state.progress.value);
   const tracks = useSelector((state: RootState) => state.tracks);
@@ -44,7 +52,7 @@ function Player() {
   );
   const isPlay = useSelector((state: RootState) => state.isPlay);
   const { player, deviceId } = useContext(PlayerContext);
-  console.log(playMode);
+  console.log(playingTrackImage);
 
   useEffect(() => {
     if (!player) return;
@@ -54,6 +62,7 @@ function Player() {
   useEffect(() => {
     if (isArrayEmpty(tracks)) return;
     setPlayingTrack(tracks[playingPosition].name);
+    setPlayingTrackImage(tracks[playingPosition].album.images[2].url);
     const artistData = tracks[playingPosition].artists.map(
       (artist) => artist.name
     );
@@ -145,12 +154,12 @@ function Player() {
         () => retryPlay({ spotify_uri, device_id, playerInstance }),
         3000
       );
-      dispatch(updateStatusMessage('오류로 인해 트랙 재생을 재시도합니다.'));
+      dispatch(updateStatusMessage('트랙 재생을 재시도 중...'));
       errorCost++;
       if (errorCost > 5) {
         dispatch(
           updateStatusMessage(
-            '재시도 횟수가 초과되었습니다. 재생 버튼을 다시 눌러주세요.'
+            '재시도 횟수가 초과, 재생 버튼을 다시 눌러주세요.'
           )
         );
       }
@@ -163,9 +172,14 @@ function Player() {
 
   return (
     <Wrap isPlay={isPlay}>
-      <TrackName text={playingTrack} />
-      <ArtistName text={artist} />
-      <PlayerController player={player} onPlay={onPlay} />
+      <PlayerColumn>
+        <PlayerTrackImage name={playingTrack} image={playingTrackImage} />
+      </PlayerColumn>
+      <PlayerColumn>
+        <TrackName text={playingTrack} />
+        <ArtistName text={artist} />
+        <PlayerController player={player} onPlay={onPlay} />
+      </PlayerColumn>
     </Wrap>
   );
 }
