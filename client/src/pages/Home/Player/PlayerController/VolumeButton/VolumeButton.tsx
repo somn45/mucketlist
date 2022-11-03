@@ -15,8 +15,6 @@ function VolumeButton({ player }: VolumeButtonProps) {
   const volume = useSelector((state: RootState) => state.volume.volume);
   const prevVolume = useSelector((state: RootState) => state.volume.prevVolume);
   const dispatch = useAppDispatch();
-  console.log(volume);
-  console.log(prevVolume);
 
   const handleToggleVolume = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

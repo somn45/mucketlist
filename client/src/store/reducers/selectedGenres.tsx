@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const genre = createSlice({
-  name: 'genreReducer',
+const selectedGenres = createSlice({
+  name: 'selectedGenresReducer',
   initialState: [] as string[],
   reducers: {
     addGenre: (state, action) => {
@@ -13,4 +13,4 @@ const genre = createSlice({
   },
 });
 
-export default genre;
+export default selectedGenres;

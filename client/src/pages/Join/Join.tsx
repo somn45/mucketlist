@@ -27,7 +27,7 @@ function Join() {
     const validateMessage = handleJoinValidate();
     if (!(validateMessage === 'ok')) return;
     try {
-      const response = await axios.post(`${SERVER_ENDPOINT}/users/join`, {
+      await axios.post(`${SERVER_ENDPOINT}/users/join`, {
         email,
         password,
       });

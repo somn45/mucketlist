@@ -94,7 +94,9 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
             <OptionModalItem
               name="popularity"
               checked={selectedSetting === 'popularity'}
-              onChange={(e) => setSelectedSetting(e.target.name)}
+              onChange={(e) => {
+                setSelectedSetting(e.target.name);
+              }}
               text="인기순"
             />
             <OptionModalItem

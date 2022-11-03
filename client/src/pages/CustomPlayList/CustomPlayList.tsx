@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import { Cookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import CustomPlayListTitle from './Title/CustomPlayListTitle';
 import CloseButton from './CloseButton/CloseButton';
 import CustomTrackItem from '../../components/CustomTrackItem';
 import styled from 'styled-components';
 import { Modal } from '../../utils/styles/Modal';
-import { addCustomTrack, RootState } from '../../store/reducers/rootReducer';
+import { useAppDispatch } from '../../store/store';
+import { getCustomTracks } from '../../store/reducers/thunk/customTracks';
+import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 
 export interface ICustomPlayList {
   name: string;
@@ -19,6 +19,10 @@ export interface ICustomPlayList {
   artistId: string;
   release_date: string;
   image: string;
+}
+
+interface IOutletContext {
+  customTracks: ICustomPlayList[];
 }
 
 const Wrap = styled(Modal)`
@@ -46,25 +50,17 @@ const cookies = new Cookies();
 
 function CustomPlayList() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const customTrack = useSelector((state: RootState) => state.customTrack);
-  const [tracks, setTracks] = useState<ICustomPlayList[]>([]);
+  const dispatch = useAppDispatch();
+  const { customTracks } = useOutletContext<IOutletContext>();
 
   useEffect(() => {
+    if (!isArrayEmpty(customTracks)) return;
     getCustomPlayList();
   }, []);
 
-  useEffect(() => {
-    setTracks(customTrack);
-  }, [customTrack]);
-
   const getCustomPlayList = async () => {
     const firebaseUid = cookies.get('firebaseUid');
-    const response = await axios.get(
-      `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
-    );
-    dispatch(addCustomTrack(response.data.tracks));
+    dispatch(getCustomTracks(firebaseUid));
   };
   return (
     <Wrap>
@@ -73,8 +69,8 @@ function CustomPlayList() {
         <CloseButton value="X" onClick={() => navigate('/')} />
       </CustomTrackHeader>
       <CustomTrackList>
-        {customTrack
-          ? customTrack.map((track: ICustomPlayList) => (
+        {customTracks
+          ? customTracks.map((track: ICustomPlayList) => (
               <CustomTrackItem key={track.id} track={track} />
             ))
           : null}
@@ -83,4 +79,4 @@ function CustomPlayList() {
   );
 }
 
-export default CustomPlayList;
+export default React.memo(CustomPlayList);

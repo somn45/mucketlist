@@ -37,7 +37,6 @@ const AddCustomTrackButtonStyle = styled.button`
 `;
 
 function AddCustomTrackButton({ onClick }: ButtonProps) {
-  console.log(onClick);
   return (
     <AddCustomTrackButtonStyle onClick={onClick}>
       <Icon icon={faHeart} />

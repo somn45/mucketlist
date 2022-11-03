@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { Cookies } from 'react-cookie';
@@ -51,4 +52,4 @@ function AddCustomTrack() {
   );
 }
 
-export default AddCustomTrack;
+export default React.memo(AddCustomTrack);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Player from './pages/Home/Player/Player';
 import { PlayerContext } from './PlayerContext';
 
@@ -49,4 +49,4 @@ function WebPlayback() {
   );
 }
 
-export default WebPlayback;
+export default React.memo(WebPlayback);

@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { SpanProps } from '../../../utils/types/atomTypes';
 
@@ -10,4 +11,4 @@ function ErrorMsg({ text }: SpanProps) {
   return <ErrorMsgStyle>{text}</ErrorMsgStyle>;
 }
 
-export default ErrorMsg;
+export default React.memo(ErrorMsg);

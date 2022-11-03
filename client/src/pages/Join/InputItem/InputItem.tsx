@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { InputProps } from '../../../utils/types/atomTypes';
 
@@ -52,4 +53,4 @@ function InputItem({
   );
 }
 
-export default InputItem;
+export default React.memo(InputItem);

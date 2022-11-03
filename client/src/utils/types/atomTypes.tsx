@@ -19,7 +19,7 @@ export interface ButtonProps {
 }
 
 export interface FormProps {
-  children?: JSX.Element | JSX.Element[];
+  children?: JSX.Element | JSX.Element[] | null;
 }
 
 export interface InputProps {

@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { SubmitProps } from '../../../utils/types/atomTypes';
 import { InputStyle } from '../../Join/InputItem/InputItem';
@@ -23,4 +24,4 @@ function LoginSubmit({ onClick }: Omit<SubmitProps, 'value' | 'SubmitStyle'>) {
   );
 }
 
-export default LoginSubmit;
+export default React.memo(LoginSubmit);

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -28,4 +29,4 @@ function LoginLink() {
   );
 }
 
-export default LoginLink;
+export default React.memo(LoginLink);

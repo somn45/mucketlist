@@ -52,7 +52,6 @@ function Player() {
   );
   const isPlay = useSelector((state: RootState) => state.isPlay);
   const { player, deviceId } = useContext(PlayerContext);
-  console.log(playingTrackImage);
 
   useEffect(() => {
     if (!player) return;
@@ -60,14 +59,7 @@ function Player() {
   }, [deviceId]);
 
   useEffect(() => {
-    if (isArrayEmpty(tracks)) return;
-    setPlayingTrack(tracks[playingPosition].name);
-    setPlayingTrackImage(tracks[playingPosition].album.images[2].url);
-    const artistData = tracks[playingPosition].artists.map(
-      (artist) => artist.name
-    );
-    setArtist(artistData.length < 2 ? artistData[0] : artistData.join(','));
-    onPlay(tracks[playingPosition].uri);
+    handleChangePlayingPosition();
   }, [playingPosition]);
 
   useEffect(() => {
@@ -81,6 +73,17 @@ function Player() {
       dispatch(updatePlayMode('shuffle'));
     } else dispatch(moveNextPosition());
   }, [isFinishTrackPlay]);
+
+  const handleChangePlayingPosition = () => {
+    if (isArrayEmpty(tracks)) return;
+    setPlayingTrack(tracks[playingPosition].name);
+    setPlayingTrackImage(tracks[playingPosition].album.images[2].url);
+    const artistData = tracks[playingPosition].artists.map(
+      (artist) => artist.name
+    );
+    setArtist(artistData.length < 2 ? artistData[0] : artistData.join(','));
+    onPlay(tracks[playingPosition].uri);
+  };
 
   const detectFinishTrackPlay = (player: Spotify.Player) => {
     player.addListener('player_state_changed', async (state) => {

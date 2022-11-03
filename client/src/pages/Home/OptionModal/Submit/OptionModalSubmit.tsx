@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { SubmitProps } from '../../../../utils/types/atomTypes';
 
@@ -18,4 +19,4 @@ function OptionModalSubmit({ onClick }: SubmitProps) {
   );
 }
 
-export default OptionModalSubmit;
+export default React.memo(OptionModalSubmit);

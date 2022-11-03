@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -27,4 +28,4 @@ function JoinLink() {
   );
 }
 
-export default JoinLink;
+export default React.memo(JoinLink);

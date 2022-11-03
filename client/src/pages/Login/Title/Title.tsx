@@ -1,5 +1,5 @@
+import React from 'react';
 import styled from 'styled-components';
-import { SpanProps } from '../../../utils/types/atomTypes';
 
 const TitleStyle = styled.h1`
   @font-face {
@@ -17,4 +17,4 @@ function Title() {
   return <TitleStyle>MucketList</TitleStyle>;
 }
 
-export default Title;
+export default React.memo(Title);

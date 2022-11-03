@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import Genre from '../../../../components/Genre';
 
@@ -24,4 +25,4 @@ function GenreSelectionTab({ genres }: GenreSelectionTabProps) {
   );
 }
 
-export default GenreSelectionTab;
+export default React.memo(GenreSelectionTab);
