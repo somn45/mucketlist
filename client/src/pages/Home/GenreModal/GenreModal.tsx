@@ -85,17 +85,13 @@ function GenreModal({ genres, isActive, selectedGenres }: GenreModalProps) {
   };
 
   return (
-    <>
-      {isActive.genres && (
-        <GenreModalWrap isActive={isActive.genres}>
-          <GenreModalForm>
-            <GenreModalTitle />
-            {!loading ? <GenreSelectionTab genres={genres} /> : <></>}
-            <GenreModalSubmit onClick={searchTracksToGenre} />
-          </GenreModalForm>
-        </GenreModalWrap>
-      )}
-    </>
+    <GenreModalWrap isActive={isActive.genres}>
+      <GenreModalForm>
+        <GenreModalTitle />
+        {!loading ? <GenreSelectionTab genres={genres} /> : <></>}
+        <GenreModalSubmit onClick={searchTracksToGenre} />
+      </GenreModalForm>
+    </GenreModalWrap>
   );
 }
 

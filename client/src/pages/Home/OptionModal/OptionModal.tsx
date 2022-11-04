@@ -86,36 +86,32 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
     dispatch(updateStatusMessage('트랙 검색이 완료되었습니다.'));
   };
   return (
-    <>
-      {isActive.options && (
-        <OpenModalWrap isActive={isActiveOptionModal}>
-          <OptionModalForm>
-            <OptionModalTitle />
-            <OptionModalItem
-              name="popularity"
-              checked={selectedSetting === 'popularity'}
-              onChange={(e) => {
-                setSelectedSetting(e.target.name);
-              }}
-              text="인기순"
-            />
-            <OptionModalItem
-              name="date"
-              checked={selectedSetting === 'date'}
-              onChange={(e) => setSelectedSetting(e.target.name)}
-              text="발매순"
-            />
-            <OptionModalItem
-              name="random"
-              checked={selectedSetting === 'random'}
-              onChange={(e) => setSelectedSetting(e.target.name)}
-              text="랜덤 정렬"
-            />
-            <OptionModalSubmit onClick={setTrackOption} />
-          </OptionModalForm>
-        </OpenModalWrap>
-      )}
-    </>
+    <OpenModalWrap isActive={isActiveOptionModal}>
+      <OptionModalForm>
+        <OptionModalTitle />
+        <OptionModalItem
+          name="popularity"
+          checked={selectedSetting === 'popularity'}
+          onChange={(e) => {
+            setSelectedSetting(e.target.name);
+          }}
+          text="인기순"
+        />
+        <OptionModalItem
+          name="date"
+          checked={selectedSetting === 'date'}
+          onChange={(e) => setSelectedSetting(e.target.name)}
+          text="발매순"
+        />
+        <OptionModalItem
+          name="random"
+          checked={selectedSetting === 'random'}
+          onChange={(e) => setSelectedSetting(e.target.name)}
+          text="랜덤 정렬"
+        />
+        <OptionModalSubmit onClick={setTrackOption} />
+      </OptionModalForm>
+    </OpenModalWrap>
   );
 }
 

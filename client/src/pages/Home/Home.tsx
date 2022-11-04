@@ -33,6 +33,12 @@ function Home() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [homeStatusMessage, setHomeStatusMessage] = useState('');
+  const isActiveGenreModal = useSelector(
+    (state: RootState) => state.activeComponent.genres
+  );
+  const isActiveOptionModal = useSelector(
+    (state: RootState) => state.activeComponent.options
+  );
   const tracks = useSelector((state: RootState) => state.tracks);
   const statusMessage = useSelector((state: RootState) => state.statusMessage);
   const genres = useSelector((state: RootState) => state.genres.genres);
@@ -56,8 +62,8 @@ function Home() {
       {homeStatusMessage && <StatusMessage text={homeStatusMessage} />}
       <Main>
         <section>
-          <GenreModal genres={genres} />
-          <OptionModal />
+          {isActiveGenreModal && <GenreModal genres={genres} />}
+          {isActiveOptionModal && <OptionModal />}
         </section>
         <HomeSection>
           <AddCustomTrack />
