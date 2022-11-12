@@ -15,6 +15,7 @@ import playMode from './playMode';
 import selectedGenres from './selectedGenres';
 import genres from './thunk/genres';
 import customTracks from './thunk/customTracks';
+import recommendTrack from './thunk/recommendTrack';
 
 const rootReducer = combineReducers({
   accessToken: accessToken.reducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   genres: genres.reducer,
   selectedGenres: selectedGenres.reducer,
   tracks: tracks.reducer,
+  recommendTrack: recommendTrack.reducer,
   settings: settings.reducer,
   customTracks: customTracks.reducer,
   isPlay: isPlay.reducer,
@@ -36,7 +38,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'rootReducer',
   storage: storage,
-  whitelist: ['tracks'],
+  whitelist: ['tracks', 'selectedGenres'],
 };
 
 export const { addAccessToken } = accessToken.actions;
@@ -45,9 +47,10 @@ export const { addFirebaseUidToken, getFirebaseUidToken } =
 export const { activeGenres, activeOptions, inactiveAll } =
   activeComponent.actions;
 export const { clearSpotifyGenreList } = genres.actions;
-export const { addGenre, removeGenre } = selectedGenres.actions;
+export const { addGenre, removeGenre, clearGenres } = selectedGenres.actions;
 export const {
   createTracks,
+  addTrack,
   sortByPopularity,
   sortByRelease,
   sortByRandom,

@@ -2,7 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import ClearTracks from './ClearTracks/ClearTracks';
-import { activeGenres, clearTracks } from '../../../store/reducers/rootReducer';
+import {
+  activeGenres,
+  clearGenres,
+  clearTracks,
+} from '../../../store/reducers/rootReducer';
 import Logout from './Logout/Logout';
 import { useCookies } from 'react-cookie';
 import CustomTracks from './CustomTracks/CustomTracks';
@@ -30,10 +34,10 @@ function Header() {
   const [, , removeFirebaseUID] = useCookies(['firebaseUid']);
   const [, , removeAccessToken] = useCookies(['accessToken']);
 
-  const initTrack = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const initTracks = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     dispatch(activeGenres(''));
-    dispatch(clearTracks(''));
+    dispatch(clearTracks());
   };
 
   const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -48,7 +52,7 @@ function Header() {
       <nav>
         <MenuList>
           <CustomTracks />
-          <ClearTracks onClick={initTrack} />
+          <ClearTracks onClick={initTracks} />
           <Logout onClick={handleLogout} />
         </MenuList>
       </nav>

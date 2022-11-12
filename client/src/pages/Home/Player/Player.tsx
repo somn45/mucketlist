@@ -44,6 +44,7 @@ function Player() {
   const [playingTrack, setPlayingTrack] = useState('');
   const [playingTrackImage, setPlayingTrackImage] = useState('');
   const [artist, setArtist] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
   const progress = useSelector((state: RootState) => state.progress.value);
   const tracks = useSelector((state: RootState) => state.tracks);
   const playMode = useSelector((state: RootState) => state.playMode);
@@ -152,24 +153,25 @@ function Player() {
     playerInstance,
   }: PlayError) => {
     if (error.response?.status === 502 || error.response?.status === 404) {
-      let errorCost = 0;
       setTimeout(
         () => retryPlay({ spotify_uri, device_id, playerInstance }),
         3000
       );
+      setRetryCount((prevCount) => prevCount + 1);
       dispatch(updateStatusMessage('트랙 재생을 재시도 중...'));
-      errorCost++;
-      if (errorCost > 5) {
-        dispatch(
-          updateStatusMessage(
-            '재시도 횟수가 초과, 재생 버튼을 다시 눌러주세요.'
-          )
-        );
-      }
     }
   };
 
   const retryPlay = ({ spotify_uri, device_id, playerInstance }: PlayProps) => {
+    console.log(retryCount);
+    if (retryCount === 3) {
+      setRetryCount(0);
+      return dispatch(
+        updateStatusMessage(
+          '재생 재시도 횟수 초과. 다시 재생 버튼을 눌러주세요.'
+        )
+      );
+    }
     play({ spotify_uri, device_id, playerInstance });
   };
 

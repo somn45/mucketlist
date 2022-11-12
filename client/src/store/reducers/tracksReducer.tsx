@@ -8,13 +8,16 @@ const tracks = createSlice({
     createTracks: (state, action) => {
       return [...action.payload];
     },
-    sortByPopularity: (state, action) => {
+    addTrack: (state, action) => {
+      return [...state, action.payload];
+    },
+    sortByPopularity: (state) => {
       return state.sort((a, b) => {
         if (a.popularity === b.popularity) return 0;
         return a.popularity > b.popularity ? 1 : -1;
       });
     },
-    sortByRelease: (state, action) => {
+    sortByRelease: (state) => {
       return state.sort((a, b) => {
         if (
           new Date(a.album.release_date).getTime() ===
@@ -27,8 +30,8 @@ const tracks = createSlice({
           : 1;
       });
     },
-    sortByRandom: (state, action) => {},
-    clearTracks: (state, action) => {
+    sortByRandom: (state) => {},
+    clearTracks: () => {
       return [];
     },
   },

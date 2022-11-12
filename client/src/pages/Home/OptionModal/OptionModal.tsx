@@ -74,11 +74,11 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
     e.preventDefault();
     if (isArrayEmpty(tracks)) return;
     if (selectedSetting === 'popularity') {
-      dispatch(sortByPopularity(''));
+      dispatch(sortByPopularity());
     } else if (selectedSetting === 'date') {
-      dispatch(sortByRelease(''));
+      dispatch(sortByRelease());
     } else if (selectedSetting === 'random') {
-      dispatch(sortByRandom(''));
+      dispatch(sortByRandom());
     }
     dispatch(addSettings(selectedSetting));
     setTimeout(() => setIsActiveOptionModal(false), 600);

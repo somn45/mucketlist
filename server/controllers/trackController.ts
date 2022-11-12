@@ -9,7 +9,10 @@ import {
 import SpotifyWebApi from 'spotify-web-api-node';
 import { db } from '../firebase';
 import fetch from 'node-fetch';
-import isArrayEmpty from '../utils/isArrayEmpty';
+import {
+  searchTrackToArtists,
+  searchTrackToGenres,
+} from '../utils/addRecommendTrack';
 
 interface addTrackControllerBody {
   track: {
@@ -146,4 +149,31 @@ export const addTrackPlayerQueue = async (
   );
   console.log(response);
   return res.sendStatus(200);
+};
+
+export const retrieveTrack = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const artist = req.body.artist as string;
+  const genres = req.body.genres as string;
+  const artistOffset = req.body.artistOffset as number;
+  const genresOffset = req.body.genresOfset as number;
+  const accessToken = req.body.accessToken as string;
+  const randomNumber = Math.floor(Math.random() * 2);
+  console.log(randomNumber);
+  try {
+    const searchResult =
+      randomNumber === 0
+        ? await searchTrackToArtists(artist, artistOffset, accessToken)
+        : await searchTrackToGenres(genres, genresOffset, accessToken);
+    console.log(searchResult?.query);
+    if (!searchResult) return;
+    return res.status(200).json({
+      track: searchResult.track,
+      query: searchResult.query,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import axios from 'axios';
 import { connect, useSelector } from 'react-redux';
 
 import getTokens from '../../../utils/functions/getTokens';
-import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 import GenreModalTitle from './Title/GenreModalTitle';
 import { TrackState } from '../TrackList/TrackList';
 import GenreSelectionTab from './GenreSelectionTab/GenreSelectionTab';
 import {
   activeOptions,
+  clearGenres,
   clearSettings,
   createTracks,
   RootState,
@@ -18,7 +18,6 @@ import GenreModalForm from './Form/GenreModalForm';
 import { Modal } from '../../../utils/styles/Modal';
 import styled, { css, keyframes } from 'styled-components';
 import { useAppDispatch } from '../../../store/store';
-import { getSpotifyGenreList } from '../../../store/reducers/thunk/genres';
 
 interface GenreModalStates {
   tracks: TrackState[];
@@ -69,6 +68,10 @@ const GenreModalWrap = styled(Modal)<{ isActive: boolean }>`
 function GenreModal({ genres, isActive, selectedGenres }: GenreModalProps) {
   const dispatch = useAppDispatch();
   const loading = useSelector((state: RootState) => state.genres.loading);
+
+  useEffect(() => {
+    dispatch(clearGenres());
+  }, []);
 
   const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();

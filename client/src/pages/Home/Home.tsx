@@ -23,8 +23,8 @@ const HomeSection = styled.section`
   padding-top: 40px;
   display: grid;
   gap: 6px;
-  grid-template-columns: repeat(4, 64px);
-  grid-template-rows: repeat(8, 64px);
+  grid-template-columns: repeat(5, 48px);
+  grid-template-rows: repeat(12, 48px);
 `;
 
 const cookies = new Cookies();
@@ -53,7 +53,6 @@ function Home() {
   useEffect(() => {
     if (statusMessage) setHomeStatusMessage(statusMessage);
   }, [statusMessage]);
-  console.log('test');
 
   return (
     <>
@@ -70,6 +69,7 @@ function Home() {
           <TrackList />
           {!isArrayEmpty(tracks) && <WebPlayback />}
         </HomeSection>
+        h
       </Main>
     </>
   );

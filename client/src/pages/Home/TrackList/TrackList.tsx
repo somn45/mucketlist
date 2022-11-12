@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import TempTrack from '../../../components/TempTrack';
+import Track from '../../../components/Track';
 import { RootState } from '../../../store/reducers/rootReducer';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 
@@ -52,7 +52,7 @@ function TrackList() {
     <>
       {!isArrayEmpty(tracks) &&
         tracks.map((track) => (
-          <TempTrack
+          <Track
             key={track.id}
             track={track}
             playingTrack={tracks[playingPosition].name}
