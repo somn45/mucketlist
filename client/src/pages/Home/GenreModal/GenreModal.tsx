@@ -84,7 +84,7 @@ function GenreModal({ genres, isActive, selectedGenres }: GenreModalProps) {
 
     dispatch(createTracks(response.data.tracks));
     dispatch(clearSettings(''));
-    setTimeout(() => dispatch(activeOptions('')), 600);
+    setTimeout(() => dispatch(activeOptions()), 600);
   };
 
   return (

@@ -44,7 +44,7 @@ const persistConfig = {
 export const { addAccessToken } = accessToken.actions;
 export const { addFirebaseUidToken, getFirebaseUidToken } =
   firebaseUidToken.actions;
-export const { activeGenres, activeOptions, inactiveAll } =
+export const { activeGenres, activeOptions, activeHandBook, inactiveAll } =
   activeComponent.actions;
 export const { clearSpotifyGenreList } = genres.actions;
 export const { addGenre, removeGenre, clearGenres } = selectedGenres.actions;

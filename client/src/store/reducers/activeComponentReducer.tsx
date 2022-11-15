@@ -3,28 +3,39 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   genres: false,
   options: false,
+  handBook: false,
 };
 
 const activeComponent = createSlice({
   name: 'activeComponentReducer',
   initialState,
   reducers: {
-    activeGenres: (state, action) => {
+    activeGenres: () => {
       return {
         genres: true,
         options: false,
+        handBook: false,
       };
     },
-    activeOptions: (state, action) => {
+    activeOptions: () => {
       return {
         genres: false,
         options: true,
+        handBook: false,
       };
     },
-    inactiveAll: (state, action) => {
+    activeHandBook: () => {
       return {
         genres: false,
         options: false,
+        handBook: true,
+      };
+    },
+    inactiveAll: () => {
+      return {
+        genres: false,
+        options: false,
+        handBook: false,
       };
     },
   },

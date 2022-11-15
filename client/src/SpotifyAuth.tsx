@@ -76,7 +76,7 @@ function SpotifyAuth({ tracks }: ITracks) {
       }
     );
     if (isArrayEmpty(tracks)) {
-      dispatch(activeGenres(''));
+      dispatch(activeGenres());
     }
   };
   return <></>;

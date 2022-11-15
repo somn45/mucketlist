@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import styled, { css, keyframes } from 'styled-components';
 import {
+  activeHandBook,
   addSettings,
   inactiveAll,
   sortByPopularity,
@@ -17,12 +18,14 @@ import OptionModalItem from './InputItem/OptionModalItem';
 import OptionModalSubmit from './Submit/OptionModalSubmit';
 import OptionModalTitle from './Title/OptionModalTitle';
 import { Modal } from '../../../utils/styles/Modal';
+import { Cookies } from 'react-cookie';
 
 interface OptionModalState {
   tracks: TrackState[];
   activeComponent: {
     genres: boolean;
     options: boolean;
+    handBook: boolean;
   };
 }
 
@@ -31,6 +34,7 @@ interface OptionModalProps {
   isActive: {
     genres: boolean;
     options: boolean;
+    handBook: boolean;
   };
 }
 
@@ -61,6 +65,8 @@ const OpenModalWrap = styled(Modal)<{ isActive: boolean }>`
         `};
 `;
 
+const cookies = new Cookies();
+
 function OptionModal({ tracks, isActive }: OptionModalProps) {
   const dispatch = useDispatch();
   const [selectedSetting, setSelectedSetting] = useState('');
@@ -82,9 +88,10 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
     }
     dispatch(addSettings(selectedSetting));
     setTimeout(() => setIsActiveOptionModal(false), 600);
-    dispatch(inactiveAll(''));
-    dispatch(updateStatusMessage('트랙 검색이 완료되었습니다.'));
-  };
+    if (cookies.get('newUserHandBook')) dispatch(activeHandBook());
+    else dispatch(inactiveAll());
+    dispatch(updateStatusMessage('트랙 검색이 완료되었습니다.')); 
+  }
   return (
     <OpenModalWrap isActive={isActiveOptionModal}>
       <OptionModalForm>

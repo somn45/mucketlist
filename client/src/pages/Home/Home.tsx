@@ -14,6 +14,7 @@ import StatusMessage from '../../components/StatusMessage';
 import { RootState } from '../../store/reducers/rootReducer';
 import { useAppDispatch } from '../../store/store';
 import { getSpotifyGenreList } from '../../store/reducers/thunk/genres';
+import HandBookModal from './HandBookModal/HandBookModal';
 
 const Main = styled.main`
   margin-top: 80px;
@@ -39,6 +40,9 @@ function Home() {
   const isActiveOptionModal = useSelector(
     (state: RootState) => state.activeComponent.options
   );
+  const isActiveHandBook = useSelector(
+    (state: RootState) => state.activeComponent.handBook
+  );
   const tracks = useSelector((state: RootState) => state.tracks);
   const statusMessage = useSelector((state: RootState) => state.statusMessage);
   const genres = useSelector((state: RootState) => state.genres.genres);
@@ -63,13 +67,13 @@ function Home() {
         <section>
           {isActiveGenreModal && <GenreModal genres={genres} />}
           {isActiveOptionModal && <OptionModal />}
+          {isActiveHandBook && <HandBookModal />}
         </section>
         <HomeSection>
           <AddCustomTrack />
           <TrackList />
           {!isArrayEmpty(tracks) && <WebPlayback />}
         </HomeSection>
-        h
       </Main>
     </>
   );

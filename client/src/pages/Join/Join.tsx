@@ -9,12 +9,14 @@ import LoginLink from './Link/LoginLink';
 import JoinForm from './Form/JoinForm';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
 import styled from 'styled-components';
+import { Cookies } from 'react-cookie';
 
 const AccountSection = styled.section`
   margin-top: 250px;
 `;
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
+const cookies = new Cookies();
 
 function Join() {
   const navigate = useNavigate();
@@ -31,6 +33,7 @@ function Join() {
         email,
         password,
       });
+      cookies.set('newUserHandBook', email);
       navigate('/login', {
         state: {
           joinSuccessMsg: '회원가입 완료',
