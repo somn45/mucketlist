@@ -42,6 +42,11 @@ const TrackName = styled.span`
   font-weight: 600;
 `;
 
+const TrackDeleteButton = styled.button`
+  color: #ff5252;
+  font-weight: 600;
+`;
+
 const TrackGenreList = styled.div`
   display: inline;
 `;
@@ -76,16 +81,18 @@ function CustomTrackItem({ track }: CustomTrackItemProps) {
         <TrackInfo>
           <div>
             <TrackName>{track.name}</TrackName>
-            <button onClick={(e) => handleDeleteCustomTrack(e, track.id)}>
+            <TrackDeleteButton
+              onClick={(e) => handleDeleteCustomTrack(e, track.id)}
+            >
               X
-            </button>
+            </TrackDeleteButton>
           </div>
           <span>{`아티스트 ${track.artists}`}</span>
           <span>{`발매일 ${track.release_date}`}</span>
         </TrackInfo>
       </TrackColumn>
       <TrackGenreList>
-        {track.genres.map((genre) => (
+        {track.genres.slice(0, 4).map((genre) => (
           <CustomTrackGenre key={genre} genre={genre} />
         ))}
       </TrackGenreList>

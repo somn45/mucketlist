@@ -1,3 +1,4 @@
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import { DivProps } from '../../../../utils/types/atomTypes';
 
@@ -9,12 +10,29 @@ const AddCustomTrackWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const MobileAddCustomTrackWrap = styled(AddCustomTrackWrap)`
   position: fixed;
   right: 5px;
   bottom: 130px;
 `;
+
+const TabletListAddCustomTrackWrap = styled(AddCustomTrackWrap)`
+  position: absolute;
+  right: 0;
+  bottom: -60px;
+`;
+
 function Wrap({ children }: DivProps) {
-  return <AddCustomTrackWrap>{children}</AddCustomTrackWrap>;
+  const isMobile = useMediaQuery({
+    query: '(max-width: 767px)',
+  });
+  return isMobile ? (
+    <MobileAddCustomTrackWrap>{children}</MobileAddCustomTrackWrap>
+  ) : (
+    <TabletListAddCustomTrackWrap>{children}</TabletListAddCustomTrackWrap>
+  );
 }
 
 export default Wrap;

@@ -16,14 +16,17 @@ const AnimationStatusBar = keyframes`
 `;
 
 const StatusMessageStyle = styled.span`
+  width: 100%;
   padding: 10px;
   border-radius: 15px;
   font-weight: 600;
   text-align: center;
   white-space: nowrap;
+  align-self: center;
   position: fixed;
+  left: 0px;
   top: 20px;
-  animation: ${AnimationStatusBar} 8s cubic-bezier(0.1, 0.5, 0.5, 1) forwards;
+  animation: ${AnimationStatusBar} 3s cubic-bezier(0.1, 0.5, 0.5, 1) forwards;
 `;
 
 function StatusMessage({ text }: SpanProps) {

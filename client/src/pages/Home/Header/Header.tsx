@@ -19,6 +19,7 @@ const HeaderTab = styled.header`
   background-color: #20b2aa;
   position: fixed;
   left: 0;
+  z-index: 1;
   nav,
   MenuList {
     height: 100%;

@@ -1,26 +1,21 @@
-import styled from 'styled-components';
 import { ButtonProps } from '../../../../utils/types/atomTypes';
 import Icon from '../../../../components/Icon';
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
-
-const MenuItem = styled.li`
-  * {
-    width: 20px;
-    height: 20px;
-  }
-  & > * {
-    box-sizing: content-box;
-    padding: 5px;
-  }
-`;
+import { useMediaQuery } from 'react-responsive';
+import HeaderMenuText from '../../../../utils/styles/ItemStyle/HeaderMenuText';
+import HeaderMenuItem from '../../../../utils/styles/ItemStyle/HeaderMenuItem';
 
 function ClearTracks({ onClick }: Omit<ButtonProps, 'ButtonStyle' | 'value'>) {
+  const isTablet = useMediaQuery({
+    query: '(min-width: 768px)',
+  });
   return (
-    <MenuItem>
+    <HeaderMenuItem>
       <button onClick={onClick}>
         <Icon icon={faRotateRight} />
+        {isTablet && <HeaderMenuText>트랙 초기화</HeaderMenuText>}
       </button>
-    </MenuItem>
+    </HeaderMenuItem>
   );
 }
 

@@ -55,12 +55,7 @@ function AddCustomTrack() {
       firebaseUid: firebaseUid,
     });
     if (response.data.errorMsg) console.log(response.data.errorMsg);
-    else
-      dispatch(
-        updateStatusMessage(
-          `${track.name}이 찜한 트랙 리스트에 추가되었습니다.`
-        )
-      );
+    else dispatch(updateStatusMessage(`${track.name} 찜한 트랙 리스트 추가`));
     addNewTrack(dibsTrack);
   };
 

@@ -15,17 +15,34 @@ import { RootState } from '../../store/reducers/rootReducer';
 import { useAppDispatch } from '../../store/store';
 import { getSpotifyGenreList } from '../../store/reducers/thunk/genres';
 import HandBookModal from './HandBookModal/HandBookModal';
+import { useMediaQuery } from 'react-responsive';
 
 const Main = styled.main`
   margin-top: 80px;
+  display: flex;
+  justify-content: center;
 `;
 
 const HomeSection = styled.section`
   padding-top: 40px;
   display: grid;
   gap: 6px;
+  position: relative;
+`;
+
+const HomeMobileSection = styled(HomeSection)`
   grid-template-columns: repeat(5, 48px);
-  grid-template-rows: repeat(12, 48px);
+  grid-template-rows: repeat(8, 48px);
+`;
+
+const HomeTabletSection = styled(HomeSection)`
+  grid-template-columns: repeat(7, 64px);
+  grid-template-rows: repeat(9, 64px);
+`;
+
+const HomeDesktopSection = styled(HomeSection)`
+  grid-template-columns: repeat(10, 64px);
+  grid-template-rows: repeat(10, 64px);
 `;
 
 const cookies = new Cookies();
@@ -49,6 +66,12 @@ function Home() {
   const customTracks = useSelector(
     (state: RootState) => state.customTracks.tracks
   );
+  const isMobile = useMediaQuery({
+    query: '(max-width: 767px)',
+  });
+  const isTablet = useMediaQuery({
+    query: '(max-width: 1023px)',
+  });
 
   useEffect(() => {
     if (!cookies.get('firebaseUid')) navigate('/login');
@@ -57,6 +80,13 @@ function Home() {
   useEffect(() => {
     if (statusMessage) setHomeStatusMessage(statusMessage);
   }, [statusMessage]);
+
+  const HomeSectionContent = (
+    <>
+      <AddCustomTrack />
+      <TrackList />
+    </>
+  );
 
   return (
     <>
@@ -69,11 +99,14 @@ function Home() {
           {isActiveOptionModal && <OptionModal />}
           {isActiveHandBook && <HandBookModal />}
         </section>
-        <HomeSection>
-          <AddCustomTrack />
-          <TrackList />
-          {!isArrayEmpty(tracks) && <WebPlayback />}
-        </HomeSection>
+        {isMobile ? (
+          <HomeMobileSection>{HomeSectionContent}</HomeMobileSection>
+        ) : isTablet ? (
+          <HomeTabletSection>{HomeSectionContent}</HomeTabletSection>
+        ) : (
+          <HomeDesktopSection>{HomeSectionContent}</HomeDesktopSection>
+        )}
+        {!isArrayEmpty(tracks) && <WebPlayback />}
       </Main>
     </>
   );

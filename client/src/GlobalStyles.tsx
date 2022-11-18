@@ -52,7 +52,7 @@ table {
 	border-spacing: 0;
 }
 section {
-  width: 370px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 	justify-content: center;

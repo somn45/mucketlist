@@ -10,6 +10,7 @@ import { Modal } from '../../utils/styles/Modal';
 import { useAppDispatch } from '../../store/store';
 import { getCustomTracks } from '../../store/reducers/thunk/customTracks';
 import isArrayEmpty from '../../utils/functions/isArrayEmpty';
+import { useMediaQuery } from 'react-responsive';
 
 export interface ICustomPlayList {
   name: string;
@@ -28,6 +29,7 @@ interface IOutletContext {
 const Wrap = styled(Modal)`
   padding: 30px 10px 0;
   color: white;
+  overflow: auto;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
@@ -46,12 +48,34 @@ const CustomTrackList = styled.ul`
   flex-direction: column;
 `;
 
+const CustomTrackTwoColumnsList = styled.ul`
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(auto-fill, 1fr);
+  gap: 10px;
+`;
+
+const CustomTrackThreeColumnsList = styled.ul`
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(auto-fill, 1fr);
+  gap: 10px;
+`;
+
 const cookies = new Cookies();
 
 function CustomPlayList() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { customTracks } = useOutletContext<IOutletContext>();
+  const isMobile = useMediaQuery({
+    query: '(max-width: 767px)',
+  });
+  const isWideScreen = useMediaQuery({
+    query: '(min-width: 1440px)',
+  });
 
   useEffect(() => {
     if (!isArrayEmpty(customTracks)) return;
@@ -62,19 +86,29 @@ function CustomPlayList() {
     const firebaseUid = cookies.get('firebaseUid');
     dispatch(getCustomTracks(firebaseUid));
   };
+
+  const CustomTrackItemMaps = customTracks
+    ? customTracks.map((track: ICustomPlayList) => (
+        <CustomTrackItem key={track.id} track={track} />
+      ))
+    : null;
   return (
     <Wrap>
       <CustomTrackHeader>
         <CustomPlayListTitle text="찜한 플레이리스트" />
         <CloseButton value="X" onClick={() => navigate('/')} />
       </CustomTrackHeader>
-      <CustomTrackList>
-        {customTracks
-          ? customTracks.map((track: ICustomPlayList) => (
-              <CustomTrackItem key={track.id} track={track} />
-            ))
-          : null}
-      </CustomTrackList>
+      {isMobile ? (
+        <CustomTrackList>{CustomTrackItemMaps}</CustomTrackList>
+      ) : isWideScreen ? (
+        <CustomTrackThreeColumnsList>
+          {CustomTrackItemMaps}
+        </CustomTrackThreeColumnsList>
+      ) : (
+        <CustomTrackTwoColumnsList>
+          {CustomTrackItemMaps}
+        </CustomTrackTwoColumnsList>
+      )}
     </Wrap>
   );
 }

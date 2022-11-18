@@ -2,25 +2,21 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import { ButtonProps } from '../../../../utils/types/atomTypes';
 import Icon from '../../../../components/Icon';
-
-const MenuItem = styled.li`
-  * {
-    width: 20px;
-    height: 20px;
-  }
-  & > * {
-    box-sizing: content-box;
-    padding: 5px;
-  }
-`;
+import HeaderMenuItem from '../../../../utils/styles/ItemStyle/HeaderMenuItem';
+import HeaderMenuText from '../../../../utils/styles/ItemStyle/HeaderMenuText';
+import { useMediaQuery } from 'react-responsive';
 
 function Logout({ onClick }: Omit<ButtonProps, 'ButtonStyle' | 'value'>) {
+  const isTablet = useMediaQuery({
+    query: '(min-width: 768px)',
+  });
   return (
-    <MenuItem>
+    <HeaderMenuItem>
       <button onClick={onClick}>
         <Icon icon={faRightFromBracket} />
+        {isTablet && <HeaderMenuText>로그아웃</HeaderMenuText>}
       </button>
-    </MenuItem>
+    </HeaderMenuItem>
   );
 }
 

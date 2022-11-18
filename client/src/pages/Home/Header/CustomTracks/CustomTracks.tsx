@@ -1,29 +1,26 @@
 import { faList } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 import Icon from '../../../../components/Icon';
-
-const MenuItem = styled.li`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  * {
-    width: 20px;
-    height: 20px;
-  }
-  & > * {
-    box-sizing: content-box;
-    padding: 5px;
-  }
-`;
+import HeaderMenuText from '../../../../utils/styles/ItemStyle/HeaderMenuText';
+import HeaderMenuItem from '../../../../utils/styles/ItemStyle/HeaderMenuItem';
 
 function CustomTracks() {
+  const navigate = useNavigate();
+  const isTablet = useMediaQuery({
+    query: '(min-width: 768px)',
+  });
+
+  const moveCustomTrackListModal = () => {
+    navigate('/tracks/custom');
+  };
   return (
-    <MenuItem>
-      <Link to="/tracks/custom">
+    <HeaderMenuItem>
+      <button onClick={moveCustomTrackListModal}>
         <Icon icon={faList} />
-      </Link>
-    </MenuItem>
+        {isTablet && <HeaderMenuText>찜한 트랙 목록</HeaderMenuText>}
+      </button>
+    </HeaderMenuItem>
   );
 }
 

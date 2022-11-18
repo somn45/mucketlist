@@ -1,28 +1,24 @@
 import { faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import Icon from '../../../../components/Icon';
+import HeaderMenuItem from '../../../../utils/styles/ItemStyle/HeaderMenuItem';
+import HeaderMenuText from '../../../../utils/styles/ItemStyle/HeaderMenuText';
 import { ButtonProps } from '../../../../utils/types/atomTypes';
-
-const MenuItem = styled.li`
-  * {
-    width: 20px;
-    height: 20px;
-  }
-  & > * {
-    box-sizing: content-box;
-    padding: 5px;
-  }
-`;
 
 function ActivateHandBook({
   onClick,
 }: Omit<ButtonProps, 'ButtonStyle' | 'value'>) {
+  const isTablet = useMediaQuery({
+    query: '(min-width: 768px)',
+  });
   return (
-    <MenuItem>
+    <HeaderMenuItem>
       <button onClick={onClick}>
         <Icon icon={faQuestion} />
+        {isTablet && <HeaderMenuText>도움말</HeaderMenuText>}
       </button>
-    </MenuItem>
+    </HeaderMenuItem>
   );
 }
 
