@@ -1,10 +1,9 @@
+import styled from 'styled-components';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styled from 'styled-components';
+import HandBookFrame from '../../../../utils/styles/ComponentStyle/Modal/HandBookFrame';
 
-const HandBookAddCustomTrackWrap = styled.div`
-  width: 260px;
-  position: absolute;
+const HandBookAddCustomTrackWrap = styled(HandBookFrame)`
   right: 60px;
   bottom: 130px;
 `;

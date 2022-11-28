@@ -1,8 +1,7 @@
 import styled from 'styled-components';
+import HandBookFrame from '../../../../utils/styles/ComponentStyle/Modal/HandBookFrame';
 
-const HandBookClearTracksWrap = styled.div`
-  width: 260px;
-  position: absolute;
+const HandBookClearTracksWrap = styled(HandBookFrame)`
   top: 80px;
   align-self: center;
 `;

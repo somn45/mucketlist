@@ -13,7 +13,6 @@ function WebPlayback() {
   const [player, setPlayer] = useState<Spotify.Player | null>(null);
   const [deviceId, setDeviceId] = useState('');
   useEffect(() => {
-    console.log('web playback');
     const script = document.createElement('script');
     script.src = 'https://sdk.scdn.co/spotify-player.js';
     script.async = true;

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { SubmitProps } from '../../../utils/types/atomTypes';
-import { InputStyle } from '../InputItem/InputItem';
+import AccountInputFrame from '../../../utils/styles/ComponentStyle/AccoutForm/AccountInputFrame';
 
-const SubmitStyle = styled(InputStyle)`
+const SubmitStyle = styled(AccountInputFrame)`
   padding: 0;
   background-color: #20b2aa;
   border: 1px solid #20b2aa;

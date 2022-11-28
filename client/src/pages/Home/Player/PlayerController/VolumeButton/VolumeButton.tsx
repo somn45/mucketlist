@@ -1,6 +1,7 @@
 import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import Icon from '../../../../../components/Icon';
+import { PlayerType } from '../../../../../PlayerContext';
 import {
   RootState,
   toggleVolume,
@@ -12,21 +13,24 @@ interface VolumeButtonProps {
 }
 
 function VolumeButton({ player }: VolumeButtonProps) {
-  const volume = useSelector((state: RootState) => state.volume.volume);
-  const prevVolume = useSelector((state: RootState) => state.volume.prevVolume);
+  const { volume, prevVolume } = useSelector(
+    (state: RootState) => state.volume
+  );
   const dispatch = useAppDispatch();
 
   const handleToggleVolume = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!player) return;
-    if (volume === 0) {
-      await player.setVolume(prevVolume);
-      dispatch(toggleVolume());
-    } else {
-      dispatch(toggleVolume());
-      await player.setVolume(0);
-    }
+    volume === 0 ? convertUnmuteMode(player) : convertMuteMode(player);
+    dispatch(toggleVolume());
   };
+
+  const convertUnmuteMode = async (player: PlayerType) =>
+    await player?.setVolume(prevVolume);
+
+  const convertMuteMode = async (player: PlayerType) =>
+    await player?.setVolume(0);
+
   return (
     <button onClick={handleToggleVolume}>
       <Icon icon={faVolumeUp} />

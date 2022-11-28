@@ -1,13 +1,17 @@
 import { useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Cookies } from 'react-cookie';
 import { connect, useDispatch } from 'react-redux';
 import { activeGenres } from './store/reducers/rootReducer';
 import isArrayEmpty from './utils/functions/isArrayEmpty';
 import { ITracks } from '../src/pages/Home/TrackList/TrackList';
+import getToken from './utils/functions/getToken';
 interface TAccessToken {
   setTokenRefresh: number;
 }
+
+const ACCESS_TOKEN = getToken('accessToken');
+const FIREBASE_UID = getToken('firebaseUid');
 
 function SpotifyAuth({ tracks }: ITracks) {
   const code = new URLSearchParams(window.location.search).get('code');
@@ -26,44 +30,29 @@ function SpotifyAuth({ tracks }: ITracks) {
         'http://localhost:3001/users/spotify/auth',
         {
           code: code,
-          fuid: cookies.get('firebaseUid'),
+          fuid: FIREBASE_UID,
         }
       );
       const afterFifty = Date.now() + 3300 * 1000;
-      cookies.set(
-        'accessToken',
-        {
-          accessToken: response.data.accessToken,
-          setTokenRefresh: afterFifty,
-        },
-        {
-          maxAge: response.data.expiresIn,
-          path: '/',
-        }
-      );
+      createAccessToken(response, afterFifty);
       window.location.href = '/';
     } catch (error) {
       console.log(error);
     }
   };
   const filteringToken = () => {
-    if (!cookies.get('firebaseUid')) return;
-    const accessToken: TAccessToken = cookies.get('accessToken');
-    if (!accessToken) return refreshAccessToken();
-    else if (!accessToken.setTokenRefresh) return refreshAccessToken();
-    const now = Date.now();
-    if (accessToken.setTokenRefresh < now) return;
-    else return refreshAccessToken();
+    if (!FIREBASE_UID) return;
+    !ACCESS_TOKEN && refreshAccessToken();
   };
   const refreshAccessToken = async (): Promise<void> => {
-    const firebaseUid = cookies.get('firebaseUid');
     const response = await axios.post(
       'http://localhost:3001/users/spotify/refresh',
       {
-        firebaseUid: firebaseUid,
+        firebaseUid: FIREBASE_UID,
       }
     );
     const afterFifty = Date.now() + 3300 * 1000;
+    createAccessToken(response, afterFifty);
     cookies.set(
       'accessToken',
       {
@@ -78,6 +67,23 @@ function SpotifyAuth({ tracks }: ITracks) {
     if (isArrayEmpty(tracks)) {
       dispatch(activeGenres());
     }
+  };
+
+  const createAccessToken = (
+    res: AxiosResponse<any, any>,
+    afterFifty: number
+  ) => {
+    cookies.set(
+      'accessToken',
+      {
+        accessToken: res.data.accessToken,
+        setTokenRefresh: afterFifty,
+      },
+      {
+        maxAge: res.data.expiresIn,
+        path: '/',
+      }
+    );
   };
   return <></>;
 }

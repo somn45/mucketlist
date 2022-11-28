@@ -1,10 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import accessToken from '../reducers/accessTokenReducer';
-import firebaseUidToken from '../reducers/firebaseUidToken';
 import tracks from '../reducers/tracksReducer';
-import settings from '../reducers/settingsReducer';
 import activeComponent from './activeComponentReducer';
 import volume from './volumeReducer';
 import statusMessage from './statusMessageReducer';
@@ -18,14 +15,11 @@ import customTracks from './thunk/customTracks';
 import recommendTrack from './thunk/recommendTrack';
 
 const rootReducer = combineReducers({
-  accessToken: accessToken.reducer,
-  firebaseUidToken: firebaseUidToken.reducer,
   activeComponent: activeComponent.reducer,
   genres: genres.reducer,
   selectedGenres: selectedGenres.reducer,
   tracks: tracks.reducer,
   recommendTrack: recommendTrack.reducer,
-  settings: settings.reducer,
   customTracks: customTracks.reducer,
   isPlay: isPlay.reducer,
   volume: volume.reducer,
@@ -41,9 +35,6 @@ const persistConfig = {
   whitelist: ['tracks', 'selectedGenres'],
 };
 
-export const { addAccessToken } = accessToken.actions;
-export const { addFirebaseUidToken, getFirebaseUidToken } =
-  firebaseUidToken.actions;
 export const { activeGenres, activeOptions, activeHandBook, inactiveAll } =
   activeComponent.actions;
 export const { clearSpotifyGenreList } = genres.actions;
@@ -56,7 +47,6 @@ export const {
   sortByRandom,
   clearTracks,
 } = tracks.actions;
-export const { addSettings, clearSettings } = settings.actions;
 export const { deleteCustomTrack } = customTracks.actions;
 export const { onChangeVolume, toggleVolume } = volume.actions;
 export const { updatePlayMode } = playMode.actions;

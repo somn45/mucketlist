@@ -12,6 +12,7 @@ interface PrevTrackButton {
 
 function PrevTrackButton({ player }: PrevTrackButton) {
   const dispatch = useAppDispatch();
+
   const onPreviousTrack = () => {
     if (!player) return;
     dispatch(clearTrackProgress());

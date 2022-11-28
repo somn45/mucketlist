@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SubmitProps } from '../../../utils/types/atomTypes';
-import { InputStyle } from '../../Join/InputItem/InputItem';
+import AccountInputFrame from '../../../utils/styles/ComponentStyle/AccoutForm/AccountInputFrame';
 
-const SubmitStyle = styled(InputStyle)`
+const Submit = styled(AccountInputFrame)`
   padding: 0;
   background-color: #20b2aa;
   border: 1px solid #20b2aa;
@@ -19,7 +19,7 @@ const SubmitStyle = styled(InputStyle)`
 function LoginSubmit({ onClick }: Omit<SubmitProps, 'value' | 'SubmitStyle'>) {
   return (
     <>
-      <SubmitStyle type="submit" value="로그인" onClick={onClick} />
+      <Submit type="submit" value="로그인" onClick={onClick} />
     </>
   );
 }

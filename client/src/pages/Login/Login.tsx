@@ -32,6 +32,16 @@ const AccountSection = styled.section`
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
 const cookies = new Cookies();
+const SPOTIFY_AUTH_URL_CONFIG = {
+  response_type: 'code',
+  client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID
+    ? process.env.REACT_APP_SPOTIFY_CLIENT_ID
+    : '',
+  redirect_uri: 'http://localhost:3000',
+  scope:
+    'user-read-private user-read-email streaming user-read-playback-state, user-modify-playback-state',
+  state: '1SMWKN29Nksmwogl49SWM238FM1879Smx',
+};
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -55,19 +65,7 @@ function Login() {
     cookies.set('firebaseUid', response?.data.firebaseUid, {
       maxAge: 3600 * 7,
     });
-    const baseUrl = 'https://accounts.spotify.com/authorize';
-    const urlConfig = {
-      response_type: 'code',
-      client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID
-        ? process.env.REACT_APP_SPOTIFY_CLIENT_ID
-        : '',
-      redirect_uri: 'http://localhost:3000',
-      scope:
-        'user-read-private user-read-email streaming user-read-playback-state, user-modify-playback-state',
-      state: '1SMWKN29Nksmwogl49SWM238FM1879Smx',
-    };
-    const option = new URLSearchParams(urlConfig).toString();
-    const finalUrl = `${baseUrl}?${option}`;
+    const finalUrl = combineSpotifyAuthUrl();
     window.location.href = finalUrl;
   };
 
@@ -75,6 +73,12 @@ function Login() {
     const result = validateForm({ email, password }, 'login');
     if (result !== 'ok') return setErrorMsg(result);
     return 'ok';
+  };
+
+  const combineSpotifyAuthUrl = () => {
+    const baseUrl = 'https://accounts.spotify.com/authorize';
+    const option = new URLSearchParams(SPOTIFY_AUTH_URL_CONFIG).toString();
+    return `${baseUrl}?${option}`;
   };
 
   return (

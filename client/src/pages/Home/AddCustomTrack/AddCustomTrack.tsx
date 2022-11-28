@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
-import { Cookies } from 'react-cookie';
+import { useSelector } from 'react-redux';
 import AddCustomTrackButton from './AddCustomTrackButton/AddCustomTrackButton';
-import getTokens from '../../../utils/functions/getTokens';
+import getToken from '../../../utils/functions/getToken';
 import {
   addTrack,
   RootState,
@@ -12,47 +11,36 @@ import {
 import Wrap from './Wrap/AddCustomTrackWrap';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 import { getRecommendTrack } from '../../../store/reducers/thunk/recommendTrack';
-import { ICustomPlayList } from '../../CustomPlayList/CustomPlayList';
 import { useAppDispatch } from '../../../store/store';
+import { TrackState } from '../TrackList/TrackList';
 
-const cookies = new Cookies();
+const ACCESS_TOKEN = getToken('accessToken');
+const FIREBASE_UID = getToken('firebaseUid');
 
 function AddCustomTrack() {
   const tracks = useSelector((state: RootState) => state.tracks);
-  const playingPosition = useSelector(
-    (state: RootState) => state.playingPosition
-  );
-  const selectedGenres = useSelector(
-    (state: RootState) => state.selectedGenres
-  );
-  const recommendTrackState = useSelector(
-    (state: RootState) => state.recommendTrack
+  const { playingPosition, selectedGenres } = useSelector(
+    (state: RootState) => state
   );
   const recommendTrack = useSelector(
     (state: RootState) => state.recommendTrack.track
   );
   const dispatch = useAppDispatch();
-  console.log(recommendTrackState);
-  console.log(tracks.length);
+
+  useEffect(() => {
+    if (!recommendTrack) return;
+    checkDuplicatedTrack();
+  }, [recommendTrack]);
 
   const addCustomTrack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isArrayEmpty(tracks)) return;
     const track = tracks[playingPosition];
-    const dibsTrack = {
-      name: track.name,
-      id: track.id,
-      artists: track.artists.map((artist) => artist.name),
-      artistId: track.artists[0].id,
-      genres: selectedGenres,
-      release_date: track.album.release_date,
-      image: track.album.images[2].url,
-    };
-    const firebaseUid = cookies.get('firebaseUid');
+    const favoriteTrack = createFavoriteTrack(track);
     const response = await axios.post('http://localhost:3001/tracks/add', {
-      track: dibsTrack,
-      accessToken: getTokens(),
-      firebaseUid: firebaseUid,
+      track: favoriteTrack,
+      accessToken: ACCESS_TOKEN,
+      firebaseUid: FIREBASE_UID,
     });
     if (response.data.errorMsg) console.log(response.data.errorMsg);
     else
@@ -61,24 +49,26 @@ function AddCustomTrack() {
           `${track.name}이 찜한 트랙 리스트에 추가되었습니다.`
         )
       );
-    addNewTrack(dibsTrack);
+    dispatch(getRecommendTrack(favoriteTrack));
   };
 
-  const addNewTrack = (track: ICustomPlayList) => {
-    dispatch(getRecommendTrack(track));
-    filterDuplicatedTrack();
+  const createFavoriteTrack = (track: TrackState) => {
+    return {
+      name: track.name,
+      id: track.id,
+      artists: track.artists.map((artist) => artist.name),
+      artistId: track.artists[0].id,
+      genres: selectedGenres,
+      release_date: track.album.release_date,
+      image: track.album.images[2].url,
+    };
   };
 
-  const filterDuplicatedTrack = () => {
+  const checkDuplicatedTrack = () => {
     const duplicatedTrack = tracks.filter(
       (track) => track.id === recommendTrack?.id
     );
-    if (!recommendTrack) return;
-    if (duplicatedTrack.length > 0) {
-      return;
-    } else {
-      dispatch(addTrack(recommendTrack));
-    }
+    if (duplicatedTrack.length < 1) dispatch(addTrack(recommendTrack));
   };
 
   return (

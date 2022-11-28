@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios, { AxiosError } from 'axios';
 
-import { PlayerContext } from '../../../PlayerContext';
+import { PlayerContext, PlayerType } from '../../../PlayerContext';
 import {
   moveNextPosition,
   moveRandomPosition,
@@ -24,12 +24,11 @@ import PlayerTrackImage from './PlayerTrackImage/PlayerTrackImage';
 
 interface PlayProps {
   spotify_uri: string;
-  device_id: string;
   playerInstance: Spotify.Player;
 }
 
 interface PlayError extends PlayProps {
-  error: AxiosError;
+  error: unknown;
 }
 
 const PlayerColumn = styled.div`
@@ -45,13 +44,10 @@ function Player() {
   const [playingTrackImage, setPlayingTrackImage] = useState('');
   const [artist, setArtist] = useState('');
   const [retryCount, setRetryCount] = useState(0);
-  const progress = useSelector((state: RootState) => state.progress.value);
-  const tracks = useSelector((state: RootState) => state.tracks);
-  const playMode = useSelector((state: RootState) => state.playMode);
-  const playingPosition = useSelector(
-    (state: RootState) => state.playingPosition
+  const { tracks, playMode, playingPosition, isPlay } = useSelector(
+    (state: RootState) => state
   );
-  const isPlay = useSelector((state: RootState) => state.isPlay);
+  const progress = useSelector((state: RootState) => state.progress.value);
   const { player, deviceId } = useContext(PlayerContext);
 
   useEffect(() => {
@@ -66,14 +62,24 @@ function Player() {
   useEffect(() => {
     if (!isFinishTrackPlay) return;
     setIsFinishTrackPlay(false);
-    if (playMode === 'repeat') {
-      dispatch(updatePlayMode('repeat'));
-      onPlay(tracks[playingPosition].uri);
-    } else if (playMode === 'shuffle') {
-      dispatch(moveRandomPosition());
-      dispatch(updatePlayMode('shuffle'));
-    } else dispatch(moveNextPosition());
+    const playModeMap = new Map([
+      ['repeat', dispatchRepeatMode],
+      ['shuffle', dispatchShuffleMode],
+      ['normal', dispatchNormalMode],
+    ]);
+    playModeMap.get(playMode);
   }, [isFinishTrackPlay]);
+
+  const dispatchNormalMode = () => dispatch(moveNextPosition());
+
+  const dispatchRepeatMode = () => {
+    dispatch(updatePlayMode('repeat'));
+    prepareToPlay(tracks[playingPosition].uri);
+  };
+  const dispatchShuffleMode = () => {
+    dispatch(moveRandomPosition());
+    dispatch(updatePlayMode('shuffle'));
+  };
 
   const handleChangePlayingPosition = () => {
     if (isArrayEmpty(tracks)) return;
@@ -83,12 +89,12 @@ function Player() {
       (artist) => artist.name
     );
     setArtist(artistData.length < 2 ? artistData[0] : artistData.join(','));
-    onPlay(tracks[playingPosition].uri);
+    prepareToPlay(tracks[playingPosition].uri);
   };
 
   const detectFinishTrackPlay = (player: Spotify.Player) => {
+    if (!player) return;
     player.addListener('player_state_changed', async (state) => {
-      if (!player) return;
       console.log('Player state changed', state);
       console.log('Playing Track', state.track_window.current_track.name);
       if (state.duration <= state.position) {
@@ -98,8 +104,15 @@ function Player() {
     });
   };
 
-  const onPlay = (uri: string): void => {
+  const prepareToPlay = (uri: string): void => {
     if (!player) return;
+    progress === 0 || progress === undefined
+      ? play({
+          spotify_uri: uri,
+          playerInstance: player,
+        })
+      : resume(player);
+    /*
     if (progress === 0 || progress === undefined) {
       {
         play({
@@ -112,17 +125,18 @@ function Player() {
       player?.resume();
       console.log('resume');
     }
+    */
     dispatch(updatePlayState(true));
   };
 
-  const play = ({ spotify_uri, device_id, playerInstance }: PlayProps) => {
+  const play = ({ spotify_uri, playerInstance }: PlayProps) => {
     const {
       _options: { getOAuthToken },
     } = playerInstance;
     getOAuthToken(async () => {
       try {
         await axios.put(
-          `https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,
+          `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
           {
             uris: [spotify_uri],
           },
@@ -134,35 +148,31 @@ function Player() {
           }
         );
       } catch (error) {
-        if (error instanceof AxiosError)
-          handlePlayerStateError({
-            error,
-            spotify_uri,
-            device_id,
-            playerInstance,
-          });
-        else console.log(error);
+        handlePlayerStateError({ error, spotify_uri, playerInstance });
       }
     });
+  };
+
+  const resume = (player: PlayerType) => {
+    console.log('resume');
+    player?.resume();
   };
 
   const handlePlayerStateError = ({
     error,
     spotify_uri,
-    device_id,
     playerInstance,
   }: PlayError) => {
-    if (error.response?.status === 502 || error.response?.status === 404) {
-      setTimeout(
-        () => retryPlay({ spotify_uri, device_id, playerInstance }),
-        3000
-      );
-      setRetryCount((prevCount) => prevCount + 1);
-      dispatch(updateStatusMessage('트랙 재생을 재시도 중...'));
-    }
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 502 || error.response?.status === 404) {
+        setTimeout(() => retryPlay({ spotify_uri, playerInstance }), 3000);
+        setRetryCount((prevCount) => prevCount + 1);
+        dispatch(updateStatusMessage('트랙 재생을 재시도 중...'));
+      }
+    } else console.log(error);
   };
 
-  const retryPlay = ({ spotify_uri, device_id, playerInstance }: PlayProps) => {
+  const retryPlay = ({ spotify_uri, playerInstance }: PlayProps) => {
     console.log(retryCount);
     if (retryCount === 3) {
       setRetryCount(0);
@@ -172,7 +182,7 @@ function Player() {
         )
       );
     }
-    play({ spotify_uri, device_id, playerInstance });
+    play({ spotify_uri, playerInstance });
   };
 
   return (
@@ -183,7 +193,7 @@ function Player() {
       <PlayerColumn>
         <TrackName text={playingTrack} />
         <ArtistName text={artist} />
-        <PlayerController player={player} onPlay={onPlay} />
+        <PlayerController player={player} onPlay={prepareToPlay} />
       </PlayerColumn>
     </Wrap>
   );

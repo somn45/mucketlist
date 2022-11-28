@@ -48,6 +48,7 @@ function TrackList() {
     (state: RootState) => state.playingPosition
   );
   const tracks = useSelector((state: RootState) => state.tracks);
+  console.log(tracks.length);
   return (
     <>
       {!isArrayEmpty(tracks) &&

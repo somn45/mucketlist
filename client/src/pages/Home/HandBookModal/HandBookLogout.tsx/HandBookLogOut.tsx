@@ -1,8 +1,9 @@
 import { faTurnUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
+import HandBookFrame from '../../../../utils/styles/ComponentStyle/Modal/HandBookFrame';
 
-const HandBookLogOutWrap = styled.div`
+const HandBookLogOutWrap = styled(HandBookFrame)`
   width: 260px;
   position: absolute;
   right: 40px;
