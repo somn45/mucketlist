@@ -15,7 +15,6 @@ const ShuffleButton = styled.button<{ isShuffle: boolean }>`
 function ShuffleMode() {
   const playMode = useSelector((state: RootState) => state.playMode);
   const dispatch = useAppDispatch();
-
   const handleShuffleMode = async () =>
     playMode === 'normal'
       ? dispatch(updatePlayMode('shuffle'))

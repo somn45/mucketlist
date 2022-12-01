@@ -62,26 +62,26 @@ function Player() {
   useEffect(() => {
     if (!isFinishTrackPlay) return;
     setIsFinishTrackPlay(false);
-    const playModeMap = new Map([
-      ['repeat', dispatchRepeatMode],
-      ['shuffle', dispatchShuffleMode],
-      ['normal', dispatchNormalMode],
-    ]);
-    playModeMap.get(playMode);
+    const playModeObject = {
+      repeat: dispatchRepeatMode,
+      shuffle: dispatchShuffleMode,
+      normal: dispatchNormalMode,
+    };
+    console.log(playMode);
+    playModeObject[playMode]();
   }, [isFinishTrackPlay]);
-
   const dispatchNormalMode = () => dispatch(moveNextPosition());
 
   const dispatchRepeatMode = () => {
-    dispatch(updatePlayMode('repeat'));
     prepareToPlay(tracks[playingPosition].uri);
   };
   const dispatchShuffleMode = () => {
+    console.log('shuffle');
     dispatch(moveRandomPosition());
-    dispatch(updatePlayMode('shuffle'));
   };
 
   const handleChangePlayingPosition = () => {
+    console.log('player : ', playingPosition);
     if (isArrayEmpty(tracks)) return;
     setPlayingTrack(tracks[playingPosition].name);
     setPlayingTrackImage(tracks[playingPosition].album.images[2].url);

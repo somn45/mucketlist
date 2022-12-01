@@ -6,7 +6,6 @@ const cookies = new Cookies();
 
 const getToken = (key: string) => {
   const cookieToken: ICookieToken = cookies.get(key);
-  console.log(cookieToken);
   return cookieToken ? cookieToken : '';
 };
 
