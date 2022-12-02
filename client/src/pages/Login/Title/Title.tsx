@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const TitleStyle = styled.h1`
+const TitleContent = styled.h1`
   @font-face {
     font-family: 'Rubic';
     src: url('./static/fonts/RubikMarkerHatch.ttf') format('truetype');
@@ -14,7 +14,7 @@ const TitleStyle = styled.h1`
 `;
 
 function Title() {
-  return <TitleStyle>MucketList</TitleStyle>;
+  return <TitleContent>MucketList</TitleContent>;
 }
 
 export default React.memo(Title);

@@ -20,20 +20,15 @@ function TogglePlayButton({
   onPlay,
 }: Omit<TogglePlayButtonProps, 'onClick'>) {
   const dispatch = useAppDispatch();
-  const tracks = useSelector((state: RootState) => state.tracks);
-  const isPlay = useSelector((state: RootState) => state.isPlay);
-  const playingPosition = useSelector(
-    (state: RootState) => state.playingPosition
+  const { tracks, isPlay, playingPosition } = useSelector(
+    (state: RootState) => state
   );
-
   const onPause = async () => {
     if (!player) return;
     dispatch(getTrackProgress(player));
     player?.pause();
     dispatch(updatePlayState(false));
   };
-
-  //
 
   return (
     <button

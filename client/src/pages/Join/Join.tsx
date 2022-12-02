@@ -17,6 +17,7 @@ const AccountSection = styled.section`
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
 const cookies = new Cookies();
+const NEW_USER_HAND_BOOK = cookies.get('newUserHandBook');
 
 function Join() {
   const navigate = useNavigate();
@@ -40,11 +41,7 @@ function Join() {
         },
       });
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return setErrorMsg(error?.response?.data.errorMsg);
-      } else {
-        return console.log(error);
-      }
+      handleErrorJoin(error);
     }
   };
 
@@ -52,6 +49,14 @@ function Join() {
     const result = validateForm({ email, password }, 'login');
     if (result !== 'ok') return setErrorMsg(result);
     return 'ok';
+  };
+
+  const handleErrorJoin = (error: unknown) => {
+    if (error instanceof AxiosError) {
+      return setErrorMsg(error?.response?.data.errorMsg);
+    } else {
+      return console.log(error);
+    }
   };
   return (
     <AccountSection>

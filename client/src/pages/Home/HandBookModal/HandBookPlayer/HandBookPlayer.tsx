@@ -1,8 +1,9 @@
 import { faTurnDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
+import HandBookFrame from '../../../../utils/styles/ComponentStyle/Modal/HandBookFrame';
 
-const HandBookPlayerWrap = styled.div`
+const HandBookPlayerWrap = styled(HandBookFrame)`
   width: 260px;
   position: absolute;
   bottom: 120px;

@@ -161,13 +161,11 @@ export const retrieveTrack = async (
   const genresOffset = req.body.genresOfset as number;
   const accessToken = req.body.accessToken as string;
   const randomNumber = Math.floor(Math.random() * 2);
-  console.log(randomNumber);
   try {
     const searchResult =
       randomNumber === 0
         ? await searchTrackToArtists(artist, artistOffset, accessToken)
         : await searchTrackToGenres(genres, genresOffset, accessToken);
-    console.log(searchResult?.query);
     if (!searchResult) return;
     return res.status(200).json({
       track: searchResult.track,

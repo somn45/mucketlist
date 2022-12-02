@@ -1,15 +1,13 @@
 import { useEffect } from 'react';
 import axios from 'axios';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import getTokens from '../../../utils/functions/getTokens';
 import GenreModalTitle from './Title/GenreModalTitle';
-import { TrackState } from '../TrackList/TrackList';
 import GenreSelectionTab from './GenreSelectionTab/GenreSelectionTab';
 import {
   activeOptions,
   clearGenres,
-  clearSettings,
   createTracks,
   RootState,
 } from '../../../store/reducers/rootReducer';
@@ -19,23 +17,8 @@ import { Modal } from '../../../utils/styles/Modal';
 import styled, { css, keyframes } from 'styled-components';
 import { useAppDispatch } from '../../../store/store';
 
-interface GenreModalStates {
-  tracks: TrackState[];
-  activeComponent: {
-    genres: boolean;
-    options: boolean;
-  };
-  selectedGenres: string[];
-}
-
 interface GenreModalProps {
   genres: string[];
-  tracks: TrackState[];
-  isActive: {
-    genres: boolean;
-    options: boolean;
-  };
-  selectedGenres: string[];
 }
 
 const FadeIn = keyframes`
@@ -65,9 +48,16 @@ const GenreModalWrap = styled(Modal)<{ isActive: boolean }>`
         `};
 `;
 
-function GenreModal({ genres, isActive, selectedGenres }: GenreModalProps) {
+const SERVER_ENDPOINT = 'http://localhost:3001';
+const ACCESS_TOKEN = getTokens();
+
+function GenreModal({ genres }: GenreModalProps) {
   const dispatch = useAppDispatch();
-  const loading = useSelector((state: RootState) => state.genres.loading);
+  const {
+    selectedGenres,
+    genres: { loading },
+  } = useSelector((state: RootState) => state);
+  const isActive = useSelector((state: RootState) => state.activeComponent);
 
   useEffect(() => {
     dispatch(clearGenres());
@@ -75,15 +65,13 @@ function GenreModal({ genres, isActive, selectedGenres }: GenreModalProps) {
 
   const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const accessToken = getTokens();
     if (selectedGenres.length === 0) return;
-    const genres = JSON.stringify(selectedGenres);
     const response = await axios.get(
-      `http://localhost:3001/tracks/search?accessToken=${accessToken}&genre=${genres}`
+      `${SERVER_ENDPOINT}/tracks/search?accessToken=${ACCESS_TOKEN}&genre=${JSON.stringify(
+        selectedGenres
+      )}`
     );
-
     dispatch(createTracks(response.data.tracks));
-    dispatch(clearSettings(''));
     setTimeout(() => dispatch(activeOptions()), 600);
   };
 
@@ -98,12 +86,4 @@ function GenreModal({ genres, isActive, selectedGenres }: GenreModalProps) {
   );
 }
 
-function mapStateToProps(state: GenreModalStates) {
-  return {
-    tracks: state.tracks,
-    isActive: state.activeComponent,
-    selectedGenres: state.selectedGenres,
-  };
-}
-
-export default connect(mapStateToProps)(GenreModal);
+export default GenreModal;

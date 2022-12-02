@@ -19,7 +19,7 @@ const InputTab = styled.div`
   }
 `;
 
-const InputStyle = styled.input`
+const InputContent = styled.input`
   width: 100%;
   height: 40px;
   padding-left: 40px;
@@ -48,7 +48,7 @@ function InputItem({
 }: Omit<InputItemProps, 'InputStyle'>) {
   return (
     <InputTab>
-      <InputStyle
+      <InputContent
         type={type}
         value={value}
         onChange={(e) => setState(e.target.value)}

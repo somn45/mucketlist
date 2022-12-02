@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const FormFrame = styled.form`
+const ModalFormFrame = styled.form`
   width: 425px;
   height: 600px;
   padding: 0 20px;
@@ -15,3 +15,5 @@ export const FormFrame = styled.form`
     text-align: center;
   }
 `;
+
+export default ModalFormFrame;

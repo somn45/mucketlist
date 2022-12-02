@@ -16,9 +16,9 @@ function RepeatMode() {
   const playMode = useSelector((state: RootState) => state.playMode);
   const dispatch = useAppDispatch();
   const handleRepeatMode = () => {
-    dispatch(updatePlayMode('repeat'));
-    if (playMode === 'normal') dispatch(updatePlayMode('repeat'));
-    else dispatch(updatePlayMode('normal'));
+    playMode === 'normal'
+      ? dispatch(updatePlayMode('repeat'))
+      : dispatch(updatePlayMode('normal'));
   };
   return (
     <RepeatButton isRepeat={playMode === 'repeat'} onClick={handleRepeatMode}>

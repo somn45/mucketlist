@@ -1,10 +1,9 @@
+import styled from 'styled-components';
 import { faTurnUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styled from 'styled-components';
+import HandBookFrame from '../../../../utils/styles/ComponentStyle/Modal/HandBookFrame';
 
-const HandBookCustomTrackWrap = styled.div`
-  width: 260px;
-  position: absolute;
+const HandBookCustomTrackWrap = styled(HandBookFrame)`
   top: 80px;
   left: 40px;
   svg {

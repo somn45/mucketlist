@@ -1,13 +1,11 @@
 import { Cookies } from 'react-cookie';
 
-interface ICookies {
-  accessToken: string;
-}
+type ICookieToken = string;
 
 const cookies = new Cookies();
 
 const getTokens = () => {
-  const tokenCookies: ICookies = cookies.get('accessToken');
+  const tokenCookies = cookies.get('accessToken');
   if (!tokenCookies) return '';
   return tokenCookies.accessToken;
 };

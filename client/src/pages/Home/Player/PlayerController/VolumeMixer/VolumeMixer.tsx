@@ -19,8 +19,9 @@ const RangeStyle = styled.input`
 `;
 
 function VolumeMixer({ player }: VolumeMixerProps) {
-  const volume = useSelector((state: RootState) => state.volume.volume);
+  const { volume } = useSelector((state: RootState) => state.volume);
   const dispatch = useAppDispatch();
+
   const handleVolume = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!player) return;
     const currentVolume = Number(e.target.value);

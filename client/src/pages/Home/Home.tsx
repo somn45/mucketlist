@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Cookies } from 'react-cookie';
 import Header from './Header/Header';
 import GenreModal from './GenreModal/GenreModal';
 import OptionModal from './OptionModal/OptionModal';
@@ -16,6 +15,7 @@ import { useAppDispatch } from '../../store/store';
 import { getSpotifyGenreList } from '../../store/reducers/thunk/genres';
 import HandBookModal from './HandBookModal/HandBookModal';
 import { useMediaQuery } from 'react-responsive';
+import getToken from '../../utils/functions/getToken';
 
 const Main = styled.main`
   margin-top: 80px;
@@ -45,24 +45,22 @@ const HomeDesktopSection = styled(HomeSection)`
   grid-template-rows: repeat(10, 64px);
 `;
 
-const cookies = new Cookies();
+const FIREBASE_UID = getToken('firebaseUid');
 
 function Home() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [homeStatusMessage, setHomeStatusMessage] = useState('');
-  const isActiveGenreModal = useSelector(
-    (state: RootState) => state.activeComponent.genres
-  );
-  const isActiveOptionModal = useSelector(
-    (state: RootState) => state.activeComponent.options
-  );
-  const isActiveHandBook = useSelector(
-    (state: RootState) => state.activeComponent.handBook
-  );
-  const tracks = useSelector((state: RootState) => state.tracks);
-  const statusMessage = useSelector((state: RootState) => state.statusMessage);
-  const genres = useSelector((state: RootState) => state.genres.genres);
+  const {
+    tracks,
+    statusMessage,
+    genres: { genres },
+  } = useSelector((state: RootState) => state);
+  const {
+    genres: isActiveGenreModal,
+    options: isActiveOptionModal,
+    handBook: isActiveHandBook,
+  } = useSelector((state: RootState) => state.activeComponent);
   const customTracks = useSelector(
     (state: RootState) => state.customTracks.tracks
   );
@@ -74,9 +72,10 @@ function Home() {
   });
 
   useEffect(() => {
-    if (!cookies.get('firebaseUid')) navigate('/login');
-    dispatch(getSpotifyGenreList());
+    console.log(FIREBASE_UID);
+    FIREBASE_UID ? dispatch(getSpotifyGenreList()) : navigate('/login');
   }, []);
+
   useEffect(() => {
     if (statusMessage) setHomeStatusMessage(statusMessage);
   }, [statusMessage]);
