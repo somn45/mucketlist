@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { Axios, AxiosError } from 'axios';
 import { useLocation } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -58,15 +58,21 @@ function Login() {
     e.preventDefault();
     const validateMessage = handleLoginValidate();
     if (!(validateMessage === 'ok')) return;
-    const response = await axios.post(`${SERVER_ENDPOINT}/users/login`, {
-      email,
-      password,
-    });
-    cookies.set('firebaseUid', response?.data.firebaseUid, {
-      maxAge: 3600 * 7,
-    });
-    const finalUrl = combineSpotifyAuthUrl();
-    window.location.href = finalUrl;
+    try {
+      const response = await axios.post(`${SERVER_ENDPOINT}/users/login`, {
+        email,
+        password,
+      });
+      cookies.set('firebaseUid', response?.data.firebaseUid, {
+        maxAge: 3600 * 7,
+      });
+      const finalUrl = combineSpotifyAuthUrl();
+      window.location.href = finalUrl;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setErrorMsg(error.response?.data.errorMsg);
+      }
+    }
   };
 
   const handleLoginValidate = () => {

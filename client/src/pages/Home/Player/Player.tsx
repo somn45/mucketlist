@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios, { AxiosError } from 'axios';
 
@@ -7,7 +7,6 @@ import {
   moveNextPosition,
   moveRandomPosition,
   RootState,
-  updatePlayMode,
   updatePlayState,
   updateStatusMessage,
 } from '../../../store/reducers/rootReducer';
@@ -49,6 +48,8 @@ function Player() {
   );
   const progress = useSelector((state: RootState) => state.progress.value);
   const { player, deviceId } = useContext(PlayerContext);
+  const retryCountRef = useRef(retryCount);
+  retryCountRef.current = retryCount;
 
   useEffect(() => {
     if (!player) return;
@@ -166,15 +167,15 @@ function Player() {
     if (error instanceof AxiosError) {
       if (error.response?.status === 502 || error.response?.status === 404) {
         setTimeout(() => retryPlay({ spotify_uri, playerInstance }), 3000);
-        setRetryCount((prevCount) => prevCount + 1);
+        setRetryCount(retryCountRef.current + 1);
         dispatch(updateStatusMessage('트랙 재생을 재시도 중...'));
       }
     } else console.log(error);
   };
 
   const retryPlay = ({ spotify_uri, playerInstance }: PlayProps) => {
-    console.log(retryCount);
-    if (retryCount === 3) {
+    console.log(retryCountRef.current);
+    if (retryCountRef.current === 3) {
       setRetryCount(0);
       return dispatch(
         updateStatusMessage(
@@ -182,6 +183,7 @@ function Player() {
         )
       );
     }
+    console.log('retry');
     play({ spotify_uri, playerInstance });
   };
 

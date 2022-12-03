@@ -17,7 +17,6 @@ const AccountSection = styled.section`
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
 const cookies = new Cookies();
-const NEW_USER_HAND_BOOK = cookies.get('newUserHandBook');
 
 function Join() {
   const navigate = useNavigate();
