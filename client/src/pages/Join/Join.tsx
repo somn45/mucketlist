@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { Cookies } from 'react-cookie';
 
 const AccountSection = styled.section`
+  width: 360px;
   margin-top: 250px;
 `;
 

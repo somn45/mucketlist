@@ -1,8 +1,10 @@
 import { faTurnUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
+import { IMediaQuery } from '../HandBookModal';
 
-const HandBookCustomTrackWrap = styled.div`
+const HandBookCustomTrackWrap = styled.div<IMediaQuery>`
   width: 260px;
   position: absolute;
   top: 80px;
@@ -13,8 +15,14 @@ const HandBookCustomTrackWrap = styled.div`
 `;
 
 function HandBookCustomTrack() {
+  const isMobile = useMediaQuery({
+    query: '(max-width: 767px)',
+  });
+  const isTablet = useMediaQuery({
+    query: '(max-width: 1023px)',
+  });
   return (
-    <HandBookCustomTrackWrap>
+    <HandBookCustomTrackWrap isMobile={isMobile} isTablet={isTablet}>
       <FontAwesomeIcon icon={faTurnUp} />
       <span>
         플레이리스트에 등록된 트랙을 확인할 수 있습니다. 혹시나 잘못 등록했거나

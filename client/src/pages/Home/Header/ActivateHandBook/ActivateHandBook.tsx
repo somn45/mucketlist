@@ -1,6 +1,5 @@
 import { faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { useMediaQuery } from 'react-responsive';
-import styled from 'styled-components';
 import Icon from '../../../../components/Icon';
 import HeaderMenuItem from '../../../../utils/styles/ItemStyle/HeaderMenuItem';
 import HeaderMenuText from '../../../../utils/styles/ItemStyle/HeaderMenuText';

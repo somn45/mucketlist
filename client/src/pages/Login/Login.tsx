@@ -27,6 +27,7 @@ interface ILocation {
 }
 
 const AccountSection = styled.section`
+  width: 360px;
   margin-top: 250px;
 `;
 
