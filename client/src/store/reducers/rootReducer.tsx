@@ -13,6 +13,7 @@ import selectedGenres from './selectedGenres';
 import genres from './thunk/genres';
 import customTracks from './thunk/customTracks';
 import recommendTrack from './thunk/recommendTrack';
+import { useSelector } from 'react-redux';
 
 const rootReducer = combineReducers({
   activeComponent: activeComponent.reducer,

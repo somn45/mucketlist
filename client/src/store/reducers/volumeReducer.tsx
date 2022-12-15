@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface IVolumeReducer {
   volume: number;
@@ -12,7 +12,7 @@ const volume = createSlice({
     prevVolume: 0,
   },
   reducers: {
-    onChangeVolume: (state, action) => {
+    onChangeVolume: (state, action: PayloadAction<number>) => {
       return {
         volume: action.payload,
         prevVolume: state.prevVolume,

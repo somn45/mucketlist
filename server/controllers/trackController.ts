@@ -53,7 +53,7 @@ export const genres = async (req: express.Request, res: express.Response) => {
 
 export const search = async (req: express.Request, res: express.Response) => {
   const accessToken = req.query.accessToken as string;
-  const genres = req.query.genre as string;
+  const genres = req.query.genres as string;
   const parsedGenres = JSON.parse(genres);
   const spotifyApi = new SpotifyWebApi();
   spotifyApi.setAccessToken(accessToken);
@@ -68,6 +68,7 @@ export const search = async (req: express.Request, res: express.Response) => {
 
 export const addTrack = async (req: express.Request, res: express.Response) => {
   const { track, accessToken, firebaseUid }: addTrackControllerBody = req.body;
+  console.log(track, firebaseUid, accessToken);
   try {
     const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
     if (!userData.exists()) return;

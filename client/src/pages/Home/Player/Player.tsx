@@ -20,10 +20,15 @@ import { getTrackProgress } from '../../../store/reducers/thunk/progress';
 import { useAppDispatch } from '../../../store/store';
 import styled from 'styled-components';
 import PlayerTrackImage from './PlayerTrackImage/PlayerTrackImage';
+import requestAxios from '../../../utils/functions/requestAxios';
 
 interface PlayProps {
   spotify_uri: string;
   playerInstance: Spotify.Player;
+}
+
+interface LoadPlayerAxiosRequest {
+  uris: string[];
 }
 
 interface PlayError extends PlayProps {
@@ -136,6 +141,21 @@ function Player() {
     } = playerInstance;
     getOAuthToken(async () => {
       try {
+        const requestAxiosParams = {
+          method: 'put',
+          url: `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+          data: {
+            uris: [spotify_uri],
+          },
+          config: {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${getTokens()}`,
+            },
+          },
+        };
+        requestAxios<LoadPlayerAxiosRequest, {}>(requestAxiosParams);
+        /*
         await axios.put(
           `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
           {
@@ -148,6 +168,7 @@ function Player() {
             },
           }
         );
+        */
       } catch (error) {
         handlePlayerStateError({ error, spotify_uri, playerInstance });
       }

@@ -13,6 +13,18 @@ import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 import { getRecommendTrack } from '../../../store/reducers/thunk/recommendTrack';
 import { useAppDispatch } from '../../../store/store';
 import { TrackState } from '../TrackList/TrackList';
+import requestAxios from '../../../utils/functions/requestAxios';
+import { ICustomPlayList } from '../../CustomPlayList/CustomPlayList';
+
+interface AddCustomTrackAxiosRequest {
+  track: ICustomPlayList;
+  firebaseUid: string;
+  accessToken: string;
+}
+
+interface AddCustomTrackAxiosResponse {
+  errorMsg: string;
+}
 
 const ACCESS_TOKEN = getToken('accessToken');
 const FIREBASE_UID = getToken('firebaseUid');
@@ -37,12 +49,20 @@ function AddCustomTrack() {
     if (isArrayEmpty(tracks)) return;
     const track = tracks[playingPosition];
     const favoriteTrack = createFavoriteTrack(track);
-    const response = await axios.post('http://localhost:3001/tracks/add', {
-      track: favoriteTrack,
-      accessToken: ACCESS_TOKEN,
-      firebaseUid: FIREBASE_UID,
-    });
-    if (response.data.errorMsg) console.log(response.data.errorMsg);
+    const requestAxiosParams = {
+      method: 'post',
+      url: 'http://localhost:3001/tracks/add',
+      data: {
+        track: favoriteTrack,
+        accessToken: ACCESS_TOKEN,
+        firebaseUid: FIREBASE_UID,
+      },
+    };
+    const response = await requestAxios<
+      AddCustomTrackAxiosRequest,
+      AddCustomTrackAxiosResponse
+    >(requestAxiosParams);
+    if (response.errorMsg) console.log(response.errorMsg);
     else
       dispatch(
         updateStatusMessage(
@@ -65,6 +85,7 @@ function AddCustomTrack() {
   };
 
   const checkDuplicatedTrack = () => {
+    if (!recommendTrack) return;
     const duplicatedTrack = tracks.filter(
       (track) => track.id === recommendTrack?.id
     );

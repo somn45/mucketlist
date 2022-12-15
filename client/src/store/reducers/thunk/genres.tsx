@@ -22,24 +22,19 @@ export const getSpotifyGenreList = createAsyncThunk<
   }
 >('genres/getSpotifyGenreList', async (_, thunkApi) => {
   const accessToken = getTokens();
-  try {
-    const response = await axios.post(
-      `http://localhost:3001/tracks/genres`,
-      {
-        accessToken: accessToken,
+  const response = await axios.post(
+    `http://localhost:3001/tracks/genres`,
+    {
+      accessToken: accessToken,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    return response.data.genres.slice(0, 20);
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      return thunkApi.rejectWithValue(error.message);
-    } else console.log('error');
-  }
+    }
+  );
+  if (response.status >= 400) return thunkApi.rejectWithValue('error');
+  return response.data.genres.slice(0, 20) as string[];
 });
 
 const genres = createSlice({

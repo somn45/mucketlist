@@ -5,7 +5,7 @@ interface FormValue {
 
 const emailReg = new RegExp(/\w+@\w+.\w+/);
 
-const validateForm = (value: FormValue, form: string) => {
+const validateForm = (value: FormValue) => {
   const { email, password } = value;
   if (!email) return '이메일은 필수 입력 정보입니다';
   if (!password) return '비밀번호는 필수 입력 정보입니다';

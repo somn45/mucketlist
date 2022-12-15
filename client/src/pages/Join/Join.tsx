@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import validateForm from '../../utils/functions/validateForm';
@@ -10,6 +10,12 @@ import JoinForm from './Form/JoinForm';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
 import styled from 'styled-components';
 import { Cookies } from 'react-cookie';
+import requestAxios from '../../utils/functions/requestAxios';
+
+interface JoinAxiosRequest {
+  email: string;
+  password: string;
+}
 
 const AccountSection = styled.section`
   margin-top: 250px;
@@ -29,10 +35,12 @@ function Join() {
     const validateMessage = handleJoinValidate();
     if (!(validateMessage === 'ok')) return;
     try {
-      await axios.post(`${SERVER_ENDPOINT}/users/join`, {
-        email,
-        password,
-      });
+      const requestAxiosParams = {
+        method: 'post',
+        url: `${SERVER_ENDPOINT}/users/join`,
+        data: { email, password },
+      };
+      await requestAxios<JoinAxiosRequest, {}>(requestAxiosParams);
       cookies.set('newUserHandBook', email);
       navigate('/login', {
         state: {
@@ -45,7 +53,7 @@ function Join() {
   };
 
   const handleJoinValidate = () => {
-    const result = validateForm({ email, password }, 'login');
+    const result = validateForm({ email, password });
     if (result !== 'ok') return setErrorMsg(result);
     return 'ok';
   };

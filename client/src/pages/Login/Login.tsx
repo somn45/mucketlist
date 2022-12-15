@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios, { Axios, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useLocation } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -19,11 +19,21 @@ import {
   updateStatusMessage,
 } from '../../store/reducers/rootReducer';
 import { useSelector } from 'react-redux';
+import requestAxios from '../../utils/functions/requestAxios';
 
 interface ILocation {
   state: {
     joinSuccessMsg: string;
   };
+}
+
+interface LoginAxiosRequest {
+  email: string;
+  password: string;
+}
+
+interface LoginAxiosResponse {
+  firebaseUid: string;
 }
 
 const AccountSection = styled.section`
@@ -59,11 +69,16 @@ function Login() {
     const validateMessage = handleLoginValidate();
     if (!(validateMessage === 'ok')) return;
     try {
-      const response = await axios.post(`${SERVER_ENDPOINT}/users/login`, {
-        email,
-        password,
-      });
-      cookies.set('firebaseUid', response?.data.firebaseUid, {
+      const requestAxiosParams = {
+        method: 'post',
+        url: `${SERVER_ENDPOINT}/users/login`,
+        data: { email, password },
+      };
+      const loginData = await requestAxios<
+        LoginAxiosRequest,
+        LoginAxiosResponse
+      >(requestAxiosParams);
+      cookies.set('firebaseUid', loginData?.firebaseUid, {
         maxAge: 3600 * 7,
       });
       const finalUrl = combineSpotifyAuthUrl();
@@ -76,7 +91,7 @@ function Login() {
   };
 
   const handleLoginValidate = () => {
-    const result = validateForm({ email, password }, 'login');
+    const result = validateForm({ email, password });
     if (result !== 'ok') return setErrorMsg(result);
     return 'ok';
   };

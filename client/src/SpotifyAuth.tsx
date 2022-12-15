@@ -1,13 +1,23 @@
 import { useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
 import { Cookies } from 'react-cookie';
 import { connect, useDispatch } from 'react-redux';
 import { activeGenres } from './store/reducers/rootReducer';
 import isArrayEmpty from './utils/functions/isArrayEmpty';
 import { ITracks } from '../src/pages/Home/TrackList/TrackList';
 import getToken from './utils/functions/getToken';
-interface TAccessToken {
-  setTokenRefresh: number;
+import requestAxios from './utils/functions/requestAxios';
+
+interface RefreshAxiosRequest {
+  firebaseUid: string;
+}
+
+interface AuthAxiosRequest extends RefreshAxiosRequest {
+  code: string;
+}
+
+interface AuthAxiosResponse {
+  accessToken: string;
+  expiresIn: number;
 }
 
 const ACCESS_TOKEN = getToken('accessToken');
@@ -26,12 +36,16 @@ function SpotifyAuth({ tracks }: ITracks) {
   });
   const requestSpotifyToken = async (code: string): Promise<void> => {
     try {
-      const response = await axios.post(
-        'http://localhost:3001/users/spotify/auth',
-        {
+      const requestAxiosParams = {
+        method: 'post',
+        url: 'http://localhost:3001/users/spotify/auth',
+        data: {
           code: code,
-          fuid: FIREBASE_UID,
-        }
+          firebaseUid: FIREBASE_UID,
+        },
+      };
+      const response = await requestAxios<AuthAxiosRequest, AuthAxiosResponse>(
+        requestAxiosParams
       );
       const afterFifty = Date.now() + 3300 * 1000;
       createAccessToken(response, afterFifty);
@@ -40,47 +54,40 @@ function SpotifyAuth({ tracks }: ITracks) {
       console.log(error);
     }
   };
+
   const filteringToken = () => {
     if (!FIREBASE_UID) return;
     !ACCESS_TOKEN && refreshAccessToken();
   };
+
   const refreshAccessToken = async (): Promise<void> => {
-    const response = await axios.post(
-      'http://localhost:3001/users/spotify/refresh',
-      {
+    const requestAxiosParams = {
+      method: 'post',
+      url: 'http://localhost:3001/users/spotify/refresh',
+      data: {
         firebaseUid: FIREBASE_UID,
-      }
+      },
+    };
+    const response = await requestAxios<RefreshAxiosRequest, AuthAxiosResponse>(
+      requestAxiosParams
     );
+    console.log(response.accessToken);
     const afterFifty = Date.now() + 3300 * 1000;
     createAccessToken(response, afterFifty);
-    cookies.set(
-      'accessToken',
-      {
-        accessToken: response.data.accessToken,
-        setTokenRefresh: afterFifty,
-      },
-      {
-        maxAge: response.data.expiresIn,
-        path: '/',
-      }
-    );
     if (isArrayEmpty(tracks)) {
       dispatch(activeGenres());
     }
   };
 
-  const createAccessToken = (
-    res: AxiosResponse<any, any>,
-    afterFifty: number
-  ) => {
+  const createAccessToken = (res: AuthAxiosResponse, afterFifty: number) => {
     cookies.set(
       'accessToken',
       {
-        accessToken: res.data.accessToken,
+        accessToken: res.accessToken,
         setTokenRefresh: afterFifty,
       },
       {
-        maxAge: res.data.expiresIn,
+        maxAge: res.expiresIn,
         path: '/',
       }
     );
