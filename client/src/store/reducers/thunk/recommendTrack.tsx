@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { Cookies } from 'react-cookie';
 import { ICustomPlayList } from '../../../pages/CustomPlayList/CustomPlayList';
 import { TrackState } from '../../../pages/Home/TrackList/TrackList';
-import getTokens from '../../../utils/functions/getTokens';
+import getToken from '../../../utils/functions/getToken';
 import store from '../../store';
 
 interface ArtistOffset {
@@ -32,6 +32,8 @@ const initialState: IinitialState = {
   errorMsg: '',
 };
 
+const ACCESS_TOKEN = getToken('accessToken');
+
 export const getRecommendTrack = createAsyncThunk<
   ResponseGetRecommendTrack,
   ICustomPlayList,
@@ -45,15 +47,15 @@ export const getRecommendTrack = createAsyncThunk<
   const artistOffset = state.recommendTrack.artistsOffset.filter(
     (artistOffset) => artistOffset.artist === artists[0]
   );
-  const accessToken = getTokens();
   const response = await axios.put(`http://localhost:3001/tracks/recommend`, {
-    accessToken: accessToken,
+    accessToken: ACCESS_TOKEN,
     artist: artists[0],
     genres: genres[0],
     artistOffset: artistOffset.length > 1 ? artistOffset[0].offset : 1,
     genreOffset: state.recommendTrack.genreOffset,
   });
-  if (response.status >= 400) return thunkApi.rejectWithValue('error');
+  if (response.status >= 400)
+    return thunkApi.rejectWithValue('추천 트랙을 추가하는 도중 문제 발생');
   return response.data as ResponseGetRecommendTrack;
 });
 

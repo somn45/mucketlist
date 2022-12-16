@@ -28,8 +28,8 @@ export const getCustomTracks = createAsyncThunk<
   const response = await axios.get(
     `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
   );
-  console.log(response);
-  if (response.status >= 400) return thunkApi.rejectWithValue('error');
+  if (response.status >= 400)
+    return thunkApi.rejectWithValue('커스텀 트랙을 불러오는 도중 문제 발생');
   return response.data.tracks as ICustomPlayList[];
 });
 

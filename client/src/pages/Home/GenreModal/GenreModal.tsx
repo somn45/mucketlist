@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import getTokens from '../../../utils/functions/getTokens';
+import getToken from '../../../utils/functions/getToken';
 import GenreModalTitle from './Title/GenreModalTitle';
 import GenreSelectionTab from './GenreSelectionTab/GenreSelectionTab';
 import {
+  activeGenres,
   activeOptions,
   clearGenres,
   createTracks,
@@ -17,6 +18,8 @@ import styled, { css, keyframes } from 'styled-components';
 import { useAppDispatch } from '../../../store/store';
 import requestAxios from '../../../utils/functions/requestAxios';
 import { TrackState } from '../TrackList/TrackList';
+import tracks from '../../../store/reducers/tracksReducer';
+import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 
 interface GenreModalProps {
   genres: string[];
@@ -58,11 +61,12 @@ const GenreModalWrap = styled(Modal)<{ isActive: boolean }>`
 `;
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
-const ACCESS_TOKEN = getTokens();
+const ACCESS_TOKEN = getToken('accessToken');
 
 function GenreModal({ genres }: GenreModalProps) {
   const dispatch = useAppDispatch();
   const {
+    tracks,
     selectedGenres,
     genres: { loading },
   } = useSelector((state: RootState) => state);
@@ -71,6 +75,10 @@ function GenreModal({ genres }: GenreModalProps) {
   useEffect(() => {
     dispatch(clearGenres());
   }, []);
+
+  useEffect(() => {
+    if (isArrayEmpty(tracks)) dispatch(activeGenres());
+  }, [isActive.genres]);
 
   const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();

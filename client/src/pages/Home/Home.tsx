@@ -70,9 +70,8 @@ function Home() {
   const isTablet = useMediaQuery({
     query: '(max-width: 1023px)',
   });
-
+  console.log(isActiveGenreModal);
   useEffect(() => {
-    console.log(FIREBASE_UID);
     FIREBASE_UID ? dispatch(getSpotifyGenreList()) : navigate('/login');
   }, []);
 

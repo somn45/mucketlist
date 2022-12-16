@@ -4,8 +4,8 @@ import { connect, useDispatch } from 'react-redux';
 import { activeGenres } from './store/reducers/rootReducer';
 import isArrayEmpty from './utils/functions/isArrayEmpty';
 import { ITracks } from '../src/pages/Home/TrackList/TrackList';
-import getToken from './utils/functions/getToken';
 import requestAxios from './utils/functions/requestAxios';
+import getToken from './utils/functions/getToken';
 
 interface RefreshAxiosRequest {
   firebaseUid: string;
@@ -80,17 +80,10 @@ function SpotifyAuth({ tracks }: ITracks) {
   };
 
   const createAccessToken = (res: AuthAxiosResponse, afterFifty: number) => {
-    cookies.set(
-      'accessToken',
-      {
-        accessToken: res.accessToken,
-        setTokenRefresh: afterFifty,
-      },
-      {
-        maxAge: res.expiresIn,
-        path: '/',
-      }
-    );
+    cookies.set('accessToken', res.accessToken, {
+      maxAge: res.expiresIn,
+      path: '/',
+    });
   };
   return <></>;
 }

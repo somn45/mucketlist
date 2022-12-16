@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Player from './pages/Home/Player/Player';
 import { PlayerContext } from './PlayerContext';
 
-import getTokens from './utils/functions/getTokens';
+import getToken from './utils/functions/getToken';
 
 export interface IPlayerContext {
   player: Spotify.Player | null;
@@ -23,7 +23,7 @@ function WebPlayback() {
       const player = new window.Spotify.Player({
         name: 'Mucketlist Player SDK',
         getOAuthToken: (cb) => {
-          cb(getTokens());
+          cb(getToken('accessToken'));
         },
         volume: 0.5,
       });

@@ -10,7 +10,7 @@ import {
   updatePlayState,
   updateStatusMessage,
 } from '../../../store/reducers/rootReducer';
-import getTokens from '../../../utils/functions/getTokens';
+import getToken from '../../../utils/functions/getToken';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 import TrackName from './TrackName/TrackName';
 import ArtistName from './ArtistName/ArtistName';
@@ -150,7 +150,7 @@ function Player() {
           config: {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${getTokens()}`,
+              Authorization: `Bearer ${getToken('accessToken')}`,
             },
           },
         };
@@ -164,7 +164,7 @@ function Player() {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${getTokens()}`,
+              Authorization: `Bearer ${getToken()}`,
             },
           }
         );
