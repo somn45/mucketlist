@@ -78,7 +78,7 @@ function Login() {
         LoginAxiosRequest,
         LoginAxiosResponse
       >(requestAxiosParams);
-      cookies.set('firebaseUid', loginData?.firebaseUid, {
+      cookies.set('firebaseUid', loginData?.data.firebaseUid, {
         maxAge: 3600 * 7,
       });
       const finalUrl = combineSpotifyAuthUrl();
@@ -104,7 +104,6 @@ function Login() {
 
   return (
     <AccountSection>
-      {statusMessage && <StatusMessage text={statusMessage} />}
       <Title />
       <ErrorMsg text={errorMsg} />
       <LoginForm>

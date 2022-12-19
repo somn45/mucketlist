@@ -73,7 +73,6 @@ function Player() {
       shuffle: dispatchShuffleMode,
       normal: dispatchNormalMode,
     };
-    console.log(playMode);
     playModeObject[playMode]();
   }, [isFinishTrackPlay]);
   const dispatchNormalMode = () => dispatch(moveNextPosition());
@@ -82,7 +81,6 @@ function Player() {
     prepareToPlay(tracks[playingPosition].uri);
   };
   const dispatchShuffleMode = () => {
-    console.log('shuffle');
     dispatch(moveRandomPosition());
   };
 
@@ -118,20 +116,6 @@ function Player() {
           playerInstance: player,
         })
       : resume(player);
-    /*
-    if (progress === 0 || progress === undefined) {
-      {
-        play({
-          spotify_uri: uri,
-          device_id: deviceId,
-          playerInstance: player,
-        });
-      }
-    } else {
-      player?.resume();
-      console.log('resume');
-    }
-    */
     dispatch(updatePlayState(true));
   };
 
@@ -141,21 +125,6 @@ function Player() {
     } = playerInstance;
     getOAuthToken(async () => {
       try {
-        const requestAxiosParams = {
-          method: 'put',
-          url: `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-          data: {
-            uris: [spotify_uri],
-          },
-          config: {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${getToken('accessToken')}`,
-            },
-          },
-        };
-        requestAxios<LoadPlayerAxiosRequest, {}>(requestAxiosParams);
-        /*
         await axios.put(
           `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
           {
@@ -164,11 +133,10 @@ function Player() {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${getToken()}`,
+              Authorization: `Bearer ${getToken('accessToken')}`,
             },
           }
         );
-        */
       } catch (error) {
         handlePlayerStateError({ error, spotify_uri, playerInstance });
       }
@@ -187,15 +155,15 @@ function Player() {
   }: PlayError) => {
     if (error instanceof AxiosError) {
       if (error.response?.status === 502 || error.response?.status === 404) {
+        retryCountRef.current += 1;
+        setRetryCount(retryCountRef.current);
         setTimeout(() => retryPlay({ spotify_uri, playerInstance }), 3000);
-        setRetryCount(retryCountRef.current + 1);
         dispatch(updateStatusMessage('트랙 재생을 재시도 중...'));
       }
     } else console.log(error);
   };
 
   const retryPlay = ({ spotify_uri, playerInstance }: PlayProps) => {
-    console.log(retryCountRef.current);
     if (retryCountRef.current === 3) {
       setRetryCount(0);
       return dispatch(
@@ -204,7 +172,6 @@ function Player() {
         )
       );
     }
-    console.log('retry');
     play({ spotify_uri, playerInstance });
   };
 

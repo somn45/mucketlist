@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Cookies } from 'react-cookie';
 import { connect, useDispatch } from 'react-redux';
 import { activeGenres } from './store/reducers/rootReducer';
@@ -6,6 +6,7 @@ import isArrayEmpty from './utils/functions/isArrayEmpty';
 import { ITracks } from '../src/pages/Home/TrackList/TrackList';
 import requestAxios from './utils/functions/requestAxios';
 import getToken from './utils/functions/getToken';
+import { AxiosResponse } from 'axios';
 
 interface RefreshAxiosRequest {
   firebaseUid: string;
@@ -15,17 +16,17 @@ interface AuthAxiosRequest extends RefreshAxiosRequest {
   code: string;
 }
 
-interface AuthAxiosResponse {
+interface AuthAxiosResponse extends AxiosResponse {
   accessToken: string;
   expiresIn: number;
 }
 
 const ACCESS_TOKEN = getToken('accessToken');
 const FIREBASE_UID = getToken('firebaseUid');
+const cookies = new Cookies();
 
 function SpotifyAuth({ tracks }: ITracks) {
   const code = new URLSearchParams(window.location.search).get('code');
-  const cookies = new Cookies();
   const dispatch = useDispatch();
   useEffect(() => {
     if (!code) return;
@@ -33,7 +34,7 @@ function SpotifyAuth({ tracks }: ITracks) {
   }, [code]);
   useEffect(() => {
     filteringToken();
-  });
+  }, []);
   const requestSpotifyToken = async (code: string): Promise<void> => {
     try {
       const requestAxiosParams = {
@@ -47,8 +48,7 @@ function SpotifyAuth({ tracks }: ITracks) {
       const response = await requestAxios<AuthAxiosRequest, AuthAxiosResponse>(
         requestAxiosParams
       );
-      const afterFifty = Date.now() + 3300 * 1000;
-      createAccessToken(response, afterFifty);
+      createAccessToken(response.data);
       window.location.href = '/';
     } catch (error) {
       console.log(error);
@@ -57,7 +57,8 @@ function SpotifyAuth({ tracks }: ITracks) {
 
   const filteringToken = () => {
     if (!FIREBASE_UID) return;
-    !ACCESS_TOKEN && refreshAccessToken();
+    refreshAccessToken();
+    setTimeout(() => filteringToken(), 999 * 60 * 60);
   };
 
   const refreshAccessToken = async (): Promise<void> => {
@@ -71,15 +72,14 @@ function SpotifyAuth({ tracks }: ITracks) {
     const response = await requestAxios<RefreshAxiosRequest, AuthAxiosResponse>(
       requestAxiosParams
     );
-    console.log(response.accessToken);
-    const afterFifty = Date.now() + 3300 * 1000;
-    createAccessToken(response, afterFifty);
-    if (isArrayEmpty(tracks)) {
-      dispatch(activeGenres());
-    }
+    createAccessToken(response.data);
   };
 
-  const createAccessToken = (res: AuthAxiosResponse, afterFifty: number) => {
+  const createAccessToken = (res: AuthAxiosResponse) => {
+    cookies.set('accessToken', res.accessToken, {
+      maxAge: res.expiresIn,
+      path: '/',
+    });
     cookies.set('accessToken', res.accessToken, {
       maxAge: res.expiresIn,
       path: '/',

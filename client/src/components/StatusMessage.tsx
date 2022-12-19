@@ -6,7 +6,7 @@ const AnimationStatusBar = keyframes`
   0% {
     background-color: black;
     width: 0;
-  } 13% {
+  } 33% {
     background-color: #D363AD;
     width: 100%;
   }100% {
@@ -23,6 +23,7 @@ const StatusMessageStyle = styled.span`
   text-align: center;
   white-space: nowrap;
   align-self: center;
+  z-index: 3;
   position: fixed;
   left: 0px;
   top: 20px;
@@ -30,11 +31,12 @@ const StatusMessageStyle = styled.span`
 `;
 
 function StatusMessage({ text }: SpanProps) {
-  const [isShowBar, setIsShowBar] = useState(true);
+  const [isShow, setIsShow] = useState(false);
   useEffect(() => {
-    setTimeout(() => setIsShowBar(false), 8000);
-  }, []);
-  return isShowBar ? <StatusMessageStyle>{text}</StatusMessageStyle> : null;
+    setIsShow(true);
+    setTimeout(() => setIsShow(false), 5000);
+  }, [text]);
+  return isShow ? <StatusMessageStyle>{text}</StatusMessageStyle> : null;
 }
 
 export default StatusMessage;

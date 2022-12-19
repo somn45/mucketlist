@@ -62,8 +62,9 @@ function AddCustomTrack() {
       AddCustomTrackAxiosRequest,
       AddCustomTrackAxiosResponse
     >(requestAxiosParams);
-    if (response.errorMsg) console.log(response.errorMsg);
-    else
+    if (response.status === 204) {
+      updateStatusMessage(`${track.name}는 이미 찜한 트랙에 등록되었습니다.`);
+    } else
       dispatch(
         updateStatusMessage(
           `${track.name}이 찜한 트랙 리스트에 추가되었습니다.`

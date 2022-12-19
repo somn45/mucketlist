@@ -18,8 +18,6 @@ import styled, { css, keyframes } from 'styled-components';
 import { useAppDispatch } from '../../../store/store';
 import requestAxios from '../../../utils/functions/requestAxios';
 import { TrackState } from '../TrackList/TrackList';
-import tracks from '../../../store/reducers/tracksReducer';
-import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 
 interface GenreModalProps {
   genres: string[];
@@ -71,14 +69,9 @@ function GenreModal({ genres }: GenreModalProps) {
     genres: { loading },
   } = useSelector((state: RootState) => state);
   const isActive = useSelector((state: RootState) => state.activeComponent);
-
   useEffect(() => {
     dispatch(clearGenres());
   }, []);
-
-  useEffect(() => {
-    if (isArrayEmpty(tracks)) dispatch(activeGenres());
-  }, [isActive.genres]);
 
   const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -95,7 +88,7 @@ function GenreModal({ genres }: GenreModalProps) {
       SearchTrackAxiosRequest,
       SearchTrackAxiosReponse
     >(reqeustAxiosParams);
-    dispatch(createTracks(response.tracks));
+    dispatch(createTracks(response.data.tracks));
     setTimeout(() => dispatch(activeOptions()), 600);
   };
 

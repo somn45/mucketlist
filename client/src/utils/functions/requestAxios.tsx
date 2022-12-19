@@ -21,19 +21,19 @@ type axiosMethodResponse = {
   [key: string]: requestGetOrDeleteType | requestPostOrPutType;
 };
 
-const requestAxios = async <T extends {}, D extends {}>({
+async function requestAxios<T extends {}, D>({
   method,
   url,
   data,
   config,
-}: RequestAxiosParams<T>): Promise<D> => {
+}: RequestAxiosParams<T>): Promise<AxiosResponse<D>> {
   const urlParams = new URLSearchParams(data).toString();
   const response =
     method === 'get' || method === 'delete'
-      ? await axiosMethods[method](`${url}?${urlParams}`, config)
-      : await axiosMethods[method](url, data, config);
-  return response.data;
-};
+      ? await axiosMethods[method]<D>(`${url}?${urlParams}`, config)
+      : await axiosMethods[method]<D>(url, data, config);
+  return response;
+}
 
 const axiosMethods: axiosMethodResponse = {
   get: axios.get,

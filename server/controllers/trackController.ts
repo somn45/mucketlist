@@ -78,10 +78,12 @@ export const addTrack = async (req: express.Request, res: express.Response) => {
       const dupulicateTrack = customTracks.find(
         (customTrack) => customTrack.id === track.id
       );
-      if (dupulicateTrack)
+      if (dupulicateTrack) {
+        console.log('duplicate');
         return res.status(204).json({
           errorMsg: '이 트랙은 커스텀 트랙에 이미 등록되어 있습니다.',
         });
+      }
     }
 
     const spotifyApi = new SpotifyWebApi();

@@ -10,7 +10,7 @@ import WebPlayback from '../../WebPlayback';
 import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 import AddCustomTrack from './AddCustomTrack/AddCustomTrack';
 import StatusMessage from '../../components/StatusMessage';
-import { RootState } from '../../store/reducers/rootReducer';
+import { activeGenres, RootState } from '../../store/reducers/rootReducer';
 import { useAppDispatch } from '../../store/store';
 import { getSpotifyGenreList } from '../../store/reducers/thunk/genres';
 import HandBookModal from './HandBookModal/HandBookModal';
@@ -50,11 +50,11 @@ const FIREBASE_UID = getToken('firebaseUid');
 function Home() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [homeStatusMessage, setHomeStatusMessage] = useState('');
+  const [statusMessageState, setStatusMessageState] = useState('');
   const {
     tracks,
     statusMessage,
-    genres: { genres },
+    genres: { genres, loading },
   } = useSelector((state: RootState) => state);
   const {
     genres: isActiveGenreModal,
@@ -70,15 +70,19 @@ function Home() {
   const isTablet = useMediaQuery({
     query: '(max-width: 1023px)',
   });
-  console.log(isActiveGenreModal);
   useEffect(() => {
+    console.log(getToken('accessToken'));
     FIREBASE_UID ? dispatch(getSpotifyGenreList()) : navigate('/login');
   }, []);
 
   useEffect(() => {
-    if (statusMessage) setHomeStatusMessage(statusMessage);
+    if (isArrayEmpty(tracks) && !loading) dispatch(activeGenres());
+  }, [loading]);
+  useEffect(() => {
+    if (!statusMessage) return;
+    setStatusMessageState(statusMessage);
   }, [statusMessage]);
-
+  console.log(statusMessage);
   const HomeSectionContent = (
     <>
       <AddCustomTrack />
@@ -90,7 +94,7 @@ function Home() {
     <>
       <Outlet context={{ customTracks }} />
       <Header />
-      {homeStatusMessage && <StatusMessage text={homeStatusMessage} />}
+      {statusMessageState && <StatusMessage text={statusMessageState} />}
       <Main>
         <section>
           {isActiveGenreModal && <GenreModal genres={genres} />}
