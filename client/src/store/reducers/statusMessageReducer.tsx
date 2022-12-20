@@ -5,7 +5,6 @@ const statusMessage = createSlice({
   initialState: '',
   reducers: {
     updateStatusMessage: (state, action: PayloadAction<string>) => {
-      console.log(action.payload);
       return action.payload;
     },
   },

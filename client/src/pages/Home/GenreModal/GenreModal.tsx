@@ -59,7 +59,6 @@ const GenreModalWrap = styled(Modal)<{ isActive: boolean }>`
 `;
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
-const ACCESS_TOKEN = getToken('accessToken');
 
 function GenreModal({ genres }: GenreModalProps) {
   const dispatch = useAppDispatch();
@@ -80,7 +79,7 @@ function GenreModal({ genres }: GenreModalProps) {
       method: 'get',
       url: `${SERVER_ENDPOINT}/tracks/search`,
       data: {
-        accessToken: ACCESS_TOKEN,
+        accessToken: getToken('accessToken'),
         genres: JSON.stringify(selectedGenres),
       },
     };

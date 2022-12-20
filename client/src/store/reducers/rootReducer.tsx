@@ -14,6 +14,7 @@ import genres from './thunk/genres';
 import customTracks from './thunk/customTracks';
 import recommendTrack from './thunk/recommendTrack';
 import { useSelector } from 'react-redux';
+import isSetAccessToken from './isSetAccessToken';
 
 const rootReducer = combineReducers({
   activeComponent: activeComponent.reducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   recommendTrack: recommendTrack.reducer,
   customTracks: customTracks.reducer,
   isPlay: isPlay.reducer,
+  isSetAccessToken: isSetAccessToken.reducer,
   volume: volume.reducer,
   progress: trackProgress.reducer,
   playMode: playMode.reducer,
@@ -55,6 +57,7 @@ export const { clearTrackProgress } = trackProgress.actions;
 export const { moveNextPosition, movePreviousPosition, moveRandomPosition } =
   playingPosition.actions;
 export const { updatePlayState } = isPlay.actions;
+export const { changeisAccessTokenState } = isSetAccessToken.actions;
 export const { updateStatusMessage } = statusMessage.actions;
 
 export default persistReducer(persistConfig, rootReducer);

@@ -14,26 +14,25 @@ const initialState: IInitialState = {
   errorMsg: '',
 };
 
-const ACCESS_TOKEN = getToken('accessToken');
-
 export const getSpotifyGenreList = createAsyncThunk<
   string[],
-  void,
+  string,
   {
     rejectValue: string;
   }
->('genres/getSpotifyGenreList', async (_, thunkApi) => {
+>('genres/getSpotifyGenreList', async (accessToken, thunkApi) => {
   const response = await axios.post(
     `http://localhost:3001/tracks/genres`,
     {
-      accessToken: ACCESS_TOKEN,
+      accessToken: accessToken,
     },
     {
       headers: {
-        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     }
   );
+  console.log('get genre');
   if (response.status >= 400)
     return thunkApi.rejectWithValue('Spotify 장르를 불러오는 도중 문제 발생');
   return response.data.genres.slice(0, 20) as string[];

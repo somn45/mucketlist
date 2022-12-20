@@ -16,6 +16,7 @@ import { getSpotifyGenreList } from '../../store/reducers/thunk/genres';
 import HandBookModal from './HandBookModal/HandBookModal';
 import { useMediaQuery } from 'react-responsive';
 import getToken from '../../utils/functions/getToken';
+import Modals from './Modals';
 
 const Main = styled.main`
   margin-top: 80px;
@@ -45,22 +46,10 @@ const HomeDesktopSection = styled(HomeSection)`
   grid-template-rows: repeat(10, 64px);
 `;
 
-const FIREBASE_UID = getToken('firebaseUid');
-
 function Home() {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const [statusMessageState, setStatusMessageState] = useState('');
-  const {
-    tracks,
-    statusMessage,
-    genres: { genres, loading },
-  } = useSelector((state: RootState) => state);
-  const {
-    genres: isActiveGenreModal,
-    options: isActiveOptionModal,
-    handBook: isActiveHandBook,
-  } = useSelector((state: RootState) => state.activeComponent);
+  const { tracks, statusMessage } = useSelector((state: RootState) => state);
+
   const customTracks = useSelector(
     (state: RootState) => state.customTracks.tracks
   );
@@ -70,19 +59,12 @@ function Home() {
   const isTablet = useMediaQuery({
     query: '(max-width: 1023px)',
   });
-  useEffect(() => {
-    console.log(getToken('accessToken'));
-    FIREBASE_UID ? dispatch(getSpotifyGenreList()) : navigate('/login');
-  }, []);
 
-  useEffect(() => {
-    if (isArrayEmpty(tracks) && !loading) dispatch(activeGenres());
-  }, [loading]);
   useEffect(() => {
     if (!statusMessage) return;
     setStatusMessageState(statusMessage);
   }, [statusMessage]);
-  console.log(statusMessage);
+
   const HomeSectionContent = (
     <>
       <AddCustomTrack />
@@ -97,9 +79,7 @@ function Home() {
       {statusMessageState && <StatusMessage text={statusMessageState} />}
       <Main>
         <section>
-          {isActiveGenreModal && <GenreModal genres={genres} />}
-          {isActiveOptionModal && <OptionModal />}
-          {isActiveHandBook && <HandBookModal />}
+          <Modals />
         </section>
         {isMobile ? (
           <HomeMobileSection>{HomeSectionContent}</HomeMobileSection>

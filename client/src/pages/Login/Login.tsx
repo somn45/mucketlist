@@ -12,13 +12,11 @@ import validateForm from '../../utils/functions/validateForm';
 import LoginForm from './Form/LoginForm';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
 import styled from 'styled-components';
-import StatusMessage from '../../components/StatusMessage';
 import { useAppDispatch } from '../../store/store';
 import {
   RootState,
   updateStatusMessage,
 } from '../../store/reducers/rootReducer';
-import { useSelector } from 'react-redux';
 import requestAxios from '../../utils/functions/requestAxios';
 
 interface ILocation {
@@ -58,8 +56,8 @@ function Login() {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const { state } = useLocation() as ILocation;
-  const statusMessage = useSelector((state: RootState) => state.statusMessage);
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (state) dispatch(updateStatusMessage(state.joinSuccessMsg));
   }, []);
