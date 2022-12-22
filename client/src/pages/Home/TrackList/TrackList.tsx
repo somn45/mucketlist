@@ -60,7 +60,6 @@ function TrackList() {
     : isTablet
     ? tracks.slice(0, 70)
     : tracks.slice(0, 100);
-  console.log(displayedTracks);
   return (
     <>
       {!isArrayEmpty(tracks) &&

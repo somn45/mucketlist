@@ -53,7 +53,7 @@ export const genres = async (req: express.Request, res: express.Response) => {
 
 export const search = async (req: express.Request, res: express.Response) => {
   const accessToken = req.query.accessToken as string;
-  const genres = req.query.genre as string;
+  const genres = req.query.genres as string;
   const parsedGenres = JSON.parse(genres);
   const spotifyApi = new SpotifyWebApi();
   spotifyApi.setAccessToken(accessToken);
@@ -68,6 +68,7 @@ export const search = async (req: express.Request, res: express.Response) => {
 
 export const addTrack = async (req: express.Request, res: express.Response) => {
   const { track, accessToken, firebaseUid }: addTrackControllerBody = req.body;
+  console.log(track, firebaseUid, accessToken);
   try {
     const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
     if (!userData.exists()) return;
@@ -77,10 +78,12 @@ export const addTrack = async (req: express.Request, res: express.Response) => {
       const dupulicateTrack = customTracks.find(
         (customTrack) => customTrack.id === track.id
       );
-      if (dupulicateTrack)
+      if (dupulicateTrack) {
+        console.log('duplicate');
         return res.status(204).json({
           errorMsg: '이 트랙은 커스텀 트랙에 이미 등록되어 있습니다.',
         });
+      }
     }
 
     const spotifyApi = new SpotifyWebApi();
@@ -161,13 +164,11 @@ export const retrieveTrack = async (
   const genresOffset = req.body.genresOfset as number;
   const accessToken = req.body.accessToken as string;
   const randomNumber = Math.floor(Math.random() * 2);
-  console.log(randomNumber);
   try {
     const searchResult =
       randomNumber === 0
         ? await searchTrackToArtists(artist, artistOffset, accessToken)
         : await searchTrackToGenres(genres, genresOffset, accessToken);
-    console.log(searchResult?.query);
     if (!searchResult) return;
     return res.status(200).json({
       track: searchResult.track,

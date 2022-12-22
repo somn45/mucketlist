@@ -1,42 +1,23 @@
-import { useEffect, useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled, { css, keyframes } from 'styled-components';
 import {
   activeHandBook,
-  addSettings,
   inactiveAll,
+  RootState,
   sortByPopularity,
   sortByRandom,
   sortByRelease,
   updateStatusMessage,
 } from '../../../store/reducers/rootReducer';
 import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
-import { TrackState } from '../TrackList/TrackList';
 import OptionModalForm from './Form/OptionModalForm';
 
 import OptionModalItem from './InputItem/OptionModalItem';
 import OptionModalSubmit from './Submit/OptionModalSubmit';
 import OptionModalTitle from './Title/OptionModalTitle';
 import { Modal } from '../../../utils/styles/Modal';
-import { Cookies } from 'react-cookie';
-
-interface OptionModalState {
-  tracks: TrackState[];
-  activeComponent: {
-    genres: boolean;
-    options: boolean;
-    handBook: boolean;
-  };
-}
-
-interface OptionModalProps {
-  tracks: TrackState[];
-  isActive: {
-    genres: boolean;
-    options: boolean;
-    handBook: boolean;
-  };
-}
+import getToken from '../../../utils/functions/getToken';
 
 const FadeIn = keyframes`
   0% {
@@ -65,35 +46,32 @@ const OpenModalWrap = styled(Modal)<{ isActive: boolean }>`
         `};
 `;
 
-const cookies = new Cookies();
+const NEW_USER_HAND_BOOK = getToken('newUserHandBook');
 
-function OptionModal({ tracks, isActive }: OptionModalProps) {
+function OptionModal() {
   const dispatch = useDispatch();
+  const { tracks } = useSelector((state: RootState) => state);
+  const isActive = useSelector((state: RootState) => state.activeComponent);
   const [selectedSetting, setSelectedSetting] = useState('');
-  const [isActiveOptionModal, setIsActiveOptionModal] = useState(false);
-
-  useEffect(() => {
-    setIsActiveOptionModal(true);
-  }, []);
 
   const setTrackOption = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (isArrayEmpty(tracks)) return;
-    if (selectedSetting === 'popularity') {
-      dispatch(sortByPopularity());
-    } else if (selectedSetting === 'date') {
-      dispatch(sortByRelease());
-    } else if (selectedSetting === 'random') {
-      dispatch(sortByRandom());
-    }
-    dispatch(addSettings(selectedSetting));
-    setTimeout(() => setIsActiveOptionModal(false), 600);
-    if (cookies.get('newUserHandBook')) dispatch(activeHandBook());
-    else dispatch(inactiveAll());
-    dispatch(updateStatusMessage('트랙 검색이 완료되었습니다.')); 
-  }
+    dispatchBySelectedSetting(selectedSetting);
+    NEW_USER_HAND_BOOK ? dispatch(activeHandBook()) : dispatch(inactiveAll());
+    dispatch(updateStatusMessage('트랙 검색이 완료되었습니다.'));
+  };
+
+  const dispatchBySelectedSetting = (selectedSetting: string) => {
+    const trackOptions = new Map();
+    trackOptions.set('popularity', dispatch(sortByPopularity()));
+    trackOptions.set('date', dispatch(sortByRelease()));
+    trackOptions.set('random', dispatch(sortByRandom()));
+    trackOptions.get(selectedSetting);
+  };
+
   return (
-    <OpenModalWrap isActive={isActiveOptionModal}>
+    <OpenModalWrap isActive={isActive.options}>
       <OptionModalForm>
         <OptionModalTitle />
         <OptionModalItem
@@ -122,11 +100,4 @@ function OptionModal({ tracks, isActive }: OptionModalProps) {
   );
 }
 
-function mapStateToProps(state: OptionModalState) {
-  return {
-    tracks: state.tracks,
-    isActive: state.activeComponent,
-  };
-}
-
-export default connect(mapStateToProps)(OptionModal);
+export default OptionModal;

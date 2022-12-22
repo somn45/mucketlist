@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { SubmitProps } from '../../../../utils/types/atomTypes';
 
-const SubmitStyle = styled.input`
+const Submit = styled.input`
   width: 250px;
   height: 50px;
   border: 0;
@@ -14,9 +14,7 @@ const SubmitStyle = styled.input`
 `;
 
 function OptionModalSubmit({ onClick }: SubmitProps) {
-  return (
-    <SubmitStyle type="submit" value="음악 재생 순서 결정" onClick={onClick} />
-  );
+  return <Submit type="submit" value="음악 재생 순서 결정" onClick={onClick} />;
 }
 
 export default React.memo(OptionModalSubmit);

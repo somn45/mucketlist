@@ -1,6 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { AppDispatch } from '../../store';
-import { RootState } from '../rootReducer';
 
 interface progressState {
   value: number;

@@ -4,10 +4,8 @@ import Login from './pages/Login/Login';
 import Join from './pages/Join/Join';
 
 import SpotifyAuth from './SpotifyAuth';
-// import CustomPlayList from './pages/CustomPlayList';
 import CustomPlayList from './pages/CustomPlayList/CustomPlayList';
 import GlobalStyles from './GlobalStyles';
-import WebPlayback from './WebPlayback';
 import Home from './pages/Home/Home';
 
 const cookies = new Cookies();

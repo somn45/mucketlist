@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
-import getTokens from '../../../utils/functions/getTokens';
+import getToken from '../../../utils/functions/getToken';
 
 interface IInitialState {
   genres: string[];
@@ -16,30 +16,26 @@ const initialState: IInitialState = {
 
 export const getSpotifyGenreList = createAsyncThunk<
   string[],
-  void,
+  string,
   {
     rejectValue: string;
   }
->('genres/getSpotifyGenreList', async (_, thunkApi) => {
-  const accessToken = getTokens();
-  try {
-    const response = await axios.post(
-      `http://localhost:3001/tracks/genres`,
-      {
-        accessToken: accessToken,
+>('genres/getSpotifyGenreList', async (accessToken, thunkApi) => {
+  const response = await axios.post(
+    `http://localhost:3001/tracks/genres`,
+    {
+      accessToken: accessToken,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    return response.data.genres.slice(0, 20);
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      return thunkApi.rejectWithValue(error.message);
-    } else console.log('error');
-  }
+    }
+  );
+  console.log('get genre');
+  if (response.status >= 400)
+    return thunkApi.rejectWithValue('Spotify 장르를 불러오는 도중 문제 발생');
+  return response.data.genres.slice(0, 20) as string[];
 });
 
 const genres = createSlice({

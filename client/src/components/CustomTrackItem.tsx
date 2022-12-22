@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { AxiosResponse } from 'axios';
 import styled from 'styled-components';
 import { Cookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
@@ -9,9 +9,15 @@ import {
   deleteCustomTrack,
   updateStatusMessage,
 } from '../store/reducers/rootReducer';
+import requestAxios from '../utils/functions/requestAxios';
 
 interface CustomTrackItemProps {
   track: ICustomPlayList;
+}
+
+interface DeleteCustomTrackAxiosRequest {
+  firebaseUid: string;
+  id: string;
 }
 
 const TrackItem = styled.li`
@@ -62,9 +68,15 @@ function CustomTrackItem({ track }: CustomTrackItemProps) {
     id: string
   ) => {
     const firebaseUid = cookies.get('firebaseUid');
-    const response = await axios.delete(
-      `${SERVER_URL}/tracks/delete?id=${id}&firebaseUid=${firebaseUid}`
-    );
+    const requestAxiosParams = {
+      method: 'delete',
+      url: `${SERVER_URL}/tracks/delete`,
+      data: { firebaseUid, id },
+    };
+    const response = await requestAxios<
+      DeleteCustomTrackAxiosRequest,
+      AxiosResponse
+    >(requestAxiosParams);
     if (response.status === 200) {
       dispatch(deleteCustomTrack(id));
       dispatch(

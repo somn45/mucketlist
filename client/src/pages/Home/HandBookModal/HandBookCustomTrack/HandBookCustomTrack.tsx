@@ -1,7 +1,7 @@
+import styled from 'styled-components';
 import { faTurnUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMediaQuery } from 'react-responsive';
-import styled from 'styled-components';
 import { IMediaQuery } from '../HandBookModal';
 
 const HandBookCustomTrackWrap = styled.div<IMediaQuery>`

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import validateForm from '../../utils/functions/validateForm';
@@ -10,6 +10,12 @@ import JoinForm from './Form/JoinForm';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
 import styled from 'styled-components';
 import { Cookies } from 'react-cookie';
+import requestAxios from '../../utils/functions/requestAxios';
+
+interface JoinAxiosRequest {
+  email: string;
+  password: string;
+}
 
 const AccountSection = styled.section`
   width: 360px;
@@ -30,10 +36,12 @@ function Join() {
     const validateMessage = handleJoinValidate();
     if (!(validateMessage === 'ok')) return;
     try {
-      await axios.post(`${SERVER_ENDPOINT}/users/join`, {
-        email,
-        password,
-      });
+      const requestAxiosParams = {
+        method: 'post',
+        url: `${SERVER_ENDPOINT}/users/join`,
+        data: { email, password },
+      };
+      await requestAxios<JoinAxiosRequest, {}>(requestAxiosParams);
       cookies.set('newUserHandBook', email);
       navigate('/login', {
         state: {
@@ -41,18 +49,22 @@ function Join() {
         },
       });
     } catch (error) {
-      if (error instanceof AxiosError) {
-        return setErrorMsg(error?.response?.data.errorMsg);
-      } else {
-        return console.log(error);
-      }
+      handleErrorJoin(error);
     }
   };
 
   const handleJoinValidate = () => {
-    const result = validateForm({ email, password }, 'login');
+    const result = validateForm({ email, password });
     if (result !== 'ok') return setErrorMsg(result);
     return 'ok';
+  };
+
+  const handleErrorJoin = (error: unknown) => {
+    if (error instanceof AxiosError) {
+      return setErrorMsg(error?.response?.data.errorMsg);
+    } else {
+      return console.log(error);
+    }
   };
   return (
     <AccountSection>

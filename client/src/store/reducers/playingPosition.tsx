@@ -11,7 +11,10 @@ const playingPosition = createSlice({
       return state - 1;
     },
     moveRandomPosition: () => {
-      return Math.floor(Math.random() * 100);
+      const randomPosition = Math.floor(Math.random() * 100);
+      console.log('random');
+      console.log(randomPosition);
+      return randomPosition;
     },
   },
 });
