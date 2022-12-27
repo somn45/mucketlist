@@ -16,6 +16,7 @@
     "@types/node": "^16.11.41",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
+    "@types/spotify-web-playback-sdk": "^0.1.15",
     "axios": "^0.27.2",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",

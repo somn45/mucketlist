@@ -1,0 +1,29 @@
+{
+  "name": "mucketlist",
+  "version": "1.0.0",
+  "description": "Spotify API를 이용한 음악검색 및 감상 에플리케이션",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^5.75.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
+    "dev:client": "cd client && npm run start",
+    "dev:server": "cd server && npm run dev",
+    "start:client": "cd client && npm run start",
+    "start:server": "cd server && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/somn45/mucketlist.git"
+  },
+  "author": "somn45",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/somn45/mucketlist/issues"
+  },
+  "homepage": "https://github.com/somn45/mucketlist#readme"
+}
