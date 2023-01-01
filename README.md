@@ -17,21 +17,32 @@
 ### 프로젝트 빌드
 
 ```
-추후 예정
+npm run build:server
+npm run build:client
+```
+
+### 개발용 클라이언트 실행
+
+```
+npm run dev:client
+```
+
+### 개발용 서버 실행
+
+```
+npm run dev:server
 ```
 
 ### 클라이언트 실행
 
 ```
-cd client
-npm run start
+npm run start:client
 ```
 
 ### 서버 실행
 
 ```
-cd server
-npm run start
+npm run start:server
 ```
 
 ---
