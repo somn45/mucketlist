@@ -4,6 +4,8 @@
 
 🔗 Github : https://github.com/somn45/mucketlist  
 🔗 Page Link : http://localhost:3000
+🧩 테스트용 아이디 : mucketlisttest@gmail.com
+🧩 테스트용 비밀번호 : myreactapp
 
 ## 🎉Intro
 
