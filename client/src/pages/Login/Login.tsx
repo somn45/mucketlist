@@ -46,7 +46,7 @@ const SPOTIFY_AUTH_URL_CONFIG = {
   client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID
     ? process.env.REACT_APP_SPOTIFY_CLIENT_ID
     : '',
-  redirect_uri: 'http://localhost:3000',
+  redirect_uri: 'https://mucketlist.site',
   scope:
     'user-read-private user-read-email streaming user-read-playback-state, user-modify-playback-state',
   state: '1SMWKN29Nksmwogl49SWM238FM1879Smx',
