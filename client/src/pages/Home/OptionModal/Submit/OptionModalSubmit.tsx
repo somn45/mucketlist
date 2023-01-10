@@ -11,6 +11,11 @@ const Submit = styled.input`
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.35s ease-out;
+  &:hover,
+  &:focus {
+    background-color: #33a54a;
+  }
 `;
 
 function OptionModalSubmit({ onClick }: SubmitProps) {

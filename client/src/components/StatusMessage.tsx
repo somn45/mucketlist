@@ -26,7 +26,7 @@ const StatusMessageStyle = styled.span`
   z-index: 3;
   position: fixed;
   left: 0px;
-  top: 20px;
+  top: 0px;
   animation: ${AnimationStatusBar} 3s cubic-bezier(0.1, 0.5, 0.5, 1) forwards;
 `;
 

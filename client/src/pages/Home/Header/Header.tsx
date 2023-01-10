@@ -15,7 +15,7 @@ import ActivateHandBook from './ActivateHandBook/ActivateHandBook';
 
 const HeaderTab = styled.header`
   width: 100%;
-  height: 80px;
+  height: 100px;
   background-color: #20b2aa;
   position: fixed;
   left: 0;
@@ -27,7 +27,7 @@ const HeaderTab = styled.header`
 `;
 
 const MenuList = styled.ul`
-  padding: 20px 30px 0;
+  padding: 35px 30px 0;
   display: flex;
   justify-content: space-between;
 `;

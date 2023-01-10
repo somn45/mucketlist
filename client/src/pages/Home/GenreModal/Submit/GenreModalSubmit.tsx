@@ -9,7 +9,12 @@ const Submit = styled.input`
   background-color: #20b2aa;
   font-size: 16px;
   font-weight: 600;
+  transition: background-color 0.35s ease-out;
   cursor: pointer;
+  &:hover,
+  &:focus {
+    background-color: #33a54a;
+  }
 `;
 
 function GenreModalSubmit({ onClick }: SubmitProps) {
