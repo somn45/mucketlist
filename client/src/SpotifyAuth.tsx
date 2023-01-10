@@ -8,6 +8,7 @@ import {
   changeisAccessTokenState,
 } from './store/reducers/rootReducer';
 import { useAppDispatch } from './store/store';
+import { useNavigate } from 'react-router';
 
 interface RefreshAxiosRequest {
   firebaseUid: string;
@@ -23,9 +24,11 @@ interface AuthAxiosResponse extends AxiosResponse {
 }
 
 const FIREBASE_UID = getToken('firebaseUid');
+console.log(FIREBASE_UID);
 const cookies = new Cookies();
 
 function SpotifyAuth() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const code = new URLSearchParams(window.location.search).get('code');
   useEffect(() => {
@@ -45,12 +48,11 @@ function SpotifyAuth() {
           firebaseUid: FIREBASE_UID,
         },
       };
+      navigate('/');
       const response = await requestAxios<AuthAxiosRequest, AuthAxiosResponse>(
         requestAxiosParams
       );
-      console.log('active genres');
       createAccessToken(response.data);
-      window.location.href = '/';
     } catch (error) {
       console.log(error);
     }

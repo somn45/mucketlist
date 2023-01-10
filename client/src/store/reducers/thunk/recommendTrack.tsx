@@ -75,7 +75,7 @@ const recommendTrack = createSlice({
         (artistOffset) =>
           artistOffset.artist === action.payload.track.artists[0].name
       );
-      console.log(action.payload.query);
+      console.log(action.payload);
       if (action.payload.query === 'genres') {
         return {
           ...state,

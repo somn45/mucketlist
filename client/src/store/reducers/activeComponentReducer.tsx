@@ -11,7 +11,6 @@ const activeComponent = createSlice({
   initialState,
   reducers: {
     activeGenres: () => {
-      console.log('active genres');
       return {
         genres: true,
         options: false,

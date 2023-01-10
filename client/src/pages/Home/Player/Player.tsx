@@ -85,7 +85,6 @@ function Player() {
   };
 
   const handleChangePlayingPosition = () => {
-    console.log('player : ', playingPosition);
     if (isArrayEmpty(tracks)) return;
     setPlayingTrack(tracks[playingPosition].name);
     setPlayingTrackImage(tracks[playingPosition].album.images[2].url);
@@ -144,7 +143,6 @@ function Player() {
   };
 
   const resume = (player: PlayerType) => {
-    console.log('resume');
     player?.resume();
   };
 

@@ -10,10 +10,7 @@ import WebPlayback from '../../WebPlayback';
 import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 import AddCustomTrack from './AddCustomTrack/AddCustomTrack';
 import StatusMessage from '../../components/StatusMessage';
-import { activeGenres, RootState } from '../../store/reducers/rootReducer';
-import { useAppDispatch } from '../../store/store';
-import { getSpotifyGenreList } from '../../store/reducers/thunk/genres';
-import HandBookModal from './HandBookModal/HandBookModal';
+import { RootState } from '../../store/reducers/rootReducer';
 import { useMediaQuery } from 'react-responsive';
 import getToken from '../../utils/functions/getToken';
 import Modals from './Modals';
@@ -48,7 +45,11 @@ const HomeDesktopSection = styled(HomeSection)`
 
 function Home() {
   const [statusMessageState, setStatusMessageState] = useState('');
+  const [isAcitvePlayer, setIsAcitvePlayer] = useState(false);
   const { tracks, statusMessage } = useSelector((state: RootState) => state);
+  const isActive = useSelector((state: RootState) => state.activeComponent);
+
+  console.log(tracks.length);
 
   const customTracks = useSelector(
     (state: RootState) => state.customTracks.tracks
@@ -64,6 +65,11 @@ function Home() {
     if (!statusMessage) return;
     setStatusMessageState(statusMessage);
   }, [statusMessage]);
+
+  useEffect(() => {
+    if (isActive.genres || isActive.options) setIsAcitvePlayer(false);
+    else setIsAcitvePlayer(true);
+  }, [isActive]);
 
   const HomeSectionContent = (
     <>
@@ -88,7 +94,7 @@ function Home() {
         ) : (
           <HomeDesktopSection>{HomeSectionContent}</HomeDesktopSection>
         )}
-        {!isArrayEmpty(tracks) && <WebPlayback />}
+        {isAcitvePlayer && <WebPlayback />}
       </Main>
     </>
   );
