@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
 const ModalFormFrame = styled.form`
-  width: 425px;
-  height: 600px;
   padding: 0 20px;
   background-color: white;
+  border: 3px solid #20b2aa;
   display: flex;
   flex-direction: column;
   justify-content: center;

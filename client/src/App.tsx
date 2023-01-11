@@ -8,8 +8,6 @@ import CustomPlayList from './pages/CustomPlayList/CustomPlayList';
 import GlobalStyles from './GlobalStyles';
 import Home from './pages/Home/Home';
 
-const cookies = new Cookies();
-
 function App() {
   return (
     <>

@@ -5,7 +5,6 @@ const isSetAccessToken = createSlice({
   initialState: false,
   reducers: {
     changeisAccessTokenState: (state, action: PayloadAction<boolean>) => {
-      console.log(action.payload);
       return action.payload;
     },
   },

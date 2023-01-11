@@ -26,9 +26,6 @@ interface AddCustomTrackAxiosResponse {
   errorMsg: string;
 }
 
-const ACCESS_TOKEN = getToken('accessToken');
-const FIREBASE_UID = getToken('firebaseUid');
-
 function AddCustomTrack() {
   const tracks = useSelector((state: RootState) => state.tracks);
   const { playingPosition, selectedGenres } = useSelector(
@@ -46,6 +43,8 @@ function AddCustomTrack() {
 
   const addCustomTrack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    const accessToken = getToken('accessToken');
+    const firebaseUid = getToken('firebaseUid');
     if (isArrayEmpty(tracks)) return;
     const track = tracks[playingPosition];
     const favoriteTrack = createFavoriteTrack(track);
@@ -54,8 +53,8 @@ function AddCustomTrack() {
       url: 'http://localhost:3001/tracks/add',
       data: {
         track: favoriteTrack,
-        accessToken: ACCESS_TOKEN,
-        firebaseUid: FIREBASE_UID,
+        accessToken,
+        firebaseUid,
       },
     };
     const response = await requestAxios<
