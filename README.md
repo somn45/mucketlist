@@ -3,7 +3,7 @@
 </center>
 
 🔗 Github : https://github.com/somn45/mucketlist  
-🔗 Page Link : https://mucketlist.site
+🔗 Page Link : https://mucketlist.com
 🧩 테스트용 아이디 : mucketlisttest@gmail.com
 🧩 테스트용 비밀번호 : myreactapp
 
@@ -34,20 +34,6 @@ npm run dev:client
 ```
 npm run dev:server
 ```
-
-### 클라이언트 실행
-
-```
-npm run start:client
-```
-
-### 서버 실행
-
-```
-npm run start:server
-```
-
----
 
 ## 📕 Guide
 
