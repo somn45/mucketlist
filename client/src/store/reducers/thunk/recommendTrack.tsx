@@ -47,13 +47,16 @@ export const getRecommendTrack = createAsyncThunk<
   const artistOffset = state.recommendTrack.artistsOffset.filter(
     (artistOffset) => artistOffset.artist === artists[0]
   );
-  const response = await axios.put(`http://localhost:3001/tracks/recommend`, {
-    accessToken: ACCESS_TOKEN,
-    artist: artists[0],
-    genres: genres[0],
-    artistOffset: artistOffset.length > 1 ? artistOffset[0].offset : 1,
-    genreOffset: state.recommendTrack.genreOffset,
-  });
+  const response = await axios.put(
+    `https://mucketlist-server.site/tracks/recommend`,
+    {
+      accessToken: ACCESS_TOKEN,
+      artist: artists[0],
+      genres: genres[0],
+      artistOffset: artistOffset.length > 1 ? artistOffset[0].offset : 1,
+      genreOffset: state.recommendTrack.genreOffset,
+    }
+  );
   if (response.status >= 400)
     return thunkApi.rejectWithValue('추천 트랙을 추가하는 도중 문제 발생');
   return response.data as ResponseGetRecommendTrack;

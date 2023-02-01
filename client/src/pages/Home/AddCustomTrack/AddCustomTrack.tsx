@@ -50,7 +50,7 @@ function AddCustomTrack() {
     const favoriteTrack = createFavoriteTrack(track);
     const requestAxiosParams = {
       method: 'post',
-      url: 'http://localhost:3001/tracks/add',
+      url: 'https://mucketlist-server.site/tracks/add',
       data: {
         track: favoriteTrack,
         accessToken,

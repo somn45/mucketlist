@@ -58,7 +58,7 @@ const GenreModalWrap = styled(Modal)<{ isActive: boolean }>`
         `};
 `;
 
-const SERVER_ENDPOINT = 'http://localhost:3001';
+const SERVER_ENDPOINT = 'https://mucketlist-server.site';
 
 function GenreModal({ genres }: GenreModalProps) {
   const dispatch = useAppDispatch();

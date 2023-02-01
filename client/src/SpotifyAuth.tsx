@@ -42,7 +42,7 @@ function SpotifyAuth() {
     try {
       const requestAxiosParams = {
         method: 'post',
-        url: 'http://localhost:3001/users/spotify/auth',
+        url: 'https://mucketlist-server.site/users/spotify/auth',
         data: {
           code: code,
           firebaseUid: FIREBASE_UID,
@@ -70,7 +70,7 @@ function SpotifyAuth() {
   const refreshAccessToken = async (): Promise<void> => {
     const requestAxiosParams = {
       method: 'post',
-      url: 'http://localhost:3001/users/spotify/refresh',
+      url: 'https://mucketlist-server.site/users/spotify/refresh',
       data: {
         firebaseUid: FIREBASE_UID,
       },

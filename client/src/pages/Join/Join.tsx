@@ -22,7 +22,7 @@ const AccountSection = styled.section`
   margin-top: 250px;
 `;
 
-const SERVER_ENDPOINT = 'http://localhost:3001';
+const SERVER_ENDPOINT = 'https://mucketlist-server.site';
 const cookies = new Cookies();
 
 function Join() {

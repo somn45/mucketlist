@@ -57,7 +57,7 @@ const TrackGenreList = styled.div`
   display: inline;
 `;
 
-const SERVER_URL = 'http://localhost:3001';
+const SERVER_URL = 'https://mucketlist-server.site';
 const cookies = new Cookies();
 
 function CustomTrackItem({ track }: CustomTrackItemProps) {

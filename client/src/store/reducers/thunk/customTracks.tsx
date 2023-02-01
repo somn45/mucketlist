@@ -26,7 +26,7 @@ export const getCustomTracks = createAsyncThunk<
   }
 >('customTracks/getCustomTracks', async (firebaseUid, thunkApi) => {
   const response = await axios.get(
-    `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
+    `https://mucketlist-server.site/tracks/read?firebaseUid=${firebaseUid}`
   );
   if (response.status >= 400)
     return thunkApi.rejectWithValue('커스텀 트랙을 불러오는 도중 문제 발생');

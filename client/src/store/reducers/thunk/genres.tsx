@@ -22,7 +22,7 @@ export const getSpotifyGenreList = createAsyncThunk<
   }
 >('genres/getSpotifyGenreList', async (accessToken, thunkApi) => {
   const response = await axios.post(
-    `http://localhost:3001/tracks/genres`,
+    `https://mucketlist-server.site/tracks/genres`,
     {
       accessToken: accessToken,
     },
