@@ -49,8 +49,6 @@ function Home() {
   const { tracks, statusMessage } = useSelector((state: RootState) => state);
   const isActive = useSelector((state: RootState) => state.activeComponent);
 
-  console.log(tracks.length);
-
   const customTracks = useSelector(
     (state: RootState) => state.customTracks.tracks
   );

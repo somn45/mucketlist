@@ -24,7 +24,6 @@ interface AuthAxiosResponse extends AxiosResponse {
 }
 
 const FIREBASE_UID = getToken('firebaseUid');
-console.log(FIREBASE_UID);
 const cookies = new Cookies();
 
 function SpotifyAuth() {
@@ -54,7 +53,7 @@ function SpotifyAuth() {
       );
       createAccessToken(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

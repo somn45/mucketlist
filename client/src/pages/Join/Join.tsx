@@ -63,7 +63,7 @@ function Join() {
     if (error instanceof AxiosError) {
       return setErrorMsg(error?.response?.data.errorMsg);
     } else {
-      return console.log(error);
+      return console.error(error);
     }
   };
   return (

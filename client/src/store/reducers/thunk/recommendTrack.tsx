@@ -42,7 +42,6 @@ export const getRecommendTrack = createAsyncThunk<
   }
 >('recommendTracksReducer/getRecommendTrack', async (track, thunkApi) => {
   const { artists, genres } = track;
-  console.log(artists[0]);
   const state = store.getState();
   const artistOffset = state.recommendTrack.artistsOffset.filter(
     (artistOffset) => artistOffset.artist === artists[0]
@@ -78,7 +77,6 @@ const recommendTrack = createSlice({
         (artistOffset) =>
           artistOffset.artist === action.payload.track.artists[0].name
       );
-      console.log(action.payload);
       if (action.payload.query === 'genres') {
         return {
           ...state,
@@ -87,7 +85,6 @@ const recommendTrack = createSlice({
           genreOffset: state.genreOffset + 1,
         };
       } else if (duplicatedTrack.length === 0) {
-        console.log(action.payload.track.artists);
         return {
           ...state,
           loading: true,

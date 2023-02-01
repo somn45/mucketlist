@@ -35,12 +35,10 @@ export const searchTrackToArtists = async (
   accessToken: string
 ) => {
   spotifyApi.setAccessToken(accessToken);
-  console.log(artist);
   const response = await spotifyApi.searchTracks(`artist:${artist}`, {
     limit: 1,
     offset: artistOffset,
   });
-  console.log(response.body.tracks?.items[0]);
   return {
     track: response.body.tracks?.items[0],
     query: 'artists',
@@ -65,6 +63,6 @@ export const searchTrackToGenres = async (
       query: 'genres',
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

@@ -39,7 +39,7 @@ export const join = async (req: express.Request, res: express.Response) => {
           errorMsg: '이미 가입된 회원의 이메일입니다.',
         });
       }
-    } else console.log(error);
+    } else console.error(error);
   }
 };
 
@@ -52,7 +52,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     });
   } catch (error) {
     if (error instanceof FirebaseError) {
-      console.log(error);
+      console.error(error);
       if (error.code === 'auth/user-not-found') {
         return res.status(400).json({
           errorMsg: '가입되어 있는 이메일이 아닙니다',
@@ -63,7 +63,7 @@ export const login = async (req: express.Request, res: express.Response) => {
           errorMsg: '이메일/비밀번호가 일치하지 않습니다.',
         });
       }
-    } else console.log(error);
+    } else console.error(error);
   }
 };
 
@@ -93,7 +93,7 @@ export const spotifyAuth = async (
       expiresIn: response.body.expires_in,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -114,6 +114,6 @@ export const refresh = async (req: express.Request, res: express.Response) => {
       expiresIn: response.body.expires_in,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

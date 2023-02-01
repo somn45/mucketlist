@@ -98,8 +98,6 @@ function Player() {
   const detectFinishTrackPlay = (player: Spotify.Player) => {
     if (!player) return;
     player.addListener('player_state_changed', async (state) => {
-      console.log('Player state changed', state);
-      console.log('Playing Track', state.track_window.current_track.name);
       if (state.duration <= state.position) {
         appDispatch(getTrackProgress(player));
         setIsFinishTrackPlay(true);
@@ -158,7 +156,7 @@ function Player() {
         setTimeout(() => retryPlay({ spotify_uri, playerInstance }), 3000);
         dispatch(updateStatusMessage('트랙 재생을 재시도 중...'));
       }
-    } else console.log(error);
+    } else console.error(error);
   };
 
   const retryPlay = ({ spotify_uri, playerInstance }: PlayProps) => {

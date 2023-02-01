@@ -47,7 +47,7 @@ export const genres = async (req: express.Request, res: express.Response) => {
     const response = await spotifyApi.getAvailableGenreSeeds();
     return res.status(200).json({ genres: response.body.genres });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -68,7 +68,6 @@ export const search = async (req: express.Request, res: express.Response) => {
 
 export const addTrack = async (req: express.Request, res: express.Response) => {
   const { track, accessToken, firebaseUid }: addTrackControllerBody = req.body;
-  console.log(track, firebaseUid, accessToken);
   try {
     const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
     if (!userData.exists()) return;
@@ -79,7 +78,6 @@ export const addTrack = async (req: express.Request, res: express.Response) => {
         (customTrack) => customTrack.id === track.id
       );
       if (dupulicateTrack) {
-        console.log('duplicate');
         return res.status(204).json({
           errorMsg: '이 트랙은 커스텀 트랙에 이미 등록되어 있습니다.',
         });
@@ -99,13 +97,12 @@ export const addTrack = async (req: express.Request, res: express.Response) => {
     );
     return res.sendStatus(200);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
 export const getTrack = async (req: express.Request, res: express.Response) => {
   try {
-    console.log('get track');
     const firebaseUid = req.query.firebaseUid as string;
     const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
     if (!userData.exists()) return;
@@ -114,7 +111,7 @@ export const getTrack = async (req: express.Request, res: express.Response) => {
       tracks: customTracks,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -150,7 +147,6 @@ export const addTrackPlayerQueue = async (
       },
     }
   );
-  console.log(response);
   return res.sendStatus(200);
 };
 
@@ -175,6 +171,6 @@ export const retrieveTrack = async (
       query: searchResult.query,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

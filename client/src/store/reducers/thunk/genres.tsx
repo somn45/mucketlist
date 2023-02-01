@@ -32,7 +32,6 @@ export const getSpotifyGenreList = createAsyncThunk<
       },
     }
   );
-  console.log('get genre');
   if (response.status >= 400)
     return thunkApi.rejectWithValue('Spotify 장르를 불러오는 도중 문제 발생');
   return response.data.genres.slice(0, 20) as string[];
