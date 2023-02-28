@@ -19,10 +19,6 @@ import { useAppDispatch } from '../../../store/store';
 import requestAxios from '../../../utils/functions/requestAxios';
 import { TrackState } from '../TrackList/TrackList';
 
-interface GenreModalProps {
-  genres: string[];
-}
-
 interface SearchTrackAxiosRequest {
   accessToken: string;
   genres: string;
@@ -60,13 +56,9 @@ const GenreModalWrap = styled(Modal)<{ isActive: boolean }>`
 
 const SERVER_ENDPOINT = 'http://localhost:3001';
 
-function GenreModal({ genres }: GenreModalProps) {
+function GenreModal() {
   const dispatch = useAppDispatch();
-  const {
-    tracks,
-    selectedGenres,
-    genres: { loading },
-  } = useSelector((state: RootState) => state);
+  const { selectedGenres } = useSelector((state: RootState) => state);
   const isActive = useSelector((state: RootState) => state.activeComponent);
   useEffect(() => {
     dispatch(clearGenres());
@@ -95,7 +87,7 @@ function GenreModal({ genres }: GenreModalProps) {
     <GenreModalWrap isActive={isActive.genres}>
       <GenreModalForm>
         <GenreModalTitle />
-        {!loading ? <GenreSelectionTab genres={genres} /> : <></>}
+        <GenreSelectionTab />
         <GenreModalSubmit onClick={searchTracksToGenre} />
       </GenreModalForm>
     </GenreModalWrap>

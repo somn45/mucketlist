@@ -15,6 +15,11 @@ import { useAppDispatch } from '../../../store/store';
 import { TrackState } from '../TrackList/TrackList';
 import requestAxios from '../../../utils/functions/requestAxios';
 import { ICustomPlayList } from '../../CustomPlayList/CustomPlayList';
+import { useMutation } from 'react-query';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import styled, { keyframes } from 'styled-components';
+import Icon from '../../../components/Icon';
+import { queryClient } from '../../..';
 
 interface AddCustomTrackAxiosRequest {
   track: ICustomPlayList;
@@ -25,6 +30,39 @@ interface AddCustomTrackAxiosRequest {
 interface AddCustomTrackAxiosResponse {
   errorMsg: string;
 }
+
+const TransisionAddCustomTrackButton = keyframes`
+  0% {
+    width: 20px;
+    height: 20px;
+    color: #fe3fcb;
+  } 60% {
+    width: 25px;
+    height: 25px;
+    color: #fe3fcb;
+  } 100% {
+    width: 25px;
+    height: 25px;
+    color: #E93636;
+  }
+`;
+
+const AddCustomTrackButtonStyle = styled.button`
+  width: 32px;
+  height: 32px;
+  padding: 7px;
+  box-sizing: content-box;
+  &:hover {
+    svg {
+      animation: ${TransisionAddCustomTrackButton} 1.2s ease forwards;
+    }
+  }
+  svg {
+    width: 22px;
+    height: 22px;
+    color: #fe3fcb;
+  }
+`;
 
 function AddCustomTrack() {
   const tracks = useSelector((state: RootState) => state.tracks);
@@ -41,12 +79,10 @@ function AddCustomTrack() {
     checkDuplicatedTrack();
   }, [recommendTrack]);
 
-  const addCustomTrack = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const requestAddCustomTrack = async (track: TrackState) => {
     const accessToken = getToken('accessToken');
     const firebaseUid = getToken('firebaseUid');
     if (isArrayEmpty(tracks)) return;
-    const track = tracks[playingPosition];
     const favoriteTrack = createFavoriteTrack(track);
     const requestAxiosParams = {
       method: 'post',
@@ -57,20 +93,42 @@ function AddCustomTrack() {
         firebaseUid,
       },
     };
-    const response = await requestAxios<
+    const { data } = await requestAxios<
       AddCustomTrackAxiosRequest,
       AddCustomTrackAxiosResponse
     >(requestAxiosParams);
-    if (response.status === 204) {
-      updateStatusMessage(`${track.name}는 이미 찜한 트랙에 등록되었습니다.`);
-    } else
-      dispatch(
-        updateStatusMessage(
-          `${track.name}이 찜한 트랙 리스트에 추가되었습니다.`
-        )
-      );
+    dispatch(
+      updateStatusMessage(`${track.name}이 찜한 트랙 리스트에 추가되었습니다.`)
+    );
     dispatch(getRecommendTrack(favoriteTrack));
+    return data;
   };
+
+  const addCustomTrack = useMutation(
+    (track: TrackState) => requestAddCustomTrack(track),
+    {
+      onMutate: async () => {},
+      onSuccess: (customTrack?: AddCustomTrackAxiosResponse) => {
+        queryClient.cancelQueries('customTracks');
+
+        const previousCustomTracks = queryClient.getQueryData(
+          'customTracks'
+        ) as ICustomPlayList[];
+        if (previousCustomTracks) {
+          queryClient.setQueryData('customTracks', [
+            ...previousCustomTracks,
+            customTrack,
+          ]);
+        } else queryClient.setQueryData('customTracks', customTrack);
+      },
+      onError: (error: unknown) => {
+        console.log(error);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('customTracks');
+      },
+    }
+  );
 
   const createFavoriteTrack = (track: TrackState) => {
     return {
@@ -79,7 +137,7 @@ function AddCustomTrack() {
       artists: track.artists.map((artist) => artist.name),
       artistId: track.artists[0].id,
       genres: selectedGenres,
-      release_date: track.album.release_date,
+      releaseDate: track.album.release_date,
       image: track.album.images[2].url,
     };
   };
@@ -94,7 +152,11 @@ function AddCustomTrack() {
 
   return (
     <Wrap>
-      <AddCustomTrackButton onClick={addCustomTrack} />
+      <AddCustomTrackButtonStyle
+        onClick={() => addCustomTrack.mutate(tracks[playingPosition])}
+      >
+        <Icon icon={faHeart} />
+      </AddCustomTrackButtonStyle>
     </Wrap>
   );
 }

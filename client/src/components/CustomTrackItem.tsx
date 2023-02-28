@@ -5,11 +5,10 @@ import { useDispatch } from 'react-redux';
 
 import { ICustomPlayList } from '../pages/CustomPlayList/CustomPlayList';
 import CustomTrackGenre from './CustomTrackGenre';
-import {
-  deleteCustomTrack,
-  updateStatusMessage,
-} from '../store/reducers/rootReducer';
+import { updateStatusMessage } from '../store/reducers/rootReducer';
 import requestAxios from '../utils/functions/requestAxios';
+import { useMutation } from 'react-query';
+import { queryClient } from '..';
 
 interface CustomTrackItemProps {
   track: ICustomPlayList;
@@ -63,29 +62,34 @@ const cookies = new Cookies();
 function CustomTrackItem({ track }: CustomTrackItemProps) {
   const dispatch = useDispatch();
 
-  const handleDeleteCustomTrack = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-    id: string
-  ) => {
+  const deleteCustomTracks = async (id: string) => {
     const firebaseUid = cookies.get('firebaseUid');
     const requestAxiosParams = {
       method: 'delete',
       url: `${SERVER_URL}/tracks/delete`,
       data: { firebaseUid, id },
     };
-    const response = await requestAxios<
+    const { data } = await requestAxios<
       DeleteCustomTrackAxiosRequest,
       AxiosResponse
     >(requestAxiosParams);
-    if (response.status === 200) {
-      dispatch(deleteCustomTrack(id));
+    return data;
+  };
+
+  const deleteMutation = useMutation((id: string) => deleteCustomTracks(id), {
+    onMutate: async () => {
+      queryClient.cancelQueries('customTracks');
+    },
+    onSuccess: () => {
       dispatch(
         updateStatusMessage(
           `${track.name}이 찜한 트랙 리스트에서 삭제되었습니다.`
         )
       );
-    }
-  };
+    },
+    onSettled: () => queryClient.invalidateQueries(),
+  });
+
   return (
     <TrackItem>
       <TrackColumn>
@@ -93,14 +97,12 @@ function CustomTrackItem({ track }: CustomTrackItemProps) {
         <TrackInfo>
           <div>
             <TrackName>{track.name}</TrackName>
-            <TrackDeleteButton
-              onClick={(e) => handleDeleteCustomTrack(e, track.id)}
-            >
+            <TrackDeleteButton onClick={() => deleteMutation.mutate(track.id)}>
               X
             </TrackDeleteButton>
           </div>
           <span>{`아티스트 ${track.artists}`}</span>
-          <span>{`발매일 ${track.release_date}`}</span>
+          <span>{`발매일 ${track.releaseDate}`}</span>
         </TrackInfo>
       </TrackColumn>
       <TrackGenreList>

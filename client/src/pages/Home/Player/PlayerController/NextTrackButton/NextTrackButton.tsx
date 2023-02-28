@@ -9,14 +9,15 @@ import { useAppDispatch } from '../../../../../store/store';
 
 interface NextTrackButtonProps {
   player: Spotify.Player | null;
+  clearProgress: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function NextTrackButton({ player }: NextTrackButtonProps) {
+function NextTrackButton({ player, clearProgress }: NextTrackButtonProps) {
   const dispatch = useAppDispatch();
 
   const onNextTrack = () => {
     if (!player) return;
-    dispatch(clearTrackProgress());
+    clearProgress(0);
     dispatch(moveNextPosition());
     dispatch(updatePlayState(true));
   };

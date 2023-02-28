@@ -24,6 +24,7 @@ interface PlayControllerProps extends IPlayerContext {
   onPlay: {
     (uri: string): void;
   };
+  clearProgress: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const PlayerControllerWrap = styled.div`
@@ -42,6 +43,7 @@ const PlayerControllerWrap = styled.div`
 function PlayerController({
   player,
   onPlay,
+  clearProgress,
 }: Omit<PlayControllerProps, 'deviceId'>) {
   const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
   const isPlay = useSelector((state: RootState) => state.isPlay);
@@ -54,8 +56,8 @@ function PlayerController({
           player={player}
           onPlay={onPlay}
         />
-        <PrevTrackButton player={player} />
-        <NextTrackButton player={player} />
+        <PrevTrackButton player={player} clearProgress={clearProgress} />
+        <NextTrackButton player={player} clearProgress={clearProgress} />
         <RepeatMode />
         <ShuffleMode />
       </PlayerControllerWrap>

@@ -55,6 +55,7 @@ function TrackList() {
     query: '(max-width: 1023px)',
   });
   const tracks = useSelector((state: RootState) => state.tracks);
+
   const displayedTracks = isMobile
     ? tracks.slice(0, 40)
     : isTablet

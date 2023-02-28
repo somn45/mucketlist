@@ -16,19 +16,13 @@ import TrackName from './TrackName/TrackName';
 import ArtistName from './ArtistName/ArtistName';
 import Wrap from './Wrap/Wrap';
 import PlayerController from './PlayerController/PlayerController';
-import { getTrackProgress } from '../../../store/reducers/thunk/progress';
 import { useAppDispatch } from '../../../store/store';
 import styled from 'styled-components';
 import PlayerTrackImage from './PlayerTrackImage/PlayerTrackImage';
-import requestAxios from '../../../utils/functions/requestAxios';
 
 interface PlayProps {
   spotify_uri: string;
   playerInstance: Spotify.Player;
-}
-
-interface LoadPlayerAxiosRequest {
-  uris: string[];
 }
 
 interface PlayError extends PlayProps {
@@ -42,16 +36,15 @@ const PlayerColumn = styled.div`
 
 function Player() {
   const dispatch = useDispatch();
-  const appDispatch = useAppDispatch();
   const [isFinishTrackPlay, setIsFinishTrackPlay] = useState(false);
   const [playingTrack, setPlayingTrack] = useState('');
   const [playingTrackImage, setPlayingTrackImage] = useState('');
+  const [progress, setProgress] = useState(0);
   const [artist, setArtist] = useState('');
   const [retryCount, setRetryCount] = useState(0);
   const { tracks, playMode, playingPosition, isPlay } = useSelector(
     (state: RootState) => state
   );
-  const progress = useSelector((state: RootState) => state.progress.value);
   const { player, deviceId } = useContext(PlayerContext);
   const retryCountRef = useRef(retryCount);
   retryCountRef.current = retryCount;
@@ -75,6 +68,7 @@ function Player() {
     };
     playModeObject[playMode]();
   }, [isFinishTrackPlay]);
+
   const dispatchNormalMode = () => dispatch(moveNextPosition());
 
   const dispatchRepeatMode = () => {
@@ -95,13 +89,15 @@ function Player() {
     prepareToPlay(tracks[playingPosition].uri);
   };
 
-  const detectFinishTrackPlay = (player: Spotify.Player) => {
+  const detectFinishTrackPlay = async (player: Spotify.Player) => {
     if (!player) return;
     player.addListener('player_state_changed', async (state) => {
       console.log('Player state changed', state);
       console.log('Playing Track', state.track_window.current_track.name);
       if (state.duration <= state.position) {
-        appDispatch(getTrackProgress(player));
+        const data = await player.getCurrentState();
+        if (!data) return;
+        setProgress(data.position);
         setIsFinishTrackPlay(true);
       }
     });
@@ -181,7 +177,11 @@ function Player() {
       <PlayerColumn>
         <TrackName text={playingTrack} />
         <ArtistName text={artist} />
-        <PlayerController player={player} onPlay={prepareToPlay} />
+        <PlayerController
+          player={player}
+          onPlay={prepareToPlay}
+          clearProgress={() => setProgress(0)}
+        />
       </PlayerColumn>
     </Wrap>
   );

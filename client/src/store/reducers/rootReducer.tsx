@@ -10,19 +10,14 @@ import trackProgress from './thunk/progress';
 import playingPosition from './playingPosition';
 import playMode from './playMode';
 import selectedGenres from './selectedGenres';
-import genres from './thunk/genres';
-import customTracks from './thunk/customTracks';
 import recommendTrack from './thunk/recommendTrack';
-import { useSelector } from 'react-redux';
 import isSetAccessToken from './isSetAccessToken';
 
 const rootReducer = combineReducers({
   activeComponent: activeComponent.reducer,
-  genres: genres.reducer,
   selectedGenres: selectedGenres.reducer,
   tracks: tracks.reducer,
   recommendTrack: recommendTrack.reducer,
-  customTracks: customTracks.reducer,
   isPlay: isPlay.reducer,
   isSetAccessToken: isSetAccessToken.reducer,
   volume: volume.reducer,
@@ -40,7 +35,6 @@ const persistConfig = {
 
 export const { activeGenres, activeOptions, activeHandBook, inactiveAll } =
   activeComponent.actions;
-export const { clearSpotifyGenreList } = genres.actions;
 export const { addGenre, removeGenre, clearGenres } = selectedGenres.actions;
 export const {
   createTracks,
@@ -50,7 +44,6 @@ export const {
   sortByRandom,
   clearTracks,
 } = tracks.actions;
-export const { deleteCustomTrack } = customTracks.actions;
 export const { onChangeVolume, toggleVolume } = volume.actions;
 export const { updatePlayMode } = playMode.actions;
 export const { clearTrackProgress } = trackProgress.actions;

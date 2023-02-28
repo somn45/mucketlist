@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { Cookies } from 'react-cookie';
+import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import CustomPlayListTitle from './Title/CustomPlayListTitle';
@@ -7,10 +6,8 @@ import CloseButton from './CloseButton/CloseButton';
 import CustomTrackItem from '../../components/CustomTrackItem';
 import styled from 'styled-components';
 import { Modal } from '../../utils/styles/Modal';
-import { useAppDispatch } from '../../store/store';
-import { getCustomTracks } from '../../store/reducers/thunk/customTracks';
-import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 import { useMediaQuery } from 'react-responsive';
+import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 
 export interface ICustomPlayList {
   name: string;
@@ -18,12 +15,15 @@ export interface ICustomPlayList {
   artists: string[];
   genres: string[];
   artistId: string;
-  release_date: string;
+  releaseDate: string;
   image: string;
 }
 
 interface IOutletContext {
+  isLoading: boolean;
+  isError: boolean;
   customTracks: ICustomPlayList[];
+  error: unknown;
 }
 
 const Wrap = styled(Modal)`
@@ -64,12 +64,10 @@ const CustomTrackThreeColumnsList = styled.ul`
   gap: 10px;
 `;
 
-const cookies = new Cookies();
-
 function CustomPlayList() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { customTracks } = useOutletContext<IOutletContext>();
+  const { isLoading, isError, customTracks, error } =
+    useOutletContext<IOutletContext>();
   const isMobile = useMediaQuery({
     query: '(max-width: 767px)',
   });
@@ -77,21 +75,16 @@ function CustomPlayList() {
     query: '(min-width: 1440px)',
   });
 
-  useEffect(() => {
-    if (!isArrayEmpty(customTracks)) return;
-    getCustomPlayList();
-  }, []);
+  const CustomTrackItemMaps = !isArrayEmpty(customTracks) ? (
+    customTracks.map((track: ICustomPlayList) => (
+      <CustomTrackItem key={track.id} track={track} />
+    ))
+  ) : (
+    <span>찜한 트랙 목록이 존재하지 않습니다..</span>
+  );
 
-  const getCustomPlayList = async () => {
-    const firebaseUid = cookies.get('firebaseUid');
-    dispatch(getCustomTracks(firebaseUid));
-  };
+  if (isLoading) <div>찜한 트랙 목록 로딩 중...</div>;
 
-  const CustomTrackItemMaps = customTracks
-    ? customTracks.map((track: ICustomPlayList) => (
-        <CustomTrackItem key={track.id} track={track} />
-      ))
-    : null;
   return (
     <Wrap>
       <CustomTrackHeader>
