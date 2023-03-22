@@ -1,36 +1,22 @@
 import { useMediaQuery } from 'react-responsive';
-import styled from 'styled-components';
-import AddCustomTrack from './AddCustomTrack/AddCustomTrack';
-import TrackList from './TrackList/TrackList';
 
-const HomeSection = styled.section`
-  padding-top: 40px;
-  display: grid;
-  gap: 6px;
-  position: relative;
-`;
+import AddCustomTrack from '../AddCustomTrack/AddCustomTrack';
+import TrackList from '../TrackList/TrackList';
 
-const HomeMobileSection = styled(HomeSection)`
-  grid-template-columns: repeat(5, 48px);
-  grid-template-rows: repeat(8, 48px);
-`;
+import {
+  HomeDesktopSection,
+  HomeMobileSection,
+  HomeTabletSection,
+} from '../../styles/home/homeStyles';
 
-const HomeTabletSection = styled(HomeSection)`
-  grid-template-columns: repeat(7, 64px);
-  grid-template-rows: repeat(9, 64px);
-`;
-
-const HomeDesktopSection = styled(HomeSection)`
-  grid-template-columns: repeat(10, 64px);
-  grid-template-rows: repeat(10, 64px);
-`;
+import { MOBILE_SIZE, TABLET_SIZE } from '../../constants/constants';
 
 function ResponsiveHomeSection() {
   const isMobile = useMediaQuery({
-    query: '(max-width: 767px)',
+    query: MOBILE_SIZE,
   });
   const isTablet = useMediaQuery({
-    query: '(max-width: 1023px)',
+    query: TABLET_SIZE,
   });
 
   const HomeSectionContent = (

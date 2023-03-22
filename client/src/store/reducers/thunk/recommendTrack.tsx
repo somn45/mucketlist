@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 import { Cookies } from 'react-cookie';
-import { ICustomPlayList } from '../../../pages/CustomPlayList/CustomPlayList';
-import { TrackState } from '../../../pages/Home/TrackList/TrackList';
+import { ICustomTrack } from '../../../types/trackTypes/trackTypes';
+import { ITrack } from '../../../types/trackTypes/trackTypes';
 import getToken from '../../../utils/functions/getToken';
 import store from '../../store';
 
@@ -13,14 +13,14 @@ interface ArtistOffset {
 
 interface IinitialState {
   loading: boolean;
-  track?: TrackState;
+  track?: ITrack;
   artistsOffset: ArtistOffset[];
   genreOffset: number;
   errorMsg: string;
 }
 
 interface ResponseGetRecommendTrack {
-  track: TrackState;
+  track: ITrack;
   query: string;
 }
 
@@ -36,7 +36,7 @@ const ACCESS_TOKEN = getToken('accessToken');
 
 export const getRecommendTrack = createAsyncThunk<
   ResponseGetRecommendTrack,
-  ICustomPlayList,
+  ICustomTrack,
   {
     rejectValue: string;
   }

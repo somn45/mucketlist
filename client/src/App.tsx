@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
-import Login from './pages/Login/Login';
-import Join from './pages/Join/Join';
+import Join from './pages/Account/Join/Join';
+import Login from './pages/Account/Login/Login';
 
 import SpotifyAuth from './SpotifyAuth';
-import CustomPlayList from './pages/CustomPlayList/CustomPlayList';
 import GlobalStyles from './GlobalStyles';
 import Home from './pages/Home/Home';
+import CustomTrackList from './pages/CustomTrackList/CustomTrackList';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <SpotifyAuth />
         <Routes>
           <Route path="/" element={<Home />}>
-            <Route path="/tracks/custom" element={<CustomPlayList />} />
+            <Route path="/tracks/custom" element={<CustomTrackList />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/Join" element={<Join />} />

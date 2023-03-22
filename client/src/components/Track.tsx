@@ -1,10 +1,11 @@
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
-import { TrackState } from '../pages/Home/TrackList/TrackList';
+
+import { ITrack } from '../types/trackTypes/trackTypes';
 
 interface TrackComponentProps {
-  track: TrackState;
+  track: ITrack;
   playingTrack: string;
 }
 

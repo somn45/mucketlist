@@ -1,19 +1,9 @@
 import { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { SpanProps } from '../utils/types/atomTypes';
+import styled from 'styled-components';
 
-const AnimationStatusBar = keyframes`
-  0% {
-    background-color: black;
-    width: 0;
-  } 33% {
-    background-color: #D363AD;
-    width: 100%;
-  }100% {
-    background-color: #D363AD;
-    width: 100%;
-  }
-`;
+import { AnimationStatusBar } from '../styles/animation/StatusBarAnimation';
+
+import { SpanProps } from '../types/atomTypes/atom';
 
 const StatusMessageStyle = styled.span`
   width: 100%;

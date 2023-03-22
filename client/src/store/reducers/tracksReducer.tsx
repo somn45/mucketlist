@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TrackState } from '../../pages/Home/TrackList/TrackList';
+import { ITrack } from '../../types/trackTypes/trackTypes';
 
 const tracks = createSlice({
   name: 'tracksReducer',
-  initialState: [] as TrackState[],
+  initialState: [] as ITrack[],
   reducers: {
-    createTracks: (state, action: PayloadAction<TrackState[]>) => {
+    createTracks: (state, action: PayloadAction<ITrack[]>) => {
       return [...action.payload];
     },
-    addTrack: (state, action: PayloadAction<TrackState>) => {
+    addTrack: (state, action: PayloadAction<ITrack>) => {
       return [...state, action.payload];
     },
     sortByPopularity: (state) => {

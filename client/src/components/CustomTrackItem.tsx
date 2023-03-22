@@ -1,62 +1,28 @@
-import { AxiosResponse } from 'axios';
-import styled from 'styled-components';
+import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
-
-import { ICustomPlayList } from '../pages/CustomPlayList/CustomPlayList';
-import CustomTrackGenre from './CustomTrackGenre';
-import { updateStatusMessage } from '../store/reducers/rootReducer';
-import requestAxios from '../utils/functions/requestAxios';
 import { useMutation } from 'react-query';
+
+import CustomTrackGenre from './CustomTrackGenre';
+
+import {
+  TrackItem,
+  TrackColumn,
+  TrackInfo,
+  TrackName,
+  TrackDeleteButton,
+  TrackGenreList,
+} from '../styles/customTracks/cusomTrackStyle';
+import { ICustomTrack } from '../types/trackTypes/trackTypes';
+
+import { updateStatusMessage } from '../store/reducers/rootReducer';
 import { queryClient } from '..';
+import { SERVER_ENDPOINT } from '../constants/constants';
 
 interface CustomTrackItemProps {
-  track: ICustomPlayList;
+  track: ICustomTrack;
 }
 
-interface DeleteCustomTrackAxiosRequest {
-  firebaseUid: string;
-  id: string;
-}
-
-const TrackItem = styled.li`
-  font-size: 14px;
-  color: #ddeedd;
-  margin-bottom: 14px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const TrackColumn = styled.div`
-  margin-bottom: 4px;
-  display: flex;
-  flex-direction: row;
-`;
-
-const TrackInfo = styled.div`
-  margin-left: 8px;
-  display: flex;
-  flex-direction: column;
-  span {
-    margin-bottom: 3px;
-  }
-`;
-
-const TrackName = styled.span`
-  color: white;
-  font-weight: 600;
-`;
-
-const TrackDeleteButton = styled.button`
-  color: #ff5252;
-  font-weight: 600;
-`;
-
-const TrackGenreList = styled.div`
-  display: inline;
-`;
-
-const SERVER_URL = 'http://localhost:3001';
 const cookies = new Cookies();
 
 function CustomTrackItem({ track }: CustomTrackItemProps) {
@@ -64,15 +30,10 @@ function CustomTrackItem({ track }: CustomTrackItemProps) {
 
   const deleteCustomTracks = async (id: string) => {
     const firebaseUid = cookies.get('firebaseUid');
-    const requestAxiosParams = {
-      method: 'delete',
-      url: `${SERVER_URL}/tracks/delete`,
-      data: { firebaseUid, id },
-    };
-    const { data } = await requestAxios<
-      DeleteCustomTrackAxiosRequest,
-      AxiosResponse
-    >(requestAxiosParams);
+    const urlParams = new URLSearchParams({ firebaseUid, id });
+    const { data } = await axios.delete(
+      `${SERVER_ENDPOINT}/tracks/delete?${urlParams}`
+    );
     return data;
   };
 

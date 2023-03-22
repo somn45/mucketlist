@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Player from './pages/Home/Player/Player';
+import Player from './pages/Player/Player';
 import { PlayerContext } from './PlayerContext';
 
 import getToken from './utils/functions/getToken';
-
-export interface IPlayerContext {
-  player: Spotify.Player | null;
-  deviceId: string;
-}
 
 function WebPlayback() {
   const [player, setPlayer] = useState<Spotify.Player | null>(null);
