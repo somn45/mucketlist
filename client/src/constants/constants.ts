@@ -1,4 +1,4 @@
-export const SERVER_ENDPOINT = 'http://localhost:3001';
+export const SERVER_ENDPOINT = 'https://mucketlist-server.site';
 export const SPOTIFY_AUTH_URL_CONFIG = {
   response_type: 'code',
   client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID
