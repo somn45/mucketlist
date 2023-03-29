@@ -1,31 +1,4 @@
-import { DocumentData, DocumentReference, setDoc } from 'firebase/firestore';
 import SpotifyWebApi from 'spotify-web-api-node';
-
-interface AlbumImage {
-  height: number;
-  url: string;
-  width: number;
-}
-
-interface Artist {
-  name: string;
-  id: string;
-  external_urls: {
-    spotify: string;
-  };
-}
-
-interface TrackState {
-  id: string;
-  name: string;
-  popularity: number;
-  artists: Artist[];
-  album: {
-    images: AlbumImage[];
-    release_date: string;
-  };
-  uri: string;
-}
 
 const spotifyApi = new SpotifyWebApi();
 

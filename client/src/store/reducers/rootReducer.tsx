@@ -6,30 +6,23 @@ import activeComponent from './activeComponentReducer';
 import volume from './volumeReducer';
 import statusMessage from './statusMessageReducer';
 import isPlay from './isPlayReducer';
-import trackProgress from './thunk/progress';
 import playingPosition from './playingPosition';
 import playMode from './playMode';
 import selectedGenres from './selectedGenres';
-import genres from './thunk/genres';
-import customTracks from './thunk/customTracks';
-import recommendTrack from './thunk/recommendTrack';
-import { useSelector } from 'react-redux';
 import isSetAccessToken from './isSetAccessToken';
+import playingTrack from './playingTrack';
 
 const rootReducer = combineReducers({
   activeComponent: activeComponent.reducer,
-  genres: genres.reducer,
   selectedGenres: selectedGenres.reducer,
   tracks: tracks.reducer,
-  recommendTrack: recommendTrack.reducer,
-  customTracks: customTracks.reducer,
   isPlay: isPlay.reducer,
   isSetAccessToken: isSetAccessToken.reducer,
   volume: volume.reducer,
-  progress: trackProgress.reducer,
   playMode: playMode.reducer,
   playingPosition: playingPosition.reducer,
   statusMessage: statusMessage.reducer,
+  playingTrack: playingTrack.reducer,
 });
 
 const persistConfig = {
@@ -40,7 +33,6 @@ const persistConfig = {
 
 export const { activeGenres, activeOptions, activeHandBook, inactiveAll } =
   activeComponent.actions;
-export const { clearSpotifyGenreList } = genres.actions;
 export const { addGenre, removeGenre, clearGenres } = selectedGenres.actions;
 export const {
   createTracks,
@@ -50,15 +42,14 @@ export const {
   sortByRandom,
   clearTracks,
 } = tracks.actions;
-export const { deleteCustomTrack } = customTracks.actions;
 export const { onChangeVolume, toggleVolume } = volume.actions;
 export const { updatePlayMode } = playMode.actions;
-export const { clearTrackProgress } = trackProgress.actions;
 export const { moveNextPosition, movePreviousPosition, moveRandomPosition } =
   playingPosition.actions;
 export const { updatePlayState } = isPlay.actions;
 export const { changeisAccessTokenState } = isSetAccessToken.actions;
 export const { updateStatusMessage } = statusMessage.actions;
+export const { setPlayingTrack } = playingTrack.actions;
 
 export default persistReducer(persistConfig, rootReducer);
 

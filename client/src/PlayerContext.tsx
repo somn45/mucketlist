@@ -1,14 +1,8 @@
 import { createContext } from 'react';
-import { IPlayerContext } from './WebPlayback';
 
-export type PlayerType = Spotify.Player | null;
+import { IPlayerContext } from './types/playerTypes/playerTypes';
 
-type PlayerContextType = {
-  player: PlayerType;
-  deviceId: string;
-};
-
-const initialState: PlayerContextType = {
+const initialState: IPlayerContext = {
   player: null,
   deviceId: '',
 };

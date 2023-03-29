@@ -32,7 +32,7 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
 	z-index: 1;
-  background-color: #0f0f1f;
+  background-color: #0f0f0f;
 	display: flex;
   justify-content: center;
 }
