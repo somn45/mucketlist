@@ -17,7 +17,6 @@ import {
   updateStatusMessage,
 } from '../../store/reducers/rootReducer';
 import { useAppDispatch } from '../../store/store';
-import { getRecommendTrack } from '../../store/reducers/thunk/recommendTrack';
 import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 import getToken from '../../utils/functions/getToken';
 import { MOBILE_SIZE, SERVER_ENDPOINT } from '../../constants/constants';
@@ -31,18 +30,10 @@ function AddCustomTrack() {
   const { playingPosition, selectedGenres } = useSelector(
     (state: RootState) => state
   );
-  const recommendTrack = useSelector(
-    (state: RootState) => state.recommendTrack.track
-  );
   const dispatch = useAppDispatch();
   const isMobile = useMediaQuery({
     query: MOBILE_SIZE,
   });
-
-  useEffect(() => {
-    if (!recommendTrack) return;
-    checkDuplicatedTrack();
-  }, [recommendTrack]);
 
   const requestAddCustomTrack = async (track: ITrack) => {
     const accessToken = getToken('accessToken');
@@ -62,7 +53,6 @@ function AddCustomTrack() {
     dispatch(
       updateStatusMessage(`${track.name}이 찜한 트랙 리스트에 추가되었습니다.`)
     );
-    dispatch(getRecommendTrack(favoriteTrack));
     return data;
   };
 
@@ -102,14 +92,6 @@ function AddCustomTrack() {
       releaseDate: track.album.release_date,
       image: track.album.images[2].url,
     };
-  };
-
-  const checkDuplicatedTrack = () => {
-    if (!recommendTrack) return;
-    const duplicatedTrack = tracks.filter(
-      (track) => track.id === recommendTrack?.id
-    );
-    if (duplicatedTrack.length < 1) dispatch(addTrack(recommendTrack));
   };
 
   return (

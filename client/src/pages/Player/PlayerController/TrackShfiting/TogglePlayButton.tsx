@@ -7,7 +7,6 @@ import {
   RootState,
   updatePlayState,
 } from '../../../../store/reducers/rootReducer';
-import { getTrackProgress } from '../../../../store/reducers/thunk/progress';
 import { useAppDispatch } from '../../../../store/store';
 
 interface TogglePlayButtonProps extends ButtonProps {
@@ -28,14 +27,19 @@ function TogglePlayButton({
   );
   const onPause = async () => {
     if (!player) return;
-    dispatch(getTrackProgress(player));
     player?.pause();
     dispatch(updatePlayState(false));
   };
 
+  const handlePlay = (uri: string) => {
+    if (!player) return;
+    player.activateElement();
+    onPlay(uri);
+  };
+
   return (
     <button
-      onClick={isPlay ? onPause : () => onPlay(tracks[playingPosition].uri)}
+      onClick={isPlay ? onPause : () => handlePlay(tracks[playingPosition].uri)}
     >
       {value}
     </button>

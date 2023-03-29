@@ -9,8 +9,8 @@ export interface IPlayerContext extends IPlayer {
 }
 
 export interface PlayProps {
-  spotify_uri: string;
-  playerInstance: Spotify.Player;
+  spotify_uri?: string;
+  playerInstance?: Spotify.Player;
 }
 
 export interface PlayError extends PlayProps {
@@ -18,7 +18,7 @@ export interface PlayError extends PlayProps {
 }
 
 export interface IPlayerTrack {
-  playingTrack: string;
+  trackName: string;
 }
 
 export interface PlayerInfo extends IPlayerTrack {

@@ -16,19 +16,13 @@ import VolumeMixerWrap from './VolumeController/VolumeMixerWrap';
 import { IPlayerContext } from '../../../types/playerTypes/playerTypes';
 
 import { RootState } from '../../../store/reducers/rootReducer';
-
 interface PlayControllerProps extends IPlayerContext {
   onPlay: {
     (uri: string): void;
   };
-  clearProgress: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function PlayerController({
-  player,
-  onPlay,
-  clearProgress,
-}: Omit<PlayControllerProps, 'deviceId'>) {
+function PlayerController({ player, deviceId, onPlay }: PlayControllerProps) {
   const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
   const isPlay = useSelector((state: RootState) => state.isPlay);
 
@@ -40,10 +34,10 @@ function PlayerController({
           player={player}
           onPlay={onPlay}
         />
-        <PrevTrackButton player={player} clearProgress={clearProgress} />
-        <NextTrackButton player={player} clearProgress={clearProgress} />
-        <RepeatMode />
-        <ShuffleMode />
+        <PrevTrackButton player={player} />
+        <NextTrackButton player={player} />
+        <RepeatMode deviceId={deviceId} />
+        <ShuffleMode deviceId={deviceId} />
       </PlayerControllerWrap>
       <VolumeMixerWrap
         onMouseEnter={() => setIsShowVolumeMixer(true)}

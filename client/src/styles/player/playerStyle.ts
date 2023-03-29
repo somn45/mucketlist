@@ -19,7 +19,16 @@ export const PlayerColumn = styled.div`
   flex-direction: column;
 `;
 
+export const DefaultImage = styled.div`
+  width: 64px;
+  height: 64px;
+  margin-left: 15px;
+  margin-right: 5px;
+`;
+
 export const PlayerTrackImage = styled.img`
+  width: 64px;
+  height: 64px;
   margin-left: 15px;
   margin-right: 5px;
 `;
@@ -48,7 +57,7 @@ export const PlayerControllerWrap = styled.div`
 `;
 
 export const PlayModeButton = styled.button<IPlayMode>`
-  opacity: ${(props) => (props.isRepeat ? 1 : 0.4)};
+  opacity: ${(props) => (props.isRepeat || props.isShuffle ? 1 : 0.4)};
 `;
 
 export const VolumeMixerWrap = styled.div`

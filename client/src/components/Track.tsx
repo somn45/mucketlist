@@ -4,9 +4,10 @@ import styled from 'styled-components';
 
 import { ITrack } from '../types/trackTypes/trackTypes';
 
+import { PlayerInfo } from '../types/playerTypes/playerTypes';
 interface TrackComponentProps {
   track: ITrack;
-  playingTrack: string;
+  playingTrack: PlayerInfo;
 }
 
 const TrackStyle = styled.div<{ isPlaying: boolean }>`
@@ -40,11 +41,11 @@ function Track({ track, playingTrack }: TrackComponentProps) {
   return (
     <>
       {isMobile ? (
-        <MobileTrackStyle isPlaying={track.name === playingTrack}>
+        <MobileTrackStyle isPlaying={track.name === playingTrack.trackName}>
           <img src={track.album.images[2].url} alt={track.name} />
         </MobileTrackStyle>
       ) : (
-        <TabletListTrackStyle isPlaying={track.name === playingTrack}>
+        <TabletListTrackStyle isPlaying={track.name === playingTrack.trackName}>
           <img src={track.album.images[2].url} alt={track.name} />
         </TabletListTrackStyle>
       )}

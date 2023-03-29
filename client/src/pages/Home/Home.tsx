@@ -7,7 +7,6 @@ import axios from 'axios';
 import Header from '../Header/Header';
 import ResponsiveHomeSection from './ResponsiveHomeSection';
 import StatusMessage from '../../components/StatusMessage';
-import WebPlayback from '../../WebPlayback';
 import Modals from '../Modals/Modals';
 
 import { Main } from '../../styles/home/homeStyles';
@@ -15,6 +14,7 @@ import { ICustomTrack } from '../../types/trackTypes/trackTypes';
 
 import { RootState } from '../../store/reducers/rootReducer';
 import getToken from '../../utils/functions/getToken';
+import Player from '../Player/Player';
 
 interface AxiosGetCustomTracksRes {
   tracks: ICustomTrack[];
@@ -34,6 +34,7 @@ function Home() {
   useEffect(() => {
     if (isActive.genres || isActive.options) setIsAcitvePlayer(false);
     else setIsAcitvePlayer(true);
+    console.log(isAcitvePlayer);
   }, [isActive]);
 
   const getCustomTrack = async () => {
@@ -61,7 +62,7 @@ function Home() {
           <Modals />
         </section>
         <ResponsiveHomeSection />
-        {isAcitvePlayer && <WebPlayback />}
+        {isAcitvePlayer && <Player />}
       </Main>
     </>
   );

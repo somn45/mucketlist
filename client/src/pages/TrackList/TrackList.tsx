@@ -4,19 +4,8 @@ import { useMediaQuery } from 'react-responsive';
 import Track from '../../components/Track';
 
 import { RootState } from '../../store/reducers/rootReducer';
-import { ITrack } from '../../types/trackTypes/trackTypes';
 
 import isArrayEmpty from '../../utils/functions/isArrayEmpty';
-
-export interface TrackSeed {
-  id: string;
-  type: string;
-}
-
-export interface TrackData {
-  tracks: ITrack[];
-  seeds: TrackSeed[];
-}
 
 function TrackList() {
   const playingPosition = useSelector(
@@ -28,7 +17,7 @@ function TrackList() {
   const isTablet = useMediaQuery({
     query: '(max-width: 1023px)',
   });
-  const tracks = useSelector((state: RootState) => state.tracks);
+  const { tracks, playingTrack } = useSelector((state: RootState) => state);
 
   const displayedTracks = isMobile
     ? tracks.slice(0, 40)
@@ -39,11 +28,7 @@ function TrackList() {
     <>
       {!isArrayEmpty(tracks) &&
         displayedTracks.map((track) => (
-          <Track
-            key={track.id}
-            track={track}
-            playingTrack={tracks[playingPosition].name}
-          />
+          <Track key={track.id} track={track} playingTrack={playingTrack} />
         ))}
     </>
   );

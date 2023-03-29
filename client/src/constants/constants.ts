@@ -9,11 +9,6 @@ export const SPOTIFY_AUTH_URL_CONFIG = {
     'user-read-private user-read-email streaming user-read-playback-state, user-modify-playback-state',
   state: '1SMWKN29Nksmwogl49SWM238FM1879Smx',
 };
-export const DEFAULT_TRACK_DATA = {
-  playingTrack: 'spotify track name',
-  artist: 'somn45',
-  trackImage: '',
-};
 
 export const MOBILE_SIZE = '(max-width: 767px)';
 export const TABLET_SIZE = '(max-width: 1023px)';
