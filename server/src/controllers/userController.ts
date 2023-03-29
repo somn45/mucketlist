@@ -15,7 +15,7 @@ interface UserFormBody {
 
 interface SpotifyAuthBody {
   code: string;
-  fuid: string;
+  firebaseUid: string;
 }
 
 export const join = async (req: express.Request, res: express.Response) => {
@@ -78,10 +78,11 @@ export const spotifyAuth = async (
     redirectUri: 'https://mucketlist.com',
   });
   try {
-    const { code, fuid }: SpotifyAuthBody = req.body;
+    const { code, firebaseUid }: SpotifyAuthBody = req.body;
+    console.log(code, firebaseUid);
     const response = await spotifyApi.authorizationCodeGrant(code);
     await setDoc(
-      doc(db, 'firebaseUid', fuid),
+      doc(db, 'firebaseUid', firebaseUid),
       {
         refreshToken: response.body.refresh_token,
         scope: response.body.scope,
