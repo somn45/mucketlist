@@ -2,23 +2,16 @@ import { useEffect } from 'react';
 import { Cookies } from 'react-cookie';
 import requestAxios from './utils/functions/requestAxios';
 import getToken from './utils/functions/getToken';
-import { AxiosResponse } from 'axios';
-import {
-  activeGenres,
-  changeisAccessTokenState,
-} from './store/reducers/rootReducer';
+import axios, { AxiosResponse } from 'axios';
+import { changeisAccessTokenState } from './store/reducers/rootReducer';
 import { useAppDispatch } from './store/store';
-import { useNavigate } from 'react-router';
+import { SERVER_ENDPOINT } from './constants/constants';
 
 interface RefreshAxiosRequest {
   firebaseUid: string;
 }
 
-interface AuthAxiosRequest extends RefreshAxiosRequest {
-  code: string;
-}
-
-interface AuthAxiosResponse extends AxiosResponse {
+interface AuthAxiosResponse {
   accessToken: string;
   expiresIn: number;
 }
@@ -28,7 +21,6 @@ console.log(FIREBASE_UID);
 const cookies = new Cookies();
 
 function SpotifyAuth() {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const code = new URLSearchParams(window.location.search).get('code');
   useEffect(() => {
@@ -40,19 +32,15 @@ function SpotifyAuth() {
   }, []);
   const requestSpotifyToken = async (code: string): Promise<void> => {
     try {
-      const requestAxiosParams = {
-        method: 'post',
-        url: 'http://localhost:3001/users/spotify/auth',
-        data: {
+      console.log('request');
+      const { data } = await axios.post<AuthAxiosResponse>(
+        `${SERVER_ENDPOINT}/users/spotify/auth`,
+        {
           code: code,
           firebaseUid: FIREBASE_UID,
-        },
-      };
-      navigate('/');
-      const response = await requestAxios<AuthAxiosRequest, AuthAxiosResponse>(
-        requestAxiosParams
+        }
       );
-      createAccessToken(response.data);
+      createAccessToken(data);
     } catch (error) {
       console.log(error);
     }
@@ -68,17 +56,13 @@ function SpotifyAuth() {
   };
 
   const refreshAccessToken = async (): Promise<void> => {
-    const requestAxiosParams = {
-      method: 'post',
-      url: 'http://localhost:3001/users/spotify/refresh',
-      data: {
+    const { data } = await axios.post<AuthAxiosResponse>(
+      `${SERVER_ENDPOINT}/users/spotify/refresh`,
+      {
         firebaseUid: FIREBASE_UID,
-      },
-    };
-    const response = await requestAxios<RefreshAxiosRequest, AuthAxiosResponse>(
-      requestAxiosParams
+      }
     );
-    createAccessToken(response.data);
+    createAccessToken(data);
   };
 
   const createAccessToken = (res: AuthAxiosResponse) => {
