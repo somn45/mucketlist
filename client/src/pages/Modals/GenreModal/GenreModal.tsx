@@ -40,11 +40,11 @@ function GenreModal() {
       genres: JSON.stringify(selectedGenres),
     };
     const urlParams = new URLSearchParams(searchTrackQuery).toString();
-    console.log(urlParams);
+
     const { data } = await axios.get<SearchTrackAxiosReponse>(
       `${SERVER_ENDPOINT}/tracks/search?${urlParams}`
     );
-    console.log(data);
+
     dispatch(createTracks(data.tracks));
     setTimeout(() => dispatch(activeOptions()), 600);
   };

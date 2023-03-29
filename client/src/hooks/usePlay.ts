@@ -64,13 +64,11 @@ const usePlay = (
   };
 
   const resume = () => {
-    console.log('resume');
     player?.resume();
   };
 
   const handlePlayerStateError = ({ error }: PlayError) => {
     if (error instanceof AxiosError) {
-      console.log('axios error');
       if (error.response?.status && error.response?.status >= 401) {
         setErrorMsg('트랙 재생을 재시도 중입니다.');
         retryCountRef.current += 1;

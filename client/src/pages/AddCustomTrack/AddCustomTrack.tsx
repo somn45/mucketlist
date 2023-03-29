@@ -49,7 +49,7 @@ function AddCustomTrack() {
       `${SERVER_ENDPOINT}/tracks/add`,
       requestAddCustomTrackData
     );
-    console.log(data);
+
     dispatch(
       updateStatusMessage(`${track.name}이 찜한 트랙 리스트에 추가되었습니다.`)
     );

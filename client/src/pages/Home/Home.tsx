@@ -34,7 +34,6 @@ function Home() {
   useEffect(() => {
     if (isActive.genres || isActive.options) setIsAcitvePlayer(false);
     else setIsAcitvePlayer(true);
-    console.log(isAcitvePlayer);
   }, [isActive]);
 
   const getCustomTrack = async () => {
