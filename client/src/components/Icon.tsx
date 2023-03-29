@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProps } from '../utils/types/atomTypes';
+import { IconProps } from '../types/atomTypes/atom';
 
 function Icon({ icon }: IconProps) {
   return <FontAwesomeIcon icon={icon}></FontAwesomeIcon>;
