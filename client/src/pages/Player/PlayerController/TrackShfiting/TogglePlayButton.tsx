@@ -25,6 +25,7 @@ function TogglePlayButton({
   const { tracks, isPlay, playingPosition } = useSelector(
     (state: RootState) => state
   );
+
   const onPause = async () => {
     if (!player) return;
     player?.pause();

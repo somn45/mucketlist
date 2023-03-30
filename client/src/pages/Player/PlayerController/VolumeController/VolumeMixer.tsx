@@ -13,14 +13,14 @@ import {
 import { useAppDispatch } from '../../../../store/store';
 
 function VolumeMixer({ player }: IPlayer) {
-  const { volume } = useSelector((state: RootState) => state.volume);
+  const { volume, mute } = useSelector((state: RootState) => state.volume);
   const dispatch = useAppDispatch();
 
   const handleVolume = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!player) return;
     const currentVolume = Number(e.target.value);
+    await player?.setVolume(currentVolume);
     dispatch(onChangeVolume(currentVolume));
-    await player.setVolume(currentVolume);
+    console.log(volume);
   };
 
   return (
