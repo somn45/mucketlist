@@ -49,7 +49,7 @@ export const { moveNextPosition, movePreviousPosition, moveRandomPosition } =
 export const { updatePlayState } = isPlay.actions;
 export const { changeisAccessTokenState } = isSetAccessToken.actions;
 export const { updateStatusMessage } = statusMessage.actions;
-export const { setPlayingTrack } = playingTrack.actions;
+export const { setPlayingTrack, clearPlayingTrack } = playingTrack.actions;
 
 export default persistReducer(persistConfig, rootReducer);
 

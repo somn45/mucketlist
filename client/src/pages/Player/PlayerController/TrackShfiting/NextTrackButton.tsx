@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { faForwardStep } from '@fortawesome/free-solid-svg-icons';
 
 import { IPlayer } from '../../../../types/playerTypes/playerTypes';
@@ -9,6 +10,8 @@ function NextTrackButton({ player }: IPlayer) {
     if (!player) return;
     player.nextTrack();
   };
+  useMemo(() => onNextTrack, []);
+
   return (
     <button onClick={onNextTrack}>
       <Icon icon={faForwardStep} />
@@ -16,4 +19,4 @@ function NextTrackButton({ player }: IPlayer) {
   );
 }
 
-export default NextTrackButton;
+export default React.memo(NextTrackButton);

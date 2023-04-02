@@ -6,7 +6,7 @@ import useSpotifyPlayBack from '../../hooks/useSpotifyPlayback';
 import {
   RootState,
   setPlayingTrack,
-  updateStatusMessage,
+  updatePlayState,
 } from '../../store/reducers/rootReducer';
 
 import { useAppDispatch } from '../../store/store';
@@ -18,14 +18,15 @@ import PlayerWrap from './Wrap/PlayerWrap';
 
 export default function Player() {
   const dispatch = useAppDispatch();
-  const { tracks, playingTrack } = useSelector((state: RootState) => state);
+  const { tracks, playingTrack, isPlay } = useSelector(
+    (state: RootState) => state
+  );
   const [player, deviceId, loading, state] = useSpotifyPlayBack();
   const [plays, _] = usePlay(player, deviceId, tracks);
 
   useEffect(() => {
-    if (!state) return;
+    if (!state || !state.track_window.current_track) return;
     if (playingTrack.trackName !== state.track_window.current_track.name) {
-      console.log(state);
       createPlayingTrackData(state);
     }
   }, [state]);
@@ -43,7 +44,7 @@ export default function Player() {
 
   if (loading) return <div>로딩 중</div>;
   return (
-    <PlayerWrap isPlay={true}>
+    <PlayerWrap isPlay={isPlay}>
       <PlayerColumn>
         <PlayerTrackImage
           trackName={playingTrack.trackName}

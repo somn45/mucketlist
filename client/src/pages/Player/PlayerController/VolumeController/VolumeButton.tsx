@@ -1,4 +1,4 @@
-import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 
 import { IPlayer, playerType } from '../../../../types/playerTypes/playerTypes';
@@ -11,7 +11,7 @@ import {
 import { useAppDispatch } from '../../../../store/store';
 
 function VolumeButton({ player }: IPlayer) {
-  const { volume, prevVolume } = useSelector(
+  const { volume, prevVolume, mute } = useSelector(
     (state: RootState) => state.volume
   );
   const dispatch = useAppDispatch();
@@ -19,7 +19,7 @@ function VolumeButton({ player }: IPlayer) {
   const handleToggleVolume = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!player) return;
-    volume === 0 ? convertUnmuteMode(player) : convertMuteMode(player);
+    mute ? convertUnmuteMode(player) : convertMuteMode(player);
     dispatch(toggleVolume());
   };
 
@@ -31,7 +31,7 @@ function VolumeButton({ player }: IPlayer) {
 
   return (
     <button onClick={handleToggleVolume}>
-      <Icon icon={faVolumeUp} />
+      {volume === 0 ? <Icon icon={faVolumeMute} /> : <Icon icon={faVolumeUp} />}
     </button>
   );
 }

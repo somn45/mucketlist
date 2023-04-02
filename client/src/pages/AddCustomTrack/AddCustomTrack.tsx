@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import axios from 'axios';
+import React, { useMemo } from 'react';
+import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import { useMutation } from 'react-query';
 import { queryClient } from '../..';
@@ -27,7 +27,7 @@ interface AddCustomTrackAxiosResponse {
 
 function AddCustomTrack() {
   const tracks = useSelector((state: RootState) => state.tracks);
-  const { playingPosition, selectedGenres } = useSelector(
+  const { playingTrack, playingPosition, selectedGenres } = useSelector(
     (state: RootState) => state
   );
   const dispatch = useAppDispatch();
@@ -45,16 +45,24 @@ function AddCustomTrack() {
       accessToken,
       firebaseUid,
     };
-    const { data } = await axios.post<AddCustomTrackAxiosResponse>(
-      `${SERVER_ENDPOINT}/tracks/add`,
-      requestAddCustomTrackData
-    );
-    console.log(data);
-    dispatch(
-      updateStatusMessage(`${track.name}이 찜한 트랙 리스트에 추가되었습니다.`)
-    );
-    return data;
+    try {
+      const { data } = await axios.post<AddCustomTrackAxiosResponse>(
+        `${SERVER_ENDPOINT}/tracks/add`,
+        requestAddCustomTrackData
+      );
+      dispatch(
+        updateStatusMessage(
+          `${track.name}이 찜한 트랙 리스트에 추가되었습니다.`
+        )
+      );
+      return data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+      }
+    }
   };
+  useMemo(() => requestAddCustomTrack, [playingTrack]);
 
   const addCustomTrack = useMutation(
     (track: ITrack) => requestAddCustomTrack(track),
@@ -97,7 +105,11 @@ function AddCustomTrack() {
   return (
     <AddCustomTrackWrap isMobile={isMobile}>
       <AddCustomTrackButton
-        onClick={() => addCustomTrack.mutate(tracks[playingPosition])}
+        onClick={() =>
+          addCustomTrack.mutate(
+            tracks.filter((track) => track.name === playingTrack.trackName)[0]
+          )
+        }
       />
     </AddCustomTrackWrap>
   );

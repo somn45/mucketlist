@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 
 import { ITrack } from '../types/trackTypes/trackTypes';
 
-import { PlayerInfo } from '../types/playerTypes/playerTypes';
+import { MOBILE_SIZE } from '../constants/constants';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/reducers/rootReducer';
 interface TrackComponentProps {
   track: ITrack;
-  playingTrack: PlayerInfo;
 }
 
-const TrackStyle = styled.div<{ isPlaying: boolean }>`
+const TrackStyle = styled.div<{ isPlaying?: boolean }>`
   border: ${(props) => (props.isPlaying ? '2px solid yellow' : null)};
   box-shadow: ${(props) => (props.isPlaying ? '1px 1px 1px 2px yellow' : null)};
   box-sizing: content-box;
@@ -34,18 +35,26 @@ const TabletListTrackStyle = styled(TrackStyle)`
   }
 `;
 
-function Track({ track, playingTrack }: TrackComponentProps) {
+function Track({ track }: TrackComponentProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { playingTrack } = useSelector((state: RootState) => state);
   const isMobile = useMediaQuery({
-    query: '(max-width: 767px)',
+    query: MOBILE_SIZE,
   });
+
+  useEffect(() => {
+    if (track.name === playingTrack.trackName) setIsPlaying(true);
+    else setIsPlaying(false);
+  }, [playingTrack]);
+
   return (
     <>
       {isMobile ? (
-        <MobileTrackStyle isPlaying={track.name === playingTrack.trackName}>
+        <MobileTrackStyle isPlaying={isPlaying}>
           <img src={track.album.images[2].url} alt={track.name} />
         </MobileTrackStyle>
       ) : (
-        <TabletListTrackStyle isPlaying={track.name === playingTrack.trackName}>
+        <TabletListTrackStyle isPlaying={isPlaying}>
           <img src={track.album.images[2].url} alt={track.name} />
         </TabletListTrackStyle>
       )}

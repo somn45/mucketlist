@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 
 import Icon from '../../../components/Icon';
 import NextTrackButton from './TrackShfiting/NextTrackButton';
+import { useEffect } from 'react';
+
 import PrevTrackButton from './TrackShfiting/PrevTrackButton';
 import RepeatMode from './PlayMode/RepeatMode';
 import ShuffleMode from './PlayMode/ShuffleMode';
@@ -15,7 +17,12 @@ import VolumeMixerWrap from './VolumeController/VolumeMixerWrap';
 
 import { IPlayerContext } from '../../../types/playerTypes/playerTypes';
 
-import { RootState } from '../../../store/reducers/rootReducer';
+import {
+  clearPlayingTrack,
+  RootState,
+  updatePlayState,
+} from '../../../store/reducers/rootReducer';
+import isArrayEmpty from '../../../utils/functions/isArrayEmpty';
 interface PlayControllerProps extends IPlayerContext {
   onPlay: {
     (uri: string): void;
@@ -23,8 +30,15 @@ interface PlayControllerProps extends IPlayerContext {
 }
 
 function PlayerController({ player, deviceId, onPlay }: PlayControllerProps) {
+  const dispatch = useDispatch();
   const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
-  const isPlay = useSelector((state: RootState) => state.isPlay);
+  const { tracks, isPlay } = useSelector((state: RootState) => state);
+  useEffect(() => {
+    if (!tracks || isArrayEmpty(tracks)) {
+      dispatch(updatePlayState(false));
+      dispatch(clearPlayingTrack());
+    }
+  }, [tracks]);
 
   return (
     <>
@@ -36,8 +50,8 @@ function PlayerController({ player, deviceId, onPlay }: PlayControllerProps) {
         />
         <PrevTrackButton player={player} />
         <NextTrackButton player={player} />
-        <RepeatMode deviceId={deviceId} />
-        <ShuffleMode deviceId={deviceId} />
+        <RepeatMode />
+        <ShuffleMode />
       </PlayerControllerWrap>
       <VolumeMixerWrap
         onMouseEnter={() => setIsShowVolumeMixer(true)}

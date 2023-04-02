@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
@@ -34,16 +34,15 @@ function Home() {
   useEffect(() => {
     if (isActive.genres || isActive.options) setIsAcitvePlayer(false);
     else setIsAcitvePlayer(true);
-    console.log(isAcitvePlayer);
   }, [isActive]);
 
-  const getCustomTrack = async () => {
+  const getCustomTrack = useCallback(async () => {
     const firebaseUid = getToken('firebaseUid');
     const { data } = await axios.get<AxiosGetCustomTracksRes>(
       `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
     );
     return data.tracks;
-  };
+  }, []);
 
   const {
     isLoading,
@@ -68,4 +67,4 @@ function Home() {
   );
 }
 
-export default React.memo(Home);
+export default Home;
