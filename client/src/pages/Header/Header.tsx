@@ -34,16 +34,16 @@ function Header() {
     navigate('/tracks/custom');
   };
 
-  const initTracks = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const initTracks = () => {
     dispatch(activeGenres());
     dispatch(clearTracks());
   };
 
-  const handleActiveHandBook = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleActiveHandBook = () => {
     dispatch(activeHandBook());
   };
 
-  const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleLogout = () => {
     removeFirebaseUID('firebaseUid');
     removeAccessToken('accessToken');
     localStorage.clear();
@@ -84,4 +84,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default React.memo(Header);

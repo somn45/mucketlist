@@ -18,13 +18,14 @@ function ResponsedTrackList({
   isMobile,
   isWideScreen,
 }: CustomTracksProps) {
-  const CustomTrackItemMaps = !isArrayEmpty(customTracks) ? (
-    customTracks.map((track: ICustomTrack) => (
-      <CustomTrackItem key={track.id} track={track} />
-    ))
-  ) : (
-    <span>찜한 트랙 목록이 존재하지 않습니다..</span>
-  );
+  const CustomTrackItemMaps =
+    !customTracks || isArrayEmpty(customTracks) ? (
+      <span>찜한 트랙 목록이 존재하지 않습니다..</span>
+    ) : (
+      customTracks.map((track: ICustomTrack) => (
+        <CustomTrackItem key={track.id} track={track} />
+      ))
+    );
 
   return isMobile ? (
     <MobileCustomTrackList>{CustomTrackItemMaps}</MobileCustomTrackList>

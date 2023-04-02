@@ -1,5 +1,5 @@
+import React, { useMemo } from 'react';
 import { faShuffle } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 import Icon from '../../../../components/Icon';
 import {
@@ -8,15 +8,13 @@ import {
 } from '../../../../store/reducers/rootReducer';
 import { useAppDispatch } from '../../../../store/store';
 import { PlayModeButton } from '../../../../styles/player/playerStyle';
-import { IPlayerContext } from '../../../../types/playerTypes/playerTypes';
 import {
   clearRepeatMode,
   clearShuffleMode,
   setShuffleMode,
 } from '../../../../utils/functions/changePlayMode';
-import getToken from '../../../../utils/functions/getToken';
 
-function ShuffleMode({ deviceId }: Omit<IPlayerContext, 'player'>) {
+function ShuffleMode() {
   const playMode = useSelector((state: RootState) => state.playMode);
   const dispatch = useAppDispatch();
 
@@ -27,7 +25,7 @@ function ShuffleMode({ deviceId }: Omit<IPlayerContext, 'player'>) {
     }
     if (playMode === 'repeat') {
       await clearRepeatMode();
-      await setShuffleMode();
+      setShuffleMode();
       dispatch(updatePlayMode('shuffle'));
     }
     if (playMode === 'shuffle') {
@@ -35,6 +33,7 @@ function ShuffleMode({ deviceId }: Omit<IPlayerContext, 'player'>) {
       dispatch(updatePlayMode('normal'));
     }
   };
+  useMemo(() => handleShuffleMode, [playMode]);
 
   return (
     <PlayModeButton
@@ -46,4 +45,4 @@ function ShuffleMode({ deviceId }: Omit<IPlayerContext, 'player'>) {
   );
 }
 
-export default ShuffleMode;
+export default React.memo(ShuffleMode);

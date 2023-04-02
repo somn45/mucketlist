@@ -1,3 +1,4 @@
+import React from 'react';
 import { VolumeMixerWrap as StyledVolumeMixerWrap } from '../../../../styles/player/playerStyle';
 import { IChildren } from '../../../../types/moduleTypes/moduleTypes';
 
@@ -21,4 +22,4 @@ function VolumeMixerWrap({
   );
 }
 
-export default VolumeMixerWrap;
+export default React.memo(VolumeMixerWrap);
