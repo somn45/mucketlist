@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import { useMutation } from 'react-query';
@@ -62,6 +62,7 @@ function AddCustomTrack() {
       }
     }
   };
+  useMemo(() => requestAddCustomTrack, [playingTrack]);
 
   const addCustomTrack = useMutation(
     (track: ITrack) => requestAddCustomTrack(track),

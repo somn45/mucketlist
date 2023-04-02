@@ -26,9 +26,7 @@ export default function Player() {
 
   useEffect(() => {
     if (!state || !state.track_window.current_track) return;
-    console.log(state.track_window.current_track);
     if (playingTrack.trackName !== state.track_window.current_track.name) {
-      console.log(state);
       createPlayingTrackData(state);
     }
   }, [state]);

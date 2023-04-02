@@ -1,5 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export interface IPlayingTrack {
+  trackName: string;
+  artist: string;
+  trackImage: string;
+}
+
 export const PLAYING_TRACK_INITIAL_STATE = {
   trackName: 'track',
   artist: 'artist',

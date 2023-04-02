@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -13,15 +14,15 @@ import {
 import { useAppDispatch } from '../../../../store/store';
 
 function VolumeMixer({ player }: IPlayer) {
-  const { volume, mute } = useSelector((state: RootState) => state.volume);
+  const { volume } = useSelector((state: RootState) => state.volume);
   const dispatch = useAppDispatch();
 
   const handleVolume = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const currentVolume = Number(e.target.value);
     await player?.setVolume(currentVolume);
     dispatch(onChangeVolume(currentVolume));
-    console.log(volume);
   };
+  useMemo(() => handleVolume, [volume]);
 
   return (
     <VolumeMixerContainer>
@@ -37,4 +38,4 @@ function VolumeMixer({ player }: IPlayer) {
   );
 }
 
-export default VolumeMixer;
+export default React.memo(VolumeMixer);

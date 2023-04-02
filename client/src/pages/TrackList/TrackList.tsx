@@ -1,23 +1,22 @@
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 
 import Track from '../../components/Track';
+import { IPlayingTrack } from '../../store/reducers/playingTrack';
 
 import { RootState } from '../../store/reducers/rootReducer';
 
 import isArrayEmpty from '../../utils/functions/isArrayEmpty';
 
 function TrackList() {
-  const playingPosition = useSelector(
-    (state: RootState) => state.playingPosition
-  );
   const isMobile = useMediaQuery({
     query: '(max-width: 767px)',
   });
   const isTablet = useMediaQuery({
     query: '(max-width: 1023px)',
   });
-  const { tracks, playingTrack } = useSelector((state: RootState) => state);
+  const { tracks } = useSelector((state: RootState) => state);
 
   const displayedTracks = isMobile
     ? tracks.slice(0, 40)
@@ -27,11 +26,9 @@ function TrackList() {
   return (
     <>
       {!isArrayEmpty(tracks) &&
-        displayedTracks.map((track) => (
-          <Track key={track.id} track={track} playingTrack={playingTrack} />
-        ))}
+        displayedTracks.map((track) => <Track key={track.id} track={track} />)}
     </>
   );
 }
 
-export default TrackList;
+export default React.memo(TrackList);

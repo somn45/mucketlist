@@ -33,7 +33,6 @@ function PlayerController({ player, deviceId, onPlay }: PlayControllerProps) {
   const dispatch = useDispatch();
   const [isShowVolumeMixer, setIsShowVolumeMixer] = useState(false);
   const { tracks, isPlay } = useSelector((state: RootState) => state);
-
   useEffect(() => {
     if (!tracks || isArrayEmpty(tracks)) {
       dispatch(updatePlayState(false));
@@ -51,8 +50,8 @@ function PlayerController({ player, deviceId, onPlay }: PlayControllerProps) {
         />
         <PrevTrackButton player={player} />
         <NextTrackButton player={player} />
-        <RepeatMode deviceId={deviceId} />
-        <ShuffleMode deviceId={deviceId} />
+        <RepeatMode />
+        <ShuffleMode />
       </PlayerControllerWrap>
       <VolumeMixerWrap
         onMouseEnter={() => setIsShowVolumeMixer(true)}

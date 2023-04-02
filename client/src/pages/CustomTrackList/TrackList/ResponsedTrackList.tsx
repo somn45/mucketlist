@@ -18,7 +18,6 @@ function ResponsedTrackList({
   isMobile,
   isWideScreen,
 }: CustomTracksProps) {
-  console.log(customTracks);
   const CustomTrackItemMaps =
     !customTracks || isArrayEmpty(customTracks) ? (
       <span>찜한 트랙 목록이 존재하지 않습니다..</span>

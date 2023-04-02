@@ -17,7 +17,6 @@ interface AuthAxiosResponse {
 }
 
 const FIREBASE_UID = getToken('firebaseUid');
-console.log(FIREBASE_UID);
 const cookies = new Cookies();
 
 function SpotifyAuth() {
@@ -32,7 +31,6 @@ function SpotifyAuth() {
   }, []);
   const requestSpotifyToken = async (code: string): Promise<void> => {
     try {
-      console.log('request');
       const { data } = await axios.post<AuthAxiosResponse>(
         `${SERVER_ENDPOINT}/users/spotify/auth`,
         {

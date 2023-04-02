@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMediaQuery } from 'react-responsive';
 
 import AddCustomTrack from '../AddCustomTrack/AddCustomTrack';
@@ -10,6 +11,7 @@ import {
 } from '../../styles/home/homeStyles';
 
 import { MOBILE_SIZE, TABLET_SIZE } from '../../constants/constants';
+import { IPlayingTrack } from '../../store/reducers/playingTrack';
 
 function ResponsiveHomeSection() {
   const isMobile = useMediaQuery({
@@ -38,4 +40,4 @@ function ResponsiveHomeSection() {
   );
 }
 
-export default ResponsiveHomeSection;
+export default React.memo(ResponsiveHomeSection);

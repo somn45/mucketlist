@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { faBackwardStep } from '@fortawesome/free-solid-svg-icons';
 
 import { IPlayer } from '../../../../types/playerTypes/playerTypes';
@@ -9,6 +10,7 @@ function PrevTrackButton({ player }: IPlayer) {
     if (!player) return;
     player.previousTrack();
   };
+  useMemo(() => onPreviousTrack, []);
 
   return (
     <button onClick={onPreviousTrack}>
@@ -17,4 +19,4 @@ function PrevTrackButton({ player }: IPlayer) {
   );
 }
 
-export default PrevTrackButton;
+export default React.memo(PrevTrackButton);

@@ -19,7 +19,6 @@ function VolumeButton({ player }: IPlayer) {
   const handleToggleVolume = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!player) return;
-    console.log(volume, mute);
     mute ? convertUnmuteMode(player) : convertMuteMode(player);
     dispatch(toggleVolume());
   };
