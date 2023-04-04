@@ -15,6 +15,7 @@ import { ICustomTrack } from '../../types/trackTypes/trackTypes';
 import { RootState } from '../../store/reducers/rootReducer';
 import getToken from '../../utils/functions/getToken';
 import Player from '../Player/Player';
+import { SERVER_ENDPOINT } from '../../constants/constants';
 
 interface AxiosGetCustomTracksRes {
   tracks: ICustomTrack[];
@@ -39,7 +40,7 @@ function Home() {
   const getCustomTrack = useCallback(async () => {
     const firebaseUid = getToken('firebaseUid');
     const { data } = await axios.get<AxiosGetCustomTracksRes>(
-      `http://localhost:3001/tracks/read?firebaseUid=${firebaseUid}`
+      `${SERVER_ENDPOINT}/tracks/read?firebaseUid=${firebaseUid}`
     );
     return data.tracks;
   }, []);

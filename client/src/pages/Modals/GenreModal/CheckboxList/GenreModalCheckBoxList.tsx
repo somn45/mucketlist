@@ -6,12 +6,17 @@ import { useQuery } from 'react-query';
 import Genre from '../../../../components/Genre';
 
 import getToken from '../../../../utils/functions/getToken';
+import { SERVER_ENDPOINT } from '../../../../constants/constants';
 
 interface IGenres {
   genres: string[];
 }
 
 const GenreSelectionTabStyle = styled.div`
+  width: 335px;
+  height: 365px;
+  overflow: scroll;
+  overflow-x: hidden;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(5, 1fr);
@@ -24,7 +29,7 @@ function GenreModalCheckBoxList() {
   const getGenres = async () => {
     const accessToken = getToken('accessToken');
     const { data } = await axios.post<IGenres>(
-      `http://localhost:3001/tracks/genres`,
+      `${SERVER_ENDPOINT}/tracks/genres`,
       {
         accessToken: accessToken,
       },
@@ -34,7 +39,7 @@ function GenreModalCheckBoxList() {
         },
       }
     );
-    return data.genres.slice(0, 25);
+    return data.genres;
   };
 
   const { isLoading, isError, data, error } = useQuery('genres', getGenres, {
