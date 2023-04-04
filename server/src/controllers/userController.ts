@@ -75,11 +75,10 @@ export const spotifyAuth = async (
   const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-    redirectUri: 'https://mucketlist.com',
+    redirectUri: process.env.DOMAIN,
   });
   try {
     const { code, firebaseUid }: SpotifyAuthBody = req.body;
-    console.log(code, firebaseUid);
     const response = await spotifyApi.authorizationCodeGrant(code);
     await setDoc(
       doc(db, 'firebaseUid', firebaseUid),

@@ -7,6 +7,7 @@ import { ITrack } from '../types/trackTypes/trackTypes';
 import { MOBILE_SIZE } from '../constants/constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/reducers/rootReducer';
+import isArrayEmpty from '../utils/functions/isArrayEmpty';
 interface TrackComponentProps {
   track: ITrack;
 }
@@ -35,6 +36,15 @@ const TabletListTrackStyle = styled(TrackStyle)`
   }
 `;
 
+const NoImageTrack = styled.div`
+  width: 100%;
+  height: 100%;
+  color: white;
+  display: flex;
+  flex-direction: center;
+  align-items: center;
+`;
+
 function Track({ track }: TrackComponentProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const { playingTrack } = useSelector((state: RootState) => state);
@@ -51,11 +61,19 @@ function Track({ track }: TrackComponentProps) {
     <>
       {isMobile ? (
         <MobileTrackStyle isPlaying={isPlaying}>
-          <img src={track.album.images[2].url} alt={track.name} />
+          {!isArrayEmpty(track.album.images) ? (
+            <img src={track.album.images[2].url} alt={track.name} />
+          ) : (
+            <NoImageTrack>이미지 없음</NoImageTrack>
+          )}
         </MobileTrackStyle>
       ) : (
         <TabletListTrackStyle isPlaying={isPlaying}>
-          <img src={track.album.images[2].url} alt={track.name} />
+          {!isArrayEmpty(track.album.images) ? (
+            <img src={track.album.images[2].url} alt={track.name} />
+          ) : (
+            <NoImageTrack>이미지 없음</NoImageTrack>
+          )}
         </TabletListTrackStyle>
       )}
     </>
