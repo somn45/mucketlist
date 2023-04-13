@@ -3,9 +3,9 @@
 </center>
 
 🔗 Github : https://github.com/somn45/mucketlist  
-🔗 Page Link : https://mucketlist.com
-🧩 테스트용 아이디 : mucketlisttest@gmail.com
-🧩 테스트용 비밀번호 : myreactapp
+🔗 Page Link : https://mucketlist.com  
+🧩 스포티파이 테스트용 아이디 : mucketlisttest@gmail.com(구글)  
+🧩 스포티파이 테스트용 비밀번호 : myreactapp(구글)
 
 ## 🎉Intro
 
@@ -13,6 +13,8 @@
 
 - MucketList는 Spotify API를 이용한 음악 에플리케이션 입니다.
 - 사용자가 관심 있는 장르를 검색하면 해당 장르에 맞는 트랙 리스트들이 출력되고 트랙을 감상할 수 있습니다. -또한 리스트에 포함된 트랙을 다 듣거나 트랙을 찜했다면 해당 트랙을 토대로 하여 추천 트랙을 리스트에 추가합니다. 이로써 사용자가 관심 있는 트랙을 지속적으로 감상 할 수 있도록 도와주는 에플리케이션 입니다.
+
+- Spotify 연동 계정을 위 스포티파이 테스트용 계정을 구글 로그인으로 진행하시면 Mucketlist를 체험해 보실 수 있습니다.
 
 ## 💾 Build
 
