@@ -37,6 +37,7 @@ function SpotifyAuth() {
         {
           code: code,
           firebaseUid: FIREBASE_UID,
+          accessToken: getToken('accessToken'),
         }
       );
       createAccessToken(data, 'request');

@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Spotify API를 이용한 음악검색 및 감상 에플리케이션",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "env-cmd": "^10.1.0"
+  },
   "devDependencies": {
     "webpack": "^5.75.0"
   },
@@ -11,8 +14,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:server": "cd server && npm run build",
     "build:client": "cd client && npm run build",
-    "dev:client": "cd client && npm run start",
-    "dev:server": "cd server && npm run dev",
+    "dev:client": " cd client && npm run start",
+    "dev:server": " cd server && npm run dev",
     "start:client": "cd client && npm run start",
     "start:server": "cd server && npm run start"
   },

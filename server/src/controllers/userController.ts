@@ -16,6 +16,7 @@ interface UserFormBody {
 interface SpotifyAuthBody {
   code: string;
   firebaseUid: string;
+  accessToken: string;
 }
 
 export const join = async (req: express.Request, res: express.Response) => {
@@ -78,7 +79,9 @@ export const spotifyAuth = async (
     redirectUri: process.env.DOMAIN,
   });
   try {
-    const { code, firebaseUid }: SpotifyAuthBody = req.body;
+    console.log('domain', process.env.DOMAIN);
+    const { code, firebaseUid, accessToken }: SpotifyAuthBody = req.body;
+    spotifyApi.setAccessToken(accessToken);
     const response = await spotifyApi.authorizationCodeGrant(code);
     await setDoc(
       doc(db, 'firebaseUid', firebaseUid),
