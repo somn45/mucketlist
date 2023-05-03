@@ -41,7 +41,9 @@ interface CustomTrack {
 
 export const genres = async (req: express.Request, res: express.Response) => {
   try {
-    const accessToken = req.body.accessToken;
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return;
+    const accessToken = authHeader.substring(7, authHeader.length);
     const spotifyApi = new SpotifyWebApi();
     spotifyApi.setAccessToken(accessToken);
     const response = await spotifyApi.getAvailableGenreSeeds();
@@ -65,7 +67,7 @@ export const search = async (req: express.Request, res: express.Response) => {
     return res.json({
       tracks: response.body.tracks,
     });
-  } catch(error) {
+  } catch (error) {
     console.log(error);
   }
 };

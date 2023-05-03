@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Cookies } from 'react-cookie';
 import getToken from './utils/functions/getToken';
-import axios, { AxiosResponse } from 'axios';
-import { changeisAccessTokenState } from './store/reducers/rootReducer';
+import axios from 'axios';
+import {
+  changeisAccessTokenState,
+  saveAccessToken,
+} from './store/reducers/rootReducer';
 import { useAppDispatch } from './store/store';
 import { SERVER_ENDPOINT } from './constants/constants';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +16,6 @@ interface RefreshAxiosRequest {
 
 interface AuthAxiosResponse {
   accessToken: string;
-  expiresIn: number;
 }
 
 const FIREBASE_UID = getToken('firebaseUid');
@@ -23,6 +25,7 @@ function SpotifyAuth() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const code = new URLSearchParams(window.location.search).get('code');
+
   useEffect(() => {
     if (!code) return;
     requestSpotifyToken(code);
@@ -30,6 +33,7 @@ function SpotifyAuth() {
   useEffect(() => {
     filteringToken();
   }, []);
+
   const requestSpotifyToken = async (code: string): Promise<void> => {
     try {
       const { data } = await axios.post<AuthAxiosResponse>(
@@ -39,7 +43,7 @@ function SpotifyAuth() {
           firebaseUid: FIREBASE_UID,
         }
       );
-      createAccessToken(data, 'request');
+      setAccessTokenCookie(data, 'request');
     } catch (error) {
       console.log(error);
     }
@@ -55,26 +59,41 @@ function SpotifyAuth() {
   };
 
   const refreshAccessToken = async (): Promise<void> => {
-    const { data } = await axios.post<AuthAxiosResponse>(
+    /*
+        const { data } = await axios.post<AuthAxiosResponse>(
       `${SERVER_ENDPOINT}/users/spotify/refresh`,
       {
         firebaseUid: FIREBASE_UID,
       }
     );
-    createAccessToken(data, 'refresh');
+    setAccessTokenCookie(data, 'refresh');
+    */
   };
 
-  const createAccessToken = (
+  const setAccessTokenCookie = async (
     res: AuthAxiosResponse,
     req: 'request' | 'refresh'
   ) => {
-    cookies.set('accessToken', res.accessToken, {
-      maxAge: res.expiresIn,
-      path: '/',
-    });
+    await axios.post(
+      `${SERVER_ENDPOINT}/cookies/set`,
+      {
+        accessToken: res.accessToken,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    const { data: tokenData } = await axios.get<AuthAxiosResponse>(
+      `${SERVER_ENDPOINT}/cookies/send`,
+      {
+        withCredentials: true,
+      }
+    );
+    dispatch(saveAccessToken(tokenData.accessToken));
     dispatch(changeisAccessTokenState(true));
-    if (req === 'request') navigate('/');
+    navigate('/');
   };
+
   return <></>;
 }
 

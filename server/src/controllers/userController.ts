@@ -7,6 +7,7 @@ import {
 import { FirebaseError } from 'firebase/app';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import SpotifyWebApi from 'spotify-web-api-node';
+import Cookies from 'cookies';
 
 interface UserFormBody {
   email: string;
@@ -71,7 +72,6 @@ export const spotifyAuth = async (
   req: express.Request,
   res: express.Response
 ) => {
-  const WEEK = 1000 * 60 * 60 * 24 * 7;
   const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
@@ -88,9 +88,9 @@ export const spotifyAuth = async (
       },
       { merge: true }
     );
+
     res.status(202).json({
       accessToken: response.body.access_token,
-      expiresIn: response.body.expires_in,
     });
   } catch (error) {
     //console.log(error);

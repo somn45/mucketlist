@@ -11,8 +11,10 @@ import playMode from './playMode';
 import selectedGenres from './selectedGenres';
 import isSetAccessToken from './isSetAccessToken';
 import playingTrack from './playingTrack';
+import accessTokenSlice from './accesstoken';
 
 const rootReducer = combineReducers({
+  accessToken: accessTokenSlice.reducer,
   activeComponent: activeComponent.reducer,
   selectedGenres: selectedGenres.reducer,
   tracks: tracks.reducer,
@@ -31,6 +33,7 @@ const persistConfig = {
   whitelist: ['tracks', 'selectedGenres'],
 };
 
+export const { saveAccessToken } = accessTokenSlice.actions;
 export const { activeGenres, activeOptions, activeHandBook, inactiveAll } =
   activeComponent.actions;
 export const { addGenre, removeGenre, clearGenres } = selectedGenres.actions;

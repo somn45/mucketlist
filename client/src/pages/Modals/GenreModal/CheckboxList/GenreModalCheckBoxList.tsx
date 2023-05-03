@@ -5,8 +5,9 @@ import { useQuery } from 'react-query';
 
 import Genre from '../../../../components/Genre';
 
-import getToken from '../../../../utils/functions/getToken';
 import { SERVER_ENDPOINT } from '../../../../constants/constants';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../store/reducers/rootReducer';
 
 interface IGenres {
   genres: string[];
@@ -26,13 +27,12 @@ const GenreSelectionTabStyle = styled.div`
 `;
 
 function GenreModalCheckBoxList() {
+  const { accessToken } = useSelector((state: RootState) => state);
+
   const getGenres = async () => {
-    const accessToken = getToken('accessToken');
     const { data } = await axios.post<IGenres>(
       `${SERVER_ENDPOINT}/tracks/genres`,
-      {
-        accessToken: accessToken,
-      },
+      {},
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
