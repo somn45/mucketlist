@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/reducers/rootReducer';
 import { playerType } from '../types/playerTypes/playerTypes';
-import getToken from '../utils/functions/getToken';
 
 type useSpotifyPlayBackProps = [
   playerType,
@@ -13,6 +12,7 @@ type useSpotifyPlayBackProps = [
 
 const useSpotifyPlayBack = (): useSpotifyPlayBackProps => {
   const isActive = useSelector((state: RootState) => state.activeComponent);
+  const { accessToken } = useSelector((state: RootState) => state);
   const [player, setPlayer] = useState<playerType>(null);
   const [deviceId, setDeviceId] = useState('');
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ const useSpotifyPlayBack = (): useSpotifyPlayBackProps => {
       const player = new window.Spotify.Player({
         name: 'Mucketlist Player SDK',
         getOAuthToken: (cb) => {
-          cb(getToken('accessToken'));
+          cb(accessToken);
         },
         volume: 0.5,
       });

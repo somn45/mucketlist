@@ -93,16 +93,16 @@ export const spotifyAuth = async (
       accessToken: response.body.access_token,
     });
   } catch (error) {
-    //console.log(error);
+    //console.log('spotify auth error', error);
   }
 };
 
 export const refresh = async (req: express.Request, res: express.Response) => {
   try {
     const firebaseUid: string = req.body.firebaseUid;
-    const docSnap = await getDoc(doc(db, 'firebaseUid', firebaseUid));
-    const data = docSnap.data();
-    const refreshToken: string = data?.refreshToken;
+    const userdocSnap = await getDoc(doc(db, 'firebaseUid', firebaseUid));
+    const userData = userdocSnap.data();
+    const refreshToken: string = userData?.refreshToken;
     const spotifyApi = new SpotifyWebApi({
       clientId: process.env.SPOTIFY_CLIENT_ID,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET,

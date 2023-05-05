@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { useQuery } from 'react-query';
 
 import Genre from '../../../../components/Genre';
 
-import { SERVER_ENDPOINT } from '../../../../constants/constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store/reducers/rootReducer';
+import { getSpotifyGenres } from '../../../../API';
 
 interface IGenres {
   genres: string[];
@@ -30,19 +29,16 @@ function GenreModalCheckBoxList() {
   const { accessToken } = useSelector((state: RootState) => state);
 
   const getGenres = async () => {
-    const { data } = await axios.post<IGenres>(
-      `${SERVER_ENDPOINT}/tracks/genres`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    return data.genres;
+    const genres = await getSpotifyGenres();
+    return genres;
   };
 
-  const { isLoading, isError, data, error } = useQuery('genres', getGenres, {
+  const {
+    isLoading,
+    isError,
+    data: spotifyGenresData,
+    error,
+  } = useQuery('genres', getGenres, {
     retry: 3,
   });
 
@@ -50,7 +46,8 @@ function GenreModalCheckBoxList() {
 
   return (
     <GenreSelectionTabStyle>
-      {data && data.map((genre) => <Genre key={genre} genre={genre} />)}
+      {spotifyGenresData &&
+        spotifyGenresData.map((genre) => <Genre key={genre} genre={genre} />)}
     </GenreSelectionTabStyle>
   );
 }

@@ -18,7 +18,6 @@ interface AuthAxiosResponse {
   accessToken: string;
 }
 
-const FIREBASE_UID = getToken('firebaseUid');
 const cookies = new Cookies();
 
 function SpotifyAuth() {
@@ -36,21 +35,23 @@ function SpotifyAuth() {
 
   const requestSpotifyToken = async (code: string): Promise<void> => {
     try {
-      const { data } = await axios.post<AuthAxiosResponse>(
+      const firebaseUid = getToken('firebaseUid');
+      const { data: tokenData } = await axios.post<AuthAxiosResponse>(
         `${SERVER_ENDPOINT}/users/spotify/auth`,
         {
           code: code,
-          firebaseUid: FIREBASE_UID,
+          firebaseUid,
         }
       );
-      setAccessTokenCookie(data, 'request');
+      setAccessTokenCookie(tokenData, 'request');
     } catch (error) {
       console.log(error);
     }
   };
 
   const filteringToken = () => {
-    if (!FIREBASE_UID) return;
+    const firebaseUid = getToken('firebaseUid');
+    if (!firebaseUid) return;
     refreshAccessToken();
     setTimeout(() => {
       dispatch(changeisAccessTokenState(false));
@@ -60,7 +61,7 @@ function SpotifyAuth() {
 
   const refreshAccessToken = async (): Promise<void> => {
     /*
-        const { data } = await axios.post<AuthAxiosResponse>(
+        const { data: tokenData } = await axios.post<AuthAxiosResponse>(
       `${SERVER_ENDPOINT}/users/spotify/refresh`,
       {
         firebaseUid: FIREBASE_UID,
@@ -90,6 +91,7 @@ function SpotifyAuth() {
       }
     );
     dispatch(saveAccessToken(tokenData.accessToken));
+    console.log('pass set cookie');
     dispatch(changeisAccessTokenState(true));
     navigate('/');
   };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useLocation } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -15,10 +15,8 @@ import ErrorMsg from './ErrorMsg/ErrorMsg';
 import { useAppDispatch } from '../../../store/store';
 import { updateStatusMessage } from '../../../store/reducers/rootReducer';
 import validateForm from '../../../utils/functions/validateForm';
-import {
-  SERVER_ENDPOINT,
-  SPOTIFY_AUTH_URL_CONFIG,
-} from '../../../constants/constants';
+import { SPOTIFY_AUTH_URL_CONFIG } from '../../../constants/constants';
+import { checkUser } from '../../../API';
 
 interface ILocation {
   state: {
@@ -48,14 +46,8 @@ function Login() {
     const validateMessage = handleLoginValidate();
     if (validateMessage !== 'ok') return;
     try {
-      const { data } = await axios.post<LoginAxiosResponse>(
-        `${SERVER_ENDPOINT}/users/login`,
-        {
-          email,
-          password,
-        }
-      );
-      cookies.set('firebaseUid', data.firebaseUid, {
+      const firebaseUid = await checkUser(email, password);
+      cookies.set('firebaseUid', firebaseUid, {
         maxAge: 3600 * 7,
       });
       const finalUrl = combineSpotifyAuthUrl();

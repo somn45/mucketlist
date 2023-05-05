@@ -19,7 +19,6 @@ interface addTrackControllerBody {
     id: string;
     artistId: string;
   };
-  accessToken: string;
   firebaseUid: string;
 }
 
@@ -54,9 +53,12 @@ export const genres = async (req: express.Request, res: express.Response) => {
 };
 
 export const search = async (req: express.Request, res: express.Response) => {
-  const accessToken = req.query.accessToken as string;
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return;
+  const accessToken = authHeader.substring(7, authHeader.length);
   const genres = req.query.genres as string;
   const parsedGenres = JSON.parse(genres);
+
   try {
     const spotifyApi = new SpotifyWebApi();
     spotifyApi.setAccessToken(accessToken);
@@ -73,7 +75,10 @@ export const search = async (req: express.Request, res: express.Response) => {
 };
 
 export const addTrack = async (req: express.Request, res: express.Response) => {
-  const { track, accessToken, firebaseUid }: addTrackControllerBody = req.body;
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.sendStatus(401);
+  const accessToken = authHeader?.substring(7, authHeader.length);
+  const { track, firebaseUid }: addTrackControllerBody = req.body;
   try {
     const userData = await getDoc(doc(db, 'firebaseUid', firebaseUid));
     if (!userData.exists()) return;
@@ -101,7 +106,7 @@ export const addTrack = async (req: express.Request, res: express.Response) => {
       },
       { merge: true }
     );
-    return res.status(200).json({ track });
+    return res.status(200).json({ customTrack });
   } catch (error) {
     console.log(error);
   }
@@ -114,7 +119,7 @@ export const getTrack = async (req: express.Request, res: express.Response) => {
     if (!userData.exists()) return;
     const customTracks = userData.data().customTracks;
     return res.status(200).json({
-      tracks: customTracks,
+      customTracks,
     });
   } catch (error) {
     console.log(error);
