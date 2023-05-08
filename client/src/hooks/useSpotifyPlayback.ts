@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/reducers/rootReducer';
 import { playerType } from '../types/playerTypes/playerTypes';
+import axios from 'axios';
+import { SERVER_ENDPOINT } from '../constants/constants';
+import { AuthAxiosResponse } from '../SpotifyAuth';
 
 type useSpotifyPlayBackProps = [
   playerType,
@@ -11,8 +12,6 @@ type useSpotifyPlayBackProps = [
 ];
 
 const useSpotifyPlayBack = (): useSpotifyPlayBackProps => {
-  const isActive = useSelector((state: RootState) => state.activeComponent);
-  const { accessToken } = useSelector((state: RootState) => state);
   const [player, setPlayer] = useState<playerType>(null);
   const [deviceId, setDeviceId] = useState('');
   const [loading, setLoading] = useState(true);
@@ -20,7 +19,15 @@ const useSpotifyPlayBack = (): useSpotifyPlayBackProps => {
     null
   );
 
-  useEffect(() => {
+  const createSpotifyPlayBack = async () => {
+    const { data: tokenData } = await axios.get<AuthAxiosResponse>(
+      `${SERVER_ENDPOINT}/cookies/send`,
+      {
+        withCredentials: true,
+      }
+    );
+    const accessToken = tokenData.accessToken;
+
     const script = document.createElement('script');
     script.src = 'https://sdk.scdn.co/spotify-player.js';
     script.async = true;
@@ -53,6 +60,10 @@ const useSpotifyPlayBack = (): useSpotifyPlayBackProps => {
       player.connect();
       setPlayer(player);
     };
+  };
+
+  useEffect(() => {
+    createSpotifyPlayBack();
   }, []);
   return [player, deviceId, loading, playState];
 };

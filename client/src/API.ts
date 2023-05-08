@@ -23,6 +23,10 @@ export const checkUser = async (email: string, password: string) => {
   return firebaseUidData.firebaseUid;
 };
 
+export const requestLogout = async (firebaseUid: string) => {
+  await axiosInstance.post('/users/logout', { firebaseUid });
+};
+
 export const getSpotifyGenres = async () => {
   const { data: spotifyGenresData } = await axiosInstance.get<SpotifyGenres>(
     '/tracks/genres'
@@ -41,7 +45,6 @@ export const getCustomTracks = async (firebaseUid: string) => {
   const { data: customTracksData } = await axiosInstance.get<CustomTracks>(
     `/tracks/read?firebaseUid=${firebaseUid}`
   );
-  console.log(customTracksData);
   return customTracksData.customTracks;
 };
 

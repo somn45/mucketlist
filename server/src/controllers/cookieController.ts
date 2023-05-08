@@ -2,9 +2,10 @@ import express from 'express';
 
 export const setCookie = (req: express.Request, res: express.Response) => {
   const accessToken: string = req.body.accessToken;
+  console.log('set cookie', accessToken);
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
-    maxAge: 1000 * 60 * 60,
+    maxAge: 1000 * 60 * 1,
   });
   res.sendStatus(200);
 };

@@ -8,10 +8,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store/reducers/rootReducer';
 import { getSpotifyGenres } from '../../../../API';
 
-interface IGenres {
-  genres: string[];
-}
-
 const GenreSelectionTabStyle = styled.div`
   width: 335px;
   height: 365px;
@@ -26,8 +22,6 @@ const GenreSelectionTabStyle = styled.div`
 `;
 
 function GenreModalCheckBoxList() {
-  const { accessToken } = useSelector((state: RootState) => state);
-
   const getGenres = async () => {
     const genres = await getSpotifyGenres();
     return genres;
