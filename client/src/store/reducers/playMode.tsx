@@ -7,7 +7,6 @@ const playMode = createSlice({
   initialState: 'normal' as playModeType,
   reducers: {
     updatePlayMode: (state, action: PayloadAction<playModeType>) => {
-      console.log(action.payload);
       return action.payload;
     },
   },

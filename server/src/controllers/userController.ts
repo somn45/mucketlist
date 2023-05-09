@@ -128,7 +128,6 @@ export const spotifyAuth = async (
 export const refresh = async (req: express.Request, res: express.Response) => {
   try {
     const firebaseUid: string = req.body.firebaseUid;
-    console.log(firebaseUid);
     if (!firebaseUid) return res.end();
     const userRef = doc(db, 'firebaseUid', firebaseUid);
     const userdocSnap = await getDoc(userRef);
@@ -151,7 +150,6 @@ export const refresh = async (req: express.Request, res: express.Response) => {
       refreshToken,
     });
     const response = await spotifyApi.refreshAccessToken();
-    console.log('refresh', response.body.access_token);
     res.cookie('accessToken', response.body.access_token, {
       httpOnly: true,
       maxAge: HOUR,
