@@ -12,7 +12,7 @@ import {
   clearRepeatMode,
   clearShuffleMode,
   setShuffleMode,
-} from '../../../../utils/functions/changePlayMode';
+} from '../../../../API';
 
 function ShuffleMode() {
   const playMode = useSelector((state: RootState) => state.playMode);
@@ -20,7 +20,7 @@ function ShuffleMode() {
 
   const handleShuffleMode = async () => {
     if (playMode === 'normal') {
-      setShuffleMode();
+      await setShuffleMode();
       dispatch(updatePlayMode('shuffle'));
     }
     if (playMode === 'repeat') {

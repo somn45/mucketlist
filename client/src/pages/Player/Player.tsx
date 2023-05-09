@@ -1,13 +1,8 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import usePlay from '../../hooks/usePlay';
 import useSpotifyPlayBack from '../../hooks/useSpotifyPlayback';
-import {
-  RootState,
-  setPlayingTrack,
-  updatePlayState,
-} from '../../store/reducers/rootReducer';
+import { RootState, setPlayingTrack } from '../../store/reducers/rootReducer';
 
 import { useAppDispatch } from '../../store/store';
 import PlayerColumn from './Column/PlayerColumn';

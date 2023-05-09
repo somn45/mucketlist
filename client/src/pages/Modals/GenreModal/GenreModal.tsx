@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 
 import GenreModalWrap from './ModalWrap/GenreModalWrap';
 import GenreModalTitle from './Title/GenreModalTitle';
@@ -16,13 +15,8 @@ import GenreModalSubmit from './Submit/GenreModalSubmit';
 
 import { ITrack } from '../../../types/trackTypes/trackTypes';
 
-import getToken from '../../../utils/functions/getToken';
 import { useAppDispatch } from '../../../store/store';
-import { SERVER_ENDPOINT } from '../../../constants/constants';
-
-interface SearchTrackAxiosReponse {
-  tracks: ITrack[];
-}
+import { getSpotifyTracks } from '../../../API';
 
 function GenreModal() {
   const dispatch = useAppDispatch();
@@ -35,16 +29,8 @@ function GenreModal() {
   const searchTracksToGenre = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (selectedGenres.length === 0) return;
-    const searchTrackQuery = {
-      accessToken: getToken('accessToken'),
-      genres: JSON.stringify(selectedGenres),
-    };
-    const urlParams = new URLSearchParams(searchTrackQuery).toString();
-    const { data } = await axios.get<SearchTrackAxiosReponse>(
-      `${SERVER_ENDPOINT}/tracks/search?${urlParams}`
-    );
-    console.log(data);
-    dispatch(createTracks(data.tracks));
+    const tracks = await getSpotifyTracks(selectedGenres);
+    dispatch(createTracks(tracks));
     setTimeout(() => dispatch(activeOptions()), 600);
   };
 

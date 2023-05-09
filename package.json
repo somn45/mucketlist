@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "Spotify API를 이용한 음악검색 및 감상 에플리케이션",
   "main": "index.js",
-  "dependencies": {
-    "cross-env": "^7.0.3",
-    "env-cmd": "^10.1.0"
-  },
   "devDependencies": {
     "webpack": "^5.75.0"
   },

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 
@@ -11,7 +11,7 @@ import LoginLink from './Link/LoginLink';
 import ErrorMsg from './ErrorMsg/ErrorMsg';
 
 import validateForm from '../../../utils/functions/validateForm';
-import { SERVER_ENDPOINT } from '../../../constants/constants';
+import { addUser } from '../../../API';
 
 const cookies = new Cookies();
 
@@ -26,10 +26,7 @@ function Join() {
     const validateMessage = handleJoinValidate();
     if (!(validateMessage === 'ok')) return;
     try {
-      await axios.post(`${SERVER_ENDPOINT}/users/join`, {
-        email,
-        password,
-      });
+      await addUser(email, password);
       cookies.set('newUserHandBook', email);
       navigate('/login', {
         state: {
