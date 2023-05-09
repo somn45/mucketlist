@@ -5,7 +5,13 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  deleteField,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import SpotifyWebApi from 'spotify-web-api-node';
 
 interface UserFormBody {
@@ -13,10 +19,18 @@ interface UserFormBody {
   password: string;
 }
 
-interface SpotifyAuthBody {
-  code: string;
+interface RequestAccountBody {
+  code?: string;
   firebaseUid: string;
 }
+
+interface TokenData {
+  refreshToken: string;
+  expiredIn: number;
+}
+
+const HOUR = 1000 * 60 * 60;
+const WEEK = 1000 * 60 * 60 * 24 * 7;
 
 export const join = async (req: express.Request, res: express.Response) => {
   const { email, password }: UserFormBody = req.body;
@@ -67,53 +81,85 @@ export const login = async (req: express.Request, res: express.Response) => {
   }
 };
 
+export const logout = async (req: express.Request, res: express.Response) => {
+  const { firebaseUid }: RequestAccountBody = req.body;
+  const userRef = doc(db, 'firebaseUid', firebaseUid);
+  await updateDoc(userRef, {
+    refreshToken: deleteField(),
+    expiredIn: deleteField(),
+  });
+  res.clearCookie('accessToken', { httpOnly: true, maxAge: HOUR });
+  return res.sendStatus(200);
+};
+
 export const spotifyAuth = async (
   req: express.Request,
   res: express.Response
 ) => {
-  const WEEK = 1000 * 60 * 60 * 24 * 7;
   const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     redirectUri: process.env.DOMAIN,
   });
   try {
-    const { code, firebaseUid }: SpotifyAuthBody = req.body;
+    const { code, firebaseUid }: RequestAccountBody = req.body;
+    if (!code) return;
     const response = await spotifyApi.authorizationCodeGrant(code);
+    const now = Date.now();
+    const expirationTime = now + WEEK;
     await setDoc(
       doc(db, 'firebaseUid', firebaseUid),
       {
         refreshToken: response.body.refresh_token,
+        expiredIn: expirationTime,
         scope: response.body.scope,
       },
       { merge: true }
     );
+
     res.status(202).json({
       accessToken: response.body.access_token,
-      expiresIn: response.body.expires_in,
     });
   } catch (error) {
-    //console.log(error);
+    console.log('spotify auth error', error);
   }
 };
 
 export const refresh = async (req: express.Request, res: express.Response) => {
   try {
     const firebaseUid: string = req.body.firebaseUid;
-    const docSnap = await getDoc(doc(db, 'firebaseUid', firebaseUid));
-    const data = docSnap.data();
-    const refreshToken: string = data?.refreshToken;
+    console.log(firebaseUid);
+    if (!firebaseUid) return res.end();
+    const userRef = doc(db, 'firebaseUid', firebaseUid);
+    const userdocSnap = await getDoc(userRef);
+    const userData = userdocSnap.data();
+    if (!userData) return;
+    const { refreshToken, expiredIn } = userData as TokenData;
+    const now = Date.now();
+    if (now > expiredIn) {
+      await updateDoc(userRef, {
+        refreshToken: deleteField(),
+        expiredIn: deleteField(),
+      });
+      return res.status(401).json({
+        errorMsg: 'token expired',
+      });
+    }
     const spotifyApi = new SpotifyWebApi({
       clientId: process.env.SPOTIFY_CLIENT_ID,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
       refreshToken,
     });
     const response = await spotifyApi.refreshAccessToken();
+    console.log('refresh', response.body.access_token);
+    res.cookie('accessToken', response.body.access_token, {
+      httpOnly: true,
+      maxAge: HOUR,
+    });
     res.status(200).json({
       accessToken: response.body.access_token,
-      expiresIn: response.body.expires_in,
     });
   } catch (error) {
-    console.log(error);
+    console.log('refresh error', error);
   }
 };

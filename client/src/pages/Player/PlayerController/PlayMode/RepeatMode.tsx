@@ -13,7 +13,7 @@ import {
   clearRepeatMode,
   clearShuffleMode,
   setRepeatMode,
-} from '../../../../utils/functions/changePlayMode';
+} from '../../../../API';
 
 function RepeatMode() {
   const playMode = useSelector((state: RootState) => state.playMode);

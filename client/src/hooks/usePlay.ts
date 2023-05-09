@@ -1,15 +1,13 @@
 import { useState, useRef } from 'react';
-import axios, { AxiosError } from 'axios';
-import { useSelector } from 'react-redux';
+import { AxiosError } from 'axios';
 import {
-  RootState,
   updatePlayState,
   updateStatusMessage,
 } from '../store/reducers/rootReducer';
 import { useAppDispatch } from '../store/store';
 import { PlayError, playerType } from '../types/playerTypes/playerTypes';
-import getToken from '../utils/functions/getToken';
 import { ITrack } from '../types/trackTypes/trackTypes';
+import { setPlayer } from '../API';
 
 type usePlayProps = [() => Promise<void>, string];
 
@@ -19,7 +17,6 @@ const usePlay = (
   tracks: ITrack[]
 ): usePlayProps => {
   const dispatch = useAppDispatch();
-  const { playingPosition } = useSelector((state: RootState) => state);
   const [errorMsg, setErrorMsg] = useState('');
   const [retryCount, setRetryCount] = useState(0);
   const retryCountRef = useRef(retryCount);
@@ -45,18 +42,7 @@ const usePlay = (
     } = playerInstance;
     try {
       getOAuthToken(async () => {
-        await axios.put(
-          `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-          {
-            uris: trackUris,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${getToken('accessToken')}`,
-            },
-          }
-        );
+        setPlayer(deviceId, trackUris);
       });
     } catch (error) {
       handlePlayerStateError({ error });

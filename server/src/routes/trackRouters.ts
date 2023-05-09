@@ -11,7 +11,7 @@ import {
 
 const trackRouter = express.Router();
 
-trackRouter.post('/genres', genres);
+trackRouter.get('/genres', genres);
 trackRouter.get('/search', search);
 trackRouter.post('/add', addTrack);
 trackRouter.get('/read', getTrack);

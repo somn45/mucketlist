@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import { useMutation } from 'react-query';
@@ -17,7 +16,7 @@ import { ICustomTrack } from '../types/trackTypes/trackTypes';
 
 import { updateStatusMessage } from '../store/reducers/rootReducer';
 import { queryClient } from '..';
-import { SERVER_ENDPOINT } from '../constants/constants';
+import { deleteCustomTracks } from '../API';
 
 interface CustomTrackItemProps {
   track: ICustomTrack;
@@ -28,28 +27,28 @@ const cookies = new Cookies();
 function CustomTrackItem({ track }: CustomTrackItemProps) {
   const dispatch = useDispatch();
 
-  const deleteCustomTracks = async (id: string) => {
+  const requestDeleteCustomTrack = async (id: string) => {
     const firebaseUid = cookies.get('firebaseUid');
-    const urlParams = new URLSearchParams({ firebaseUid, id });
-    const { data } = await axios.delete(
-      `${SERVER_ENDPOINT}/tracks/delete?${urlParams}`
-    );
-    return data;
+    const customTracks = await deleteCustomTracks(firebaseUid, id);
+    return customTracks;
   };
 
-  const deleteMutation = useMutation((id: string) => deleteCustomTracks(id), {
-    onMutate: async () => {
-      queryClient.cancelQueries('customTracks');
-    },
-    onSuccess: () => {
-      dispatch(
-        updateStatusMessage(
-          `${track.name}이 찜한 트랙 리스트에서 삭제되었습니다.`
-        )
-      );
-    },
-    onSettled: () => queryClient.invalidateQueries(),
-  });
+  const deleteCustomTrackMutate = useMutation(
+    (id: string) => requestDeleteCustomTrack(id),
+    {
+      onMutate: async () => {
+        queryClient.cancelQueries('customTracks');
+      },
+      onSuccess: () => {
+        dispatch(
+          updateStatusMessage(
+            `${track.name}이 찜한 트랙 리스트에서 삭제되었습니다.`
+          )
+        );
+      },
+      onSettled: () => queryClient.invalidateQueries(),
+    }
+  );
 
   return (
     <TrackItem>
@@ -58,7 +57,9 @@ function CustomTrackItem({ track }: CustomTrackItemProps) {
         <TrackInfo>
           <div>
             <TrackName>{track.name}</TrackName>
-            <TrackDeleteButton onClick={() => deleteMutation.mutate(track.id)}>
+            <TrackDeleteButton
+              onClick={() => deleteCustomTrackMutate.mutate(track.id)}
+            >
               X
             </TrackDeleteButton>
           </div>

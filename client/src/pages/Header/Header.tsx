@@ -20,11 +20,12 @@ import {
 import { MOBILE_SIZE } from '../../constants/constants';
 import HeaderWrap from './HeaderWrap/HeaderWrap';
 import MenuList from './MenuList/MenuList';
+import getToken from '../../utils/functions/getToken';
+import { requestLogout } from '../../API';
 
 function Header() {
   const dispatch = useDispatch();
   const [, , removeFirebaseUID] = useCookies(['firebaseUid']);
-  const [, , removeAccessToken] = useCookies(['accessToken']);
   const navigate = useNavigate();
   const isMobile = useMediaQuery({
     query: MOBILE_SIZE,
@@ -43,9 +44,10 @@ function Header() {
     dispatch(activeHandBook());
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const firebaseUid = getToken('firebaseUid');
+    await requestLogout(firebaseUid);
     removeFirebaseUID('firebaseUid');
-    removeAccessToken('accessToken');
     localStorage.clear();
     window.location.reload();
   };

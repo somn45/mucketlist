@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
-import axios from 'axios';
 
 import Header from '../Header/Header';
 import ResponsiveHomeSection from './ResponsiveHomeSection';
@@ -15,7 +14,7 @@ import { ICustomTrack } from '../../types/trackTypes/trackTypes';
 import { RootState } from '../../store/reducers/rootReducer';
 import getToken from '../../utils/functions/getToken';
 import Player from '../Player/Player';
-import { SERVER_ENDPOINT } from '../../constants/constants';
+import { getCustomTracks } from '../../API';
 
 interface AxiosGetCustomTracksRes {
   tracks: ICustomTrack[];
@@ -37,12 +36,10 @@ function Home() {
     else setIsAcitvePlayer(true);
   }, [isActive]);
 
-  const getCustomTrack = useCallback(async () => {
+  const initCustomTrack = useCallback(async () => {
     const firebaseUid = getToken('firebaseUid');
-    const { data } = await axios.get<AxiosGetCustomTracksRes>(
-      `${SERVER_ENDPOINT}/tracks/read?firebaseUid=${firebaseUid}`
-    );
-    return data.tracks;
+    const customTracks = await getCustomTracks(firebaseUid);
+    return customTracks;
   }, []);
 
   const {
@@ -50,7 +47,7 @@ function Home() {
     isError,
     data: customTracks,
     error,
-  } = useQuery<ICustomTrack[]>('customtracks', getCustomTrack);
+  } = useQuery<ICustomTrack[]>('customtracks', initCustomTrack);
 
   return (
     <>
