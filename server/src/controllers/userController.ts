@@ -89,7 +89,12 @@ export const logout = async (req: express.Request, res: express.Response) => {
     refreshToken: deleteField(),
     expiredIn: deleteField(),
   });
-  res.clearCookie('accessToken', { httpOnly: true, maxAge: HOUR });
+  res.clearCookie('accessToken', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: HOUR,
+  });
   return res.sendStatus(200);
 };
 
@@ -153,6 +158,8 @@ export const refresh = async (req: express.Request, res: express.Response) => {
     const response = await spotifyApi.refreshAccessToken();
     res.cookie('accessToken', response.body.access_token, {
       httpOnly: true,
+      secure: true,
+      sameSite: 'none',
       maxAge: HOUR,
     });
     res.status(200).json({
